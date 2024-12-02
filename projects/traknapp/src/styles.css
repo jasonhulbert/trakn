@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * NunitoSans-Italic-VariableFont_YTLC,opsz,wdth,wght.ttf
+ * NunitoSans-VariableFont_YTLC,opsz,wdth,wght.ttf
+ */
+
+@font-face {
+    font-family: NunitoSans;
+    font-weight: 200 300 400 600 500 700 800 900;
+    font-style: normal;
+    src: url(/fonts/NunitoSans-VariableFont_YTLC,opsz,wdth,wght.ttf);
+}
+
+@font-face {
+    font-family: NunitoSans;
+    font-weight: 200 300 400 600 500 700 800 900;
+    font-style: italic;
+    src: url(/fonts/NunitoSans-Italic-VariableFont_YTLC,opsz,wdth,wght.ttf);
+}
+
+@font-face {
+    font-family: RemixIcon;
+    font-weight: 400;
+    font-style: normal;
+    src: url(/fonts/remixicon.ttf);
+}
+
+html,
+body {
+    @apply w-full h-full font-sans;
+}
+
+p + p {
+    @apply mt-4;
+}
