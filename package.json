@@ -1,20 +1,18 @@
 {
-    "name": "trkn",
-    "version": "0.0.1",
-    "private": true,
-    "scripts": {
-        "add:all": "pnpm add -w",
-        "add:web": "pnpm --filter trkn-web add",
-        "add:web:dev": "pnpm --filter trkn-web add -D",
-        "add:supabase": "pnpm --filter trkn-supabase add",
-        "add:supabase:dev": "pnpm --filter trkn-supabase add -D",
-        "add:shared": "pnpm --filter trkn-shared add",
-        "add:shared:dev": "pnpm --filter trkn-shared add -D",
-        "dev:web": "pnpm --filter trkn-web dev",
-        "build:web": "pnpm --filter trkn-web build",
-        "test:web": "pnpm --filter trkn-web test",
-        "install:all": "pnpm install"
-    },
-    "dependencies": {},
-    "devDependencies": {}
+  "name": "trkn",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "add:all": "pnpm add -w",
+    "add:web": "pnpm --filter trkn-web add",
+    "add:web:dev": "pnpm --filter trkn-web add -D",
+    "add:supabase": "pnpm --filter trkn-supabase add",
+    "add:supabase:dev": "pnpm --filter trkn-supabase add -D",
+    "add:shared": "pnpm --filter trkn-shared add",
+    "add:shared:dev": "pnpm --filter trkn-shared add -D",
+    "dev:web": "pnpm --filter trkn-web start",
+    "build:web": "pnpm --filter trkn-web build",
+    "test:web": "pnpm --filter trkn-web test",
+    "install:all": "pnpm install"
+  }
 }

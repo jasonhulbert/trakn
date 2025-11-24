@@ -2,7 +2,10 @@
     "name": "trkn-shared",
     "version": "0.0.1",
     "private": true,
-    "scripts": {},
+    "scripts": {
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix"
+    },
     "dependencies": {},
     "devDependencies": {
         "typescript": "~5.9.2"
