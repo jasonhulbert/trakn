@@ -7,23 +7,10 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
+    "lint": "ng lint",
+    "lint:fix": "ng lint --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
-  },
-  "prettier": {
-    "printWidth": 120,
-    "tabWidth": 2,
-    "singleQuote": true,
-    "overrides": [
-      {
-        "files": "*.html",
-        "options": {
-          "parser": "angular"
-        }
-      }
-    ]
   },
   "private": true,
   "dependencies": {
