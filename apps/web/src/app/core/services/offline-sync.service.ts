@@ -1,10 +1,10 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { IndexedDbService } from '../db/indexed-db.service';
 import { SupabaseService } from './supabase.service';
-import type { SyncOperation, SyncStatus } from '@trakn/shared';
+import type { SyncOperation, SyncOperationData, SyncStatus } from '@trakn/shared';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class OfflineSyncService {
   // Signals for reactive state
@@ -14,15 +14,15 @@ export class OfflineSyncService {
     pending: 0,
     synced: 0,
     failed: 0,
-    lastSyncAt: null
+    lastSyncAt: null,
   });
 
   private syncInProgress = false;
 
-  constructor(
-    private db: IndexedDbService,
-    private supabase: SupabaseService
-  ) {
+  private readonly db = inject(IndexedDbService);
+  private readonly supabase = inject(SupabaseService);
+
+  constructor() {
     this.initializeOnlineListener();
     this.startPeriodicSync();
   }
@@ -47,27 +47,23 @@ export class OfflineSyncService {
     }, 30000);
   }
 
-  async queueOperation(
-    type: 'create' | 'update' | 'delete',
-    table: string,
-    data: any
-  ): Promise<void> {
+  async queueOperation(type: 'create' | 'update' | 'delete', table: string, data: SyncOperationData): Promise<void> {
     const operation: SyncOperation = {
       id: crypto.randomUUID(),
       type,
       table,
       data,
       timestamp: Date.now(),
-      retries: 0
+      retries: 0,
     };
 
     await this.db.addToSyncQueue(operation);
 
     // Update pending count
     const queue = await this.db.getSyncQueue();
-    this.syncStatus.update(status => ({
+    this.syncStatus.update((status) => ({
       ...status,
-      pending: queue.length
+      pending: queue.length,
     }));
 
     // Try to sync immediately if online
@@ -123,7 +119,7 @@ export class OfflineSyncService {
         pending: remainingQueue.length,
         synced: successCount,
         failed: failCount,
-        lastSyncAt: new Date().toISOString()
+        lastSyncAt: new Date().toISOString(),
       });
     } finally {
       this.syncInProgress = false;

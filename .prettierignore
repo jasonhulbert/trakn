@@ -1,0 +1,33 @@
+# Dependencies
+node_modules
+pnpm-lock.yaml
+
+# Build outputs
+dist
+build
+.angular
+.next
+out
+
+# Coverage
+coverage
+.nyc_output
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Misc
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Supabase
+supabase/.branches
+supabase/.temp

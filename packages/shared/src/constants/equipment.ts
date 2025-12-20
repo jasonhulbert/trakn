@@ -13,7 +13,7 @@ export const EQUIPMENT_TYPES = [
   'resistance bands',
 ] as const;
 
-export type EquipmentType = typeof EQUIPMENT_TYPES[number];
+export type EquipmentType = (typeof EQUIPMENT_TYPES)[number];
 
 export const EQUIPMENT_LABELS: Record<EquipmentType, string> = {
   barbell: 'Barbell',

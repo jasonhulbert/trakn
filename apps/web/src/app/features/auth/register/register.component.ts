@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -12,9 +12,7 @@ import { AuthService } from '../../../core/services/auth.service';
     <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div class="max-w-md w-full space-y-8">
         <div>
-          <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Create your account
-          </h2>
+          <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Create your account</h2>
         </div>
         <form class="mt-8 space-y-6" (ngSubmit)="onSubmit()">
           @if (error()) {
@@ -22,7 +20,6 @@ import { AuthService } from '../../../core/services/auth.service';
               <p class="text-sm text-red-800">{{ error() }}</p>
             </div>
           }
-
           @if (success()) {
             <div class="rounded-md bg-green-50 p-4">
               <p class="text-sm text-green-800">{{ success() }}</p>
@@ -75,7 +72,7 @@ import { AuthService } from '../../../core/services/auth.service';
       </div>
     </div>
   `,
-  styles: []
+  styles: [],
 })
 export class RegisterComponent {
   email = '';
@@ -84,10 +81,8 @@ export class RegisterComponent {
   error = signal<string | null>(null);
   success = signal<string | null>(null);
 
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
   async onSubmit() {
     if (this.password.length < 8) {
@@ -104,8 +99,9 @@ export class RegisterComponent {
       this.success.set('Account created! Please check your email to confirm your account.');
       this.email = '';
       this.password = '';
-    } catch (err: any) {
-      this.error.set(err.message || 'Failed to create account');
+    } catch (err: unknown) {
+      const anyErr = err as Error;
+      this.error.set(anyErr.message || 'Failed to create account');
     } finally {
       this.isLoading.set(false);
     }

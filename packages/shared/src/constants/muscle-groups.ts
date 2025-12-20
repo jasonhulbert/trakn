@@ -12,7 +12,7 @@ export const MUSCLE_GROUPS = [
   'calves',
 ] as const;
 
-export type MuscleGroup = typeof MUSCLE_GROUPS[number];
+export type MuscleGroup = (typeof MUSCLE_GROUPS)[number];
 
 export const MUSCLE_GROUP_LABELS: Record<MuscleGroup, string> = {
   chest: 'Chest',

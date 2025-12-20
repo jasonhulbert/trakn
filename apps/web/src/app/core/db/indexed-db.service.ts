@@ -8,7 +8,7 @@ import type {
   Exercise,
   TrainingPlan,
   PlanWorkout,
-  SyncOperation
+  SyncOperation,
 } from '@trakn/shared';
 
 export class TraknDatabase extends Dexie {
@@ -33,13 +33,13 @@ export class TraknDatabase extends Dexie {
       sessionSets: 'id, session_id, exercise_id',
       trainingPlans: 'id, user_id, created_at',
       planWorkouts: 'id, plan_id, workout_id, [plan_id+week_number+day_number]',
-      syncQueue: 'id, timestamp, type, table'
+      syncQueue: 'id, timestamp, type, table',
     });
   }
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class IndexedDbService {
   private db: TraknDatabase;
@@ -88,10 +88,7 @@ export class IndexedDbService {
 
   // Workout exercise operations
   async getWorkoutExercises(workoutId: string): Promise<WorkoutExercise[]> {
-    return this.db.workoutExercises
-      .where('workout_id')
-      .equals(workoutId)
-      .sortBy('position');
+    return this.db.workoutExercises.where('workout_id').equals(workoutId).sortBy('position');
   }
 
   async saveWorkoutExercise(exercise: WorkoutExercise): Promise<string> {
@@ -104,11 +101,7 @@ export class IndexedDbService {
 
   // Session operations
   async getWorkoutSessions(userId: string): Promise<WorkoutSession[]> {
-    return this.db.workoutSessions
-      .where('user_id')
-      .equals(userId)
-      .reverse()
-      .sortBy('started_at');
+    return this.db.workoutSessions.where('user_id').equals(userId).reverse().sortBy('started_at');
   }
 
   async getSessionById(id: string): Promise<WorkoutSession | undefined> {
@@ -127,16 +120,13 @@ export class IndexedDbService {
     return this.db.workoutSessions
       .where('user_id')
       .equals(userId)
-      .filter(session => session.synced === false)
+      .filter((session) => session.synced === false)
       .toArray();
   }
 
   // Session set operations
   async getSessionSets(sessionId: string): Promise<SessionSet[]> {
-    return this.db.sessionSets
-      .where('session_id')
-      .equals(sessionId)
-      .sortBy('set_number');
+    return this.db.sessionSets.where('session_id').equals(sessionId).sortBy('set_number');
   }
 
   async saveSessionSet(set: SessionSet): Promise<string> {

@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -12,9 +12,7 @@ import { AuthService } from '../../../core/services/auth.service';
     <div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div class="max-w-md w-full space-y-8">
         <div>
-          <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to Trakn
-          </h2>
+          <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to Trakn</h2>
         </div>
         <form class="mt-8 space-y-6" (ngSubmit)="onSubmit()">
           @if (error()) {
@@ -99,7 +97,7 @@ import { AuthService } from '../../../core/services/auth.service';
       </div>
     </div>
   `,
-  styles: []
+  styles: [],
 })
 export class LoginComponent {
   email = '';
@@ -107,10 +105,8 @@ export class LoginComponent {
   isLoading = signal(false);
   error = signal<string | null>(null);
 
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {}
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
   async onSubmit() {
     this.isLoading.set(true);
@@ -119,8 +115,9 @@ export class LoginComponent {
     try {
       await this.authService.signIn(this.email, this.password);
       await this.router.navigate(['/']);
-    } catch (err: any) {
-      this.error.set(err.message || 'Failed to sign in');
+    } catch (err: unknown) {
+      const anyErr = err as Error;
+      this.error.set(anyErr.message || 'Failed to sign in');
     } finally {
       this.isLoading.set(false);
     }
@@ -129,16 +126,18 @@ export class LoginComponent {
   async signInWithGoogle() {
     try {
       await this.authService.signInWithGoogle();
-    } catch (err: any) {
-      this.error.set(err.message || 'Failed to sign in with Google');
+    } catch (err: unknown) {
+      const anyErr = err as Error;
+      this.error.set(anyErr.message || 'Failed to sign in with Google');
     }
   }
 
   async signInWithApple() {
     try {
       await this.authService.signInWithApple();
-    } catch (err: any) {
-      this.error.set(err.message || 'Failed to sign in with Apple');
+    } catch (err: unknown) {
+      const anyErr = err as Error;
+      this.error.set(anyErr.message || 'Failed to sign in with Apple');
     }
   }
 }

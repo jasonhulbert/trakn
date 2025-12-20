@@ -2,7 +2,12 @@
   "name": "trkn-supabase",
   "version": "0.0.1",
   "private": true,
-  "scripts": {},
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
   "dependencies": {
     "@supabase/functions-js": "^2.81.1",
     "@supabase/supabase-js": "^2.81.1"

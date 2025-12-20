@@ -13,6 +13,18 @@
     "dev:web": "pnpm --filter trkn-web start",
     "build:web": "pnpm --filter trkn-web build",
     "test:web": "pnpm --filter trkn-web test",
-    "install:all": "pnpm install"
+    "install:all": "pnpm install",
+    "lint:all": "pnpm -r lint",
+    "lint:fix:all": "pnpm -r lint:fix",
+    "format:all": "pnpm -r format",
+    "format:check:all": "pnpm -r format:check"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "prettier": "^3.7.4",
+    "typescript-eslint": "^8.50.0"
   }
 }

@@ -1,10 +1,10 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { SupabaseService } from './supabase.service';
 import type { User, Session } from '@supabase/supabase-js';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   // Signals for reactive state management
@@ -13,16 +13,18 @@ export class AuthService {
   isAuthenticated = signal<boolean>(false);
   isLoading = signal<boolean>(true);
 
-  constructor(
-    private supabase: SupabaseService,
-    private router: Router
-  ) {
+  private readonly supabase = inject(SupabaseService);
+  private readonly router = inject(Router);
+
+  constructor() {
     this.initializeAuth();
   }
 
   private async initializeAuth() {
     // Get initial session
-    const { data: { session } } = await this.supabase.auth.getSession();
+    const {
+      data: { session },
+    } = await this.supabase.auth.getSession();
     this.updateAuthState(session);
 
     // Listen for auth state changes
@@ -42,7 +44,7 @@ export class AuthService {
   async signUp(email: string, password: string) {
     const { data, error } = await this.supabase.auth.signUp({
       email,
-      password
+      password,
     });
 
     if (error) throw error;
@@ -52,7 +54,7 @@ export class AuthService {
   async signIn(email: string, password: string) {
     const { data, error } = await this.supabase.auth.signInWithPassword({
       email,
-      password
+      password,
     });
 
     if (error) throw error;
@@ -68,8 +70,8 @@ export class AuthService {
     const { data, error } = await this.supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`
-      }
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
     });
 
     if (error) throw error;
@@ -80,8 +82,8 @@ export class AuthService {
     const { data, error } = await this.supabase.auth.signInWithOAuth({
       provider: 'apple',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`
-      }
+        redirectTo: `${window.location.origin}/auth/callback`,
+      },
     });
 
     if (error) throw error;
@@ -98,7 +100,7 @@ export class AuthService {
 
   async resetPassword(email: string) {
     const { data, error } = await this.supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/auth/reset-password`
+      redirectTo: `${window.location.origin}/auth/reset-password`,
     });
 
     if (error) throw error;
@@ -107,7 +109,7 @@ export class AuthService {
 
   async updatePassword(newPassword: string) {
     const { data, error } = await this.supabase.auth.updateUser({
-      password: newPassword
+      password: newPassword,
     });
 
     if (error) throw error;
