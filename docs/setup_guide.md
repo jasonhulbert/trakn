@@ -7,12 +7,14 @@ Complete setup instructions to get the app running locally and in production.
 ### Required Software
 
 1. **Node.js 18+** and **PNPM 8+**
+
    ```bash
    node --version  # Should be 18+
    pnpm --version  # Should be 8+
    ```
 
 2. **Supabase CLI**
+
    ```bash
    npm install -g supabase
    supabase --version
@@ -50,6 +52,7 @@ supabase start
 ```
 
 This command will:
+
 - Pull necessary Docker images (first time only, ~2-3 minutes)
 - Start PostgreSQL, GoTrue (auth), PostgREST (API), and other services
 - Output important credentials
@@ -78,11 +81,12 @@ The local anon key in `apps/web/src/environments/environment.ts` is a placeholde
 export const environment = {
   production: false,
   supabaseUrl: 'http://localhost:54321',
-  supabaseAnonKey: 'YOUR_ACTUAL_ANON_KEY_FROM_SUPABASE_START'
+  supabaseAnonKey: 'YOUR_ACTUAL_ANON_KEY_FROM_SUPABASE_START',
 };
 ```
 
 **Tip**: You can always get these values again by running:
+
 ```bash
 supabase status
 ```
@@ -95,6 +99,7 @@ supabase db reset
 ```
 
 This will:
+
 - Drop existing database (if any)
 - Run all migrations in order:
   - Create tables (profiles, exercises, workouts, sessions, etc.)
@@ -103,6 +108,7 @@ This will:
   - Create performance indexes
 
 **Verify migrations worked**:
+
 ```bash
 # Open Supabase Studio
 open http://localhost:54323
@@ -129,6 +135,7 @@ You should see the login page. The app is now fully configured for local develop
 **File**: `supabase/config.toml`
 
 Key settings:
+
 - `project_id = "pyjvqpverfntkktlnpeb"` - Your local project identifier
 - API port: `54321`
 - Database port: `54322`
@@ -138,20 +145,22 @@ Key settings:
 ### Angular Environment Files
 
 **Development**: `apps/web/src/environments/environment.ts`
+
 ```typescript
 export const environment = {
   production: false,
   supabaseUrl: 'http://localhost:54321',
-  supabaseAnonKey: '<YOUR_LOCAL_ANON_KEY>'
+  supabaseAnonKey: '<YOUR_LOCAL_ANON_KEY>',
 };
 ```
 
 **Production**: `apps/web/src/environments/environment.prod.ts`
+
 ```typescript
 export const environment = {
   production: true,
   supabaseUrl: '', // Set via build-time env vars
-  supabaseAnonKey: '' // Set via build-time env vars
+  supabaseAnonKey: '', // Set via build-time env vars
 };
 ```
 
@@ -201,6 +210,7 @@ Should show all services as "healthy".
 Visit Supabase Studio: **http://localhost:54323**
 
 Navigate to:
+
 - **Table Editor** → Should see `exercises` table with ~50 rows
 - **Authentication** → Should see "Users" section (empty initially)
 - **Database** → **Policies** → Should see RLS policies on all tables
@@ -218,6 +228,7 @@ Navigate to:
 ### 4. Verify IndexedDB
 
 After logging in:
+
 1. Open DevTools → Application → Storage → IndexedDB
 2. Should see `TraknDB` database
 3. Tables: exercises, workouts, workoutSessions, etc.
@@ -227,9 +238,11 @@ After logging in:
 ### Issue: `supabase start` fails
 
 **Error**: "Docker is not running"
+
 - **Solution**: Start Docker Desktop and wait for it to fully initialize
 
 **Error**: "Port 54321 already in use"
+
 - **Solution**:
   ```bash
   supabase stop
@@ -241,12 +254,14 @@ After logging in:
 ### Issue: Migrations fail
 
 **Error**: "relation already exists"
+
 - **Solution**: Reset the database
   ```bash
   supabase db reset
   ```
 
 **Error**: "cannot connect to database"
+
 - **Solution**: Ensure Supabase is running
   ```bash
   supabase status
@@ -258,6 +273,7 @@ After logging in:
 **Symptom**: Login fails with network error
 
 **Solution**: Verify environment.ts has correct credentials
+
 ```bash
 # Get credentials
 supabase status
@@ -271,6 +287,7 @@ supabase status
 **Symptom**: "CORS policy: No 'Access-Control-Allow-Origin' header"
 
 **Solution**: Ensure you're using `http://localhost:4200` (not `127.0.0.1`)
+
 - Supabase config.toml has `site_url = "http://localhost:4200"`
 
 ## Production Deployment Setup
@@ -297,6 +314,7 @@ supabase db push
 ### Step 3: Configure OAuth Providers (Optional)
 
 **Google OAuth**:
+
 1. Supabase Dashboard → Authentication → Providers → Google
 2. Enable Google provider
 3. Add client ID and secret from Google Cloud Console
@@ -304,6 +322,7 @@ supabase db push
    - `https://[project-id].supabase.co/auth/v1/callback`
 
 **Apple OAuth**:
+
 1. Supabase Dashboard → Authentication → Providers → Apple
 2. Enable Apple provider
 3. Add service ID and key from Apple Developer
@@ -324,6 +343,7 @@ For other platforms, set environment variables according to their documentation.
 ### Step 5: Update Site URL
 
 In Supabase Dashboard → Authentication → URL Configuration:
+
 - Site URL: `https://your-domain.com`
 - Redirect URLs: `https://your-domain.com/auth/callback`
 
@@ -360,6 +380,7 @@ cd .. && pnpm dev:web
 ## Next Steps
 
 Once your local environment is running:
+
 1. Create an account via the UI
 2. Explore Supabase Studio to see your data
 3. Check out Phase 2 tasks in `docs/implementation_plan.md`
