@@ -1,6 +1,11 @@
 import { Routes } from '@angular/router';
 import { publicGuard } from '../../core/guards/auth.guard';
 
+export const authRoutesTmpl = {
+  Login: () => `login`,
+  Register: () => `register`,
+} as const;
+
 export const authRoutes: Routes = [
   {
     path: 'login',

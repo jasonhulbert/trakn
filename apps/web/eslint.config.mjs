@@ -48,5 +48,5 @@ export default defineConfig(
     extends: [...angular.configs.templateRecommended, ...angular.configs.templateAccessibility],
     rules: {},
   },
-  prettierConfig,
+  prettierConfig
 );
