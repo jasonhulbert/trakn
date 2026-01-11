@@ -34,7 +34,6 @@ import { AuthService } from '../../core/services/auth.service';
             <div class="px-4 py-8 sm:px-0">
               <div class="text-center">
                 <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Welcome to Trakn</h2>
-                <p class="mt-4 text-lg text-gray-500">Your workout planning and logging application</p>
               </div>
             </div>
           </div>
