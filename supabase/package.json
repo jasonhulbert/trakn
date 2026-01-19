@@ -3,10 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "lint": "deno lint",
+    "lint:fix": "deno lint --fix",
+    "format": "deno fmt",
+    "format:check": "deno fmt --check"
   },
   "dependencies": {
     "@supabase/functions-js": "^2.81.1",

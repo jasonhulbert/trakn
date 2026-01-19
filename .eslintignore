@@ -24,6 +24,5 @@ coverage
 pnpm-lock.yaml
 *.min.js
 
-# Supabase
-supabase/.branches
-supabase/.temp
+# Supabase - (Uses Deno linter/formatter)
+supabase
