@@ -1,0 +1,36 @@
+{
+  "version": 2,
+  "buildCommand": "pnpm build:web",
+  "outputDirectory": "apps/web/dist/trkn/browser",
+  "installCommand": "pnpm install",
+  "framework": null,
+  "functions": {
+    "apps/vercel/api/**/*.ts": {
+      "runtime": "@vercel/node@5.1.8",
+      "memory": 1024,
+      "maxDuration": 30,
+      "includeFiles": "apps/vercel/prompts/**/*.yml"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "/apps/vercel/api/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Credentials", "value": "true" },
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET,POST,PUT,DELETE,OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "Authorization,Content-Type" }
+      ]
+    }
+  ]
+}
