@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { handleGenerateWorkout } from '../../src/functions/workouts/generate';
+import { handleGenerateWorkout } from '@trkn-vercel/functions/workouts/generate';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Handle CORS preflight

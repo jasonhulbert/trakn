@@ -2,6 +2,9 @@
   "name": "trkn",
   "version": "0.0.1",
   "private": true,
+  "engines": {
+    "node": "22.x"
+  },
   "scripts": {
     "add:all": "pnpm add -w",
     "add:web": "pnpm --filter trkn-web add",
@@ -13,7 +16,7 @@
     "add:shared": "pnpm --filter trkn-shared add",
     "add:shared:dev": "pnpm --filter trkn-shared add -D",
     "dev:web": "pnpm --filter trkn-web start",
-    "dev:vercel": "pnpm --filter trkn-vercel dev",
+    "dev:vercel": "vercel dev",
     "dev:all": "concurrently \"pnpm dev:web\" \"pnpm dev:vercel\"",
     "build:web": "pnpm --filter trkn-web build",
     "build:vercel": "pnpm --filter trkn-vercel build",

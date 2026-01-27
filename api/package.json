@@ -1,0 +1,22 @@
+{
+  "name": "trkn-api",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "description": "Vercel serverless function entry points for Trakn API",
+  "scripts": {
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "dependencies": {
+    "@vercel/node": "^5.1.8",
+    "trkn-shared": "workspace:*",
+    "trkn-vercel": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.12.0",
+    "typescript": "~5.9.2"
+  }
+}

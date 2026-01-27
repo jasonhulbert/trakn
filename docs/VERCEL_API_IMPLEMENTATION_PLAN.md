@@ -107,9 +107,13 @@ This document outlines the implementation plan for integrating Vercel Serverless
 
 ```
 trakn/
+├── api/                        # Vercel serverless function entry points (at root per Vercel convention)
+│   └── workouts/
+│       └── generate.ts         # Thin wrapper that imports from apps/vercel/src/
 ├── apps/
 │   ├── web/                    # Angular PWA (existing)
-│   └── vercel/                 # Vercel Functions
+│   │   └── ...
+│   └── vercel/                 # Backend implementation
 │       ├── package.json
 │       ├── tsconfig.json
 │       ├── prompts/            # YAML prompt templates (content)
@@ -118,22 +122,19 @@ trakn/
 │       │   ├── hypertrophy_workout.prompt.yml
 │       │   ├── strength_workout.prompt.yml
 │       │   └── conditioning_workout.prompt.yml
-│       ├── src/
-│       │   ├── functions/      # Function handlers
-│       │   │   └── workouts/
-│       │   │       └── generate.ts
-│       │   ├── lib/            # Shared utilities
-│       │   │   ├── supabase.ts
-│       │   │   ├── langchain.ts
-│       │   │   ├── prompt-loader.ts   # YAML prompt loading utility
-│       │   │   ├── auth.ts
-│       │   │   └── errors.ts
-│       │   └── chains/         # LangChain chains
-│       │       ├── workout-generator.chain.ts
-│       │       └── index.ts
-│       └── api/                # Vercel function entry points
-│           └── workouts/
-│               └── generate.ts
+│       └── src/
+│           ├── functions/      # Core function handlers (business logic)
+│           │   └── workouts/
+│           │       └── generate.ts
+│           ├── lib/            # Shared utilities
+│           │   ├── supabase.ts
+│           │   ├── langchain.ts
+│           │   ├── prompt-loader.ts   # YAML prompt loading utility
+│           │   ├── auth.ts
+│           │   └── errors.ts
+│           └── chains/         # LangChain chains
+│               ├── workout-generator.chain.ts
+│               └── index.ts
 ├── packages/
 │   └── shared/                 # Shared types/schemas (existing)
 ├── supabase/                   # Database config (existing)
@@ -143,11 +144,14 @@ trakn/
 
 ### Why This Structure?
 
-1. **`apps/vercel/prompts/`**: YAML files containing prompt content, separate from code
-2. **`apps/vercel/src/lib/prompt-loader.ts`**: Utility to load and parse YAML prompts
-3. **`apps/vercel/src/chains/`**: LangChain chains that use loaded prompts
-4. **`apps/vercel/api/`**: Vercel's required directory for function entry points (thin wrappers)
-5. **Testability**: Prompts can be validated independently, chains can be unit tested
+1. **`api/` at root**: Follows Vercel's convention for serverless function discovery (required)
+2. **`api/` as thin wrappers**: Entry points delegate to implementation in `apps/vercel/src/`
+3. **`apps/vercel/prompts/`**: YAML files containing prompt content, separate from code
+4. **`apps/vercel/src/lib/prompt-loader.ts`**: Utility to load and parse YAML prompts
+5. **`apps/vercel/src/chains/`**: LangChain chains that use loaded prompts
+6. **`apps/vercel/src/functions/`**: Core business logic and handlers
+7. **Testability**: Prompts can be validated independently, chains can be unit tested
+8. **Organization**: Backend implementation stays organized in `apps/vercel/`, while conforming to Vercel's `api/` convention
 
 ---
 
@@ -958,11 +962,11 @@ export async function handleGenerateWorkout(req: VercelRequest, res: VercelRespo
 
 #### 4.2 Vercel Entry Point
 
-**`apps/vercel/api/workouts/generate.ts`**:
+**`api/workouts/generate.ts`** (at project root):
 
 ```typescript
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { handleGenerateWorkout } from '../../src/functions/workouts/generate';
+import { handleGenerateWorkout } from '../../apps/vercel/src/functions/workouts/generate';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Handle CORS preflight
@@ -974,6 +978,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   return handleGenerateWorkout(req, res);
 }
 ```
+
+> **Note**: The `api/` directory must be at the project root per Vercel's convention. Entry points are thin wrappers that delegate to the core implementation in `apps/vercel/src/`.
 
 ---
 

@@ -9,7 +9,7 @@ import {
   ConditioningOutputSchema,
   type WorkoutInput,
   type WorkoutOutput,
-} from 'trkn-shared';
+} from '@trkn-shared';
 
 // Cache loaded prompts to avoid repeated file reads
 let systemPromptContent: string | null = null;

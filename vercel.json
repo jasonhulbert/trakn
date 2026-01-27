@@ -1,11 +1,12 @@
 {
   "version": 2,
   "buildCommand": "pnpm build:web",
-  "outputDirectory": "apps/web/dist/trkn/browser",
+  "outputDirectory": "apps/web/dist/trakn/browser",
   "installCommand": "pnpm install",
+  "devCommand": "pnpm dev:web",
   "framework": null,
   "functions": {
-    "apps/vercel/api/**/*.ts": {
+    "api/**/*.ts": {
       "runtime": "@vercel/node@5.1.8",
       "memory": 1024,
       "maxDuration": 30,
@@ -15,7 +16,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "/apps/vercel/api/:path*"
+      "destination": "/api/:path*"
     },
     {
       "source": "/(.*)",

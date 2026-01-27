@@ -67,3 +67,4 @@ Thumbs.db
 # Optional
 .eslintcache
 .stylelintcache
+.vercel
