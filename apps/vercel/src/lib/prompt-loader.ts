@@ -46,18 +46,18 @@ function convertVariableSyntax(content: string): string {
 }
 
 /**
- * Load the system prompt for fitness trainer persona.
+ * Load a system prompt by identifier.
  */
-export function loadSystemPrompt(): string {
-  const prompt = loadPrompt('system/fitness_trainer.prompt.yml');
+export function loadSystemPrompt(identifier: string): string {
+  const prompt = loadPrompt(`system/${identifier}.prompt.yml`);
   return prompt.content;
 }
 
 /**
- * Load a workout-type-specific prompt.
+ * Load a user prompt by identifier.
  */
-export function loadWorkoutPrompt(workoutType: 'hypertrophy' | 'strength' | 'conditioning'): PromptConfig {
-  return loadPrompt(`${workoutType}_workout.prompt.yml`);
+export function loadUserPrompt(identifier: string): PromptConfig {
+  return loadPrompt(`${identifier}.prompt.yml`);
 }
 
 /**
