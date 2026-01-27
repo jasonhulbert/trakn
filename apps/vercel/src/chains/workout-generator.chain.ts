@@ -9,6 +9,8 @@ import {
   ConditioningOutputSchema,
   type WorkoutInput,
   type WorkoutOutput,
+  type WorkoutType,
+  type WorkoutGeneratorResult,
 } from '@trkn-shared';
 
 // Cache loaded prompts to avoid repeated file reads
@@ -28,7 +30,7 @@ function getSystemPrompt(): string {
 /**
  * Get the workout prompt content for a specific type (cached).
  */
-function getWorkoutPromptContent(workoutType: 'hypertrophy' | 'strength' | 'conditioning'): string {
+function getWorkoutPromptContent(workoutType: WorkoutType): string {
   if (!workoutPromptCache.has(workoutType)) {
     const promptConfig = loadUserPrompt(`${workoutType}_workout`);
     workoutPromptCache.set(workoutType, promptConfig.content);
@@ -39,7 +41,7 @@ function getWorkoutPromptContent(workoutType: 'hypertrophy' | 'strength' | 'cond
 /**
  * Build a ChatPromptTemplate from loaded YAML prompts.
  */
-function buildPromptTemplate(workoutType: 'hypertrophy' | 'strength' | 'conditioning'): ChatPromptTemplate {
+function buildPromptTemplate(workoutType: WorkoutType): ChatPromptTemplate {
   const systemContent = getSystemPrompt();
   const userContent = getWorkoutPromptContent(workoutType);
 
@@ -98,7 +100,7 @@ function toPromptInput(input: WorkoutInput): Record<string, string | number> {
 /**
  * Get the appropriate output schema for a workout type.
  */
-function getOutputSchema(workoutType: WorkoutInput['workout_type']) {
+function getOutputSchema(workoutType: WorkoutType) {
   switch (workoutType) {
     case 'hypertrophy':
       return HypertrophyOutputSchema;
@@ -109,11 +111,6 @@ function getOutputSchema(workoutType: WorkoutInput['workout_type']) {
     default:
       throw new Error(`Unknown workout type: ${workoutType}`);
   }
-}
-
-export interface WorkoutGeneratorResult {
-  workout: WorkoutOutput;
-  generatedAt: string;
 }
 
 /**

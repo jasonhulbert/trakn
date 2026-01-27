@@ -1,1 +1,1 @@
-export { generateWorkout, clearPromptCache, type WorkoutGeneratorResult } from './workout-generator.chain';
+export { generateWorkout, clearPromptCache } from './workout-generator.chain';

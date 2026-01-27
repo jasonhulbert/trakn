@@ -1,7 +1,8 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { authenticateRequest } from '@/lib/auth';
 import { handleError } from '@/lib/errors';
-import { generateWorkout, type WorkoutGeneratorResult } from '@/chains';
+import { generateWorkout } from '@/chains';
+import type { WorkoutGeneratorResult } from '@trkn-shared';
 
 export async function handleGenerateWorkout(req: VercelRequest, res: VercelResponse): Promise<void> {
   try {
