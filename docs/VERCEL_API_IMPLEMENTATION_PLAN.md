@@ -109,7 +109,7 @@ This document outlines the implementation plan for integrating Vercel Serverless
 trakn/
 ├── apps/
 │   ├── web/                    # Angular PWA (existing)
-│   └── api/                    # Vercel Functions
+│   └── vercel/                 # Vercel Functions
 │       ├── package.json
 │       ├── tsconfig.json
 │       ├── prompts/            # YAML prompt templates (content)
@@ -143,10 +143,10 @@ trakn/
 
 ### Why This Structure?
 
-1. **`apps/api/prompts/`**: YAML files containing prompt content, separate from code
-2. **`apps/api/src/lib/prompt-loader.ts`**: Utility to load and parse YAML prompts
-3. **`apps/api/src/chains/`**: LangChain chains that use loaded prompts
-4. **`apps/api/api/`**: Vercel's required directory for function entry points (thin wrappers)
+1. **`apps/vercel/prompts/`**: YAML files containing prompt content, separate from code
+2. **`apps/vercel/src/lib/prompt-loader.ts`**: Utility to load and parse YAML prompts
+3. **`apps/vercel/src/chains/`**: LangChain chains that use loaded prompts
+4. **`apps/vercel/api/`**: Vercel's required directory for function entry points (thin wrappers)
 5. **Testability**: Prompts can be validated independently, chains can be unit tested
 
 ---
@@ -171,7 +171,7 @@ content: |
 
 ### Existing Prompts
 
-The following YAML prompts have been created in `apps/api/prompts/`:
+The following YAML prompts have been created in `apps/vercel/prompts/`:
 
 #### System Prompt: `system/fitness_trainer.prompt.yml`
 - **Purpose**: System prompt establishing AI persona as a practical strength and fitness trainer
@@ -209,15 +209,15 @@ content: |
 
 #### 1.1 Create the API Package
 
-Create `apps/api/` directory structure and initialize the package:
+Create `apps/vercel/` directory structure and initialize the package:
 
 ```bash
 # From project root
-mkdir -p apps/api/{src/{functions,lib,chains},api}
+mkdir -p apps/vercel/{src/{functions,lib,chains},api}
 # Note: prompts/ directory already exists with YAML files
 ```
 
-**`apps/api/package.json`**:
+**`apps/vercel/package.json`**:
 ```json
 {
   "name": "trkn-api",
@@ -253,7 +253,7 @@ mkdir -p apps/api/{src/{functions,lib,chains},api}
 }
 ```
 
-**`apps/api/tsconfig.json`**:
+**`apps/vercel/tsconfig.json`**:
 ```json
 {
   "compilerOptions": {
@@ -317,17 +317,17 @@ packages:
   "installCommand": "pnpm install",
   "framework": null,
   "functions": {
-    "apps/api/api/**/*.ts": {
+    "apps/vercel/api/**/*.ts": {
       "runtime": "@vercel/node@5.1.8",
       "memory": 1024,
       "maxDuration": 30,
-      "includeFiles": "apps/api/prompts/**/*.yml"
+      "includeFiles": "apps/vercel/prompts/**/*.yml"
     }
   },
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "/apps/api/api/:path*"
+      "destination": "/apps/vercel/api/:path*"
     },
     {
       "source": "/(.*)",
@@ -374,7 +374,7 @@ NODE_ENV=development
 
 #### 2.1 YAML Prompt Loader
 
-**`apps/api/src/lib/prompt-loader.ts`**:
+**`apps/vercel/src/lib/prompt-loader.ts`**:
 ```typescript
 import { readFileSync } from 'fs';
 import { join, dirname } from 'path';
@@ -463,7 +463,7 @@ export function validatePromptVariables(
 
 #### 2.2 Supabase Client Factory
 
-**`apps/api/src/lib/supabase.ts`**:
+**`apps/vercel/src/lib/supabase.ts`**:
 ```typescript
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
@@ -526,7 +526,7 @@ export async function verifyToken(accessToken: string) {
 
 #### 2.3 LangChain Client Setup
 
-**`apps/api/src/lib/langchain.ts`**:
+**`apps/vercel/src/lib/langchain.ts`**:
 ```typescript
 import { ChatAnthropic } from '@langchain/anthropic';
 import { z } from 'zod';
@@ -600,7 +600,7 @@ export { z };
 
 #### 2.4 Error Handling
 
-**`apps/api/src/lib/errors.ts`**:
+**`apps/vercel/src/lib/errors.ts`**:
 ```typescript
 import type { VercelResponse } from '@vercel/node';
 
@@ -705,7 +705,7 @@ export function handleError(error: unknown, res: VercelResponse): void {
 
 #### 2.5 Authentication Middleware
 
-**`apps/api/src/lib/auth.ts`**:
+**`apps/vercel/src/lib/auth.ts`**:
 ```typescript
 import type { VercelRequest } from '@vercel/node';
 import type { User } from '@supabase/supabase-js';
@@ -743,7 +743,7 @@ export async function authenticateRequest(req: VercelRequest): Promise<Authentic
 
 #### 3.1 Workout Generator Chain
 
-**`apps/api/src/chains/workout-generator.chain.ts`**:
+**`apps/vercel/src/chains/workout-generator.chain.ts`**:
 ```typescript
 import { RunnableSequence } from '@langchain/core/runnables';
 import {
@@ -931,7 +931,7 @@ export function clearPromptCache(): void {
 
 #### 3.2 Chain Index
 
-**`apps/api/src/chains/index.ts`**:
+**`apps/vercel/src/chains/index.ts`**:
 ```typescript
 export {
   generateWorkout,
@@ -948,7 +948,7 @@ export {
 
 #### 4.1 Core Handler
 
-**`apps/api/src/functions/workouts/generate.ts`**:
+**`apps/vercel/src/functions/workouts/generate.ts`**:
 ```typescript
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { authenticateRequest } from '@/lib/auth';
@@ -983,7 +983,7 @@ export async function handleGenerateWorkout(
 
 #### 4.2 Vercel Entry Point
 
-**`apps/api/api/workouts/generate.ts`**:
+**`apps/vercel/api/workouts/generate.ts`**:
 ```typescript
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { handleGenerateWorkout } from '../../src/functions/workouts/generate';
@@ -1007,7 +1007,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
 #### 5.1 Environment Configuration
 
-**`apps/api/.env.local`** (gitignored):
+**`apps/vercel/.env.local`** (gitignored):
 ```bash
 # Supabase - Get from `supabase status` when running locally
 SUPABASE_URL=http://127.0.0.1:54321
@@ -1116,7 +1116,7 @@ export class ApiService {
 
 #### 7.1 Unit Tests
 
-**`apps/api/src/lib/prompt-loader.test.ts`**:
+**`apps/vercel/src/lib/prompt-loader.test.ts`**:
 ```typescript
 import { describe, it, expect } from 'vitest';
 import { loadPrompt, loadSystemPrompt, loadWorkoutPrompt } from './prompt-loader';
@@ -1155,7 +1155,7 @@ describe('Prompt Loader', () => {
 });
 ```
 
-**`apps/api/src/chains/workout-generator.chain.test.ts`**:
+**`apps/vercel/src/chains/workout-generator.chain.test.ts`**:
 ```typescript
 import { describe, it, expect, beforeEach } from 'vitest';
 import { WorkoutInputSchema } from 'trkn-shared';
@@ -1210,7 +1210,7 @@ describe('Workout Generator Chain', () => {
 
 #### 7.2 Integration Tests
 
-**`apps/api/src/chains/workout-generator.chain.integration.test.ts`**:
+**`apps/vercel/src/chains/workout-generator.chain.integration.test.ts`**:
 ```typescript
 import { describe, it, expect, beforeEach } from 'vitest';
 import { generateWorkout, clearPromptCache } from './workout-generator.chain';
@@ -1328,9 +1328,9 @@ vercel env add SUPABASE_URL preview
 ## Implementation Checklist
 
 ### Phase 1: Setup
-- [ ] Create `apps/api/src/` directory structure
-- [ ] Create `apps/api/package.json` with dependencies (including `js-yaml`)
-- [ ] Create `apps/api/tsconfig.json`
+- [ ] Create `apps/vercel/src/` directory structure
+- [ ] Create `apps/vercel/package.json` with dependencies (including `js-yaml`)
+- [ ] Create `apps/vercel/tsconfig.json`
 - [ ] Update `pnpm-workspace.yaml`
 - [ ] Update root `package.json` scripts
 - [ ] Create `vercel.json` with `includeFiles` for YAML prompts
