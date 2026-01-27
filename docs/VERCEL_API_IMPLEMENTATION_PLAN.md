@@ -67,37 +67,37 @@ This document outlines the implementation plan for integrating Vercel Serverless
 
 ### Why LangChain.js?
 
-| Feature | Manual Implementation | LangChain.js |
-|---------|----------------------|--------------|
-| Prompt templating | String interpolation, error-prone | `ChatPromptTemplate` with typed variables |
+| Feature           | Manual Implementation                | LangChain.js                                  |
+| ----------------- | ------------------------------------ | --------------------------------------------- |
+| Prompt templating | String interpolation, error-prone    | `ChatPromptTemplate` with typed variables     |
 | Structured output | Manual JSON parsing + Zod validation | `withStructuredOutput(zodSchema)` - automatic |
-| Retry logic | Custom implementation | Built-in with configurable retries |
-| Model switching | Different API clients | Change one import |
-| Streaming | Manual SSE handling | `.stream()` method |
-| Observability | Custom logging | LangSmith integration available |
+| Retry logic       | Custom implementation                | Built-in with configurable retries            |
+| Model switching   | Different API clients                | Change one import                             |
+| Streaming         | Manual SSE handling                  | `.stream()` method                            |
+| Observability     | Custom logging                       | LangSmith integration available               |
 
 ### Why YAML for Prompt Management?
 
-| Benefit | Description |
-|---------|-------------|
-| Separation of concerns | Prompt content separate from TypeScript logic |
-| Version control | Clear diffs when prompt text changes |
-| Non-developer editing | Content can be edited without touching code |
-| Metadata support | YAML structure supports name, description, version, variables |
-| Consistency | Single source of truth for prompt content |
+| Benefit                | Description                                                   |
+| ---------------------- | ------------------------------------------------------------- |
+| Separation of concerns | Prompt content separate from TypeScript logic                 |
+| Version control        | Clear diffs when prompt text changes                          |
+| Non-developer editing  | Content can be edited without touching code                   |
+| Metadata support       | YAML structure supports name, description, version, variables |
+| Consistency            | Single source of truth for prompt content                     |
 
 ### Decision: What Goes Where
 
-| Operation | Location | Reasoning |
-|-----------|----------|-----------|
-| AI workout generation | Vercel Function | Protects Claude API key, complex logic |
-| Workout CRUD | Angular → Supabase directly | RLS provides security, no server logic needed |
-| Plan CRUD | Angular → Supabase directly | RLS provides security |
-| Session logging | Angular → Supabase directly | RLS provides security |
-| Exercise library queries | Angular → Supabase directly | Read-only, public data |
-| User profile updates | Angular → Supabase directly | RLS scoped to user |
-| Data aggregation/reporting | Vercel Function (future) | Complex queries, cross-user if needed |
-| Webhooks (Stripe, etc.) | Vercel Function (future) | Server-side only |
+| Operation                  | Location                    | Reasoning                                     |
+| -------------------------- | --------------------------- | --------------------------------------------- |
+| AI workout generation      | Vercel Function             | Protects Claude API key, complex logic        |
+| Workout CRUD               | Angular → Supabase directly | RLS provides security, no server logic needed |
+| Plan CRUD                  | Angular → Supabase directly | RLS provides security                         |
+| Session logging            | Angular → Supabase directly | RLS provides security                         |
+| Exercise library queries   | Angular → Supabase directly | Read-only, public data                        |
+| User profile updates       | Angular → Supabase directly | RLS scoped to user                            |
+| Data aggregation/reporting | Vercel Function (future)    | Complex queries, cross-user if needed         |
+| Webhooks (Stripe, etc.)    | Vercel Function (future)    | Server-side only                              |
 
 ---
 
@@ -174,17 +174,18 @@ content: |
 The following YAML prompts have been created in `apps/vercel/prompts/`:
 
 #### System Prompt: `system/fitness_trainer.prompt.yml`
+
 - **Purpose**: System prompt establishing AI persona as a practical strength and fitness trainer
 - **Key characteristics**: Direct, practical, safety-focused, action-oriented
 - **No variables**: Static system context
 
 #### Workout Prompts
 
-| File | Purpose | Key Variables |
-|------|---------|---------------|
-| `hypertrophy_workout.prompt.yml` | Muscle building workouts | `user_age`, `user_weight`, `target_muscle_group`, `tempo_focus`, `weight_progression_pattern` |
-| `strength_workout.prompt.yml` | Strength training workouts | `user_age`, `user_weight`, `target_muscle_group`, `load_percentage`, `weight_progression_pattern` |
-| `conditioning_workout.prompt.yml` | Cardio/conditioning workouts | `user_age`, `user_weight`, `interval_structure`, `cardio_modality`, `distance_time_goal` |
+| File                              | Purpose                      | Key Variables                                                                                     |
+| --------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------- |
+| `hypertrophy_workout.prompt.yml`  | Muscle building workouts     | `user_age`, `user_weight`, `target_muscle_group`, `tempo_focus`, `weight_progression_pattern`     |
+| `strength_workout.prompt.yml`     | Strength training workouts   | `user_age`, `user_weight`, `target_muscle_group`, `load_percentage`, `weight_progression_pattern` |
+| `conditioning_workout.prompt.yml` | Cardio/conditioning workouts | `user_age`, `user_weight`, `interval_structure`, `cardio_modality`, `distance_time_goal`          |
 
 ### Variable Substitution
 
@@ -218,9 +219,10 @@ mkdir -p apps/vercel/{src/{functions,lib,chains},api}
 ```
 
 **`apps/vercel/package.json`**:
+
 ```json
 {
-  "name": "trkn-api",
+  "name": "trkn-vercel",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -254,6 +256,7 @@ mkdir -p apps/vercel/{src/{functions,lib,chains},api}
 ```
 
 **`apps/vercel/tsconfig.json`**:
+
 ```json
 {
   "compilerOptions": {
@@ -285,6 +288,7 @@ mkdir -p apps/vercel/{src/{functions,lib,chains},api}
 #### 1.2 Update Workspace Configuration
 
 **Update `pnpm-workspace.yaml`**:
+
 ```yaml
 packages:
   - 'apps/*'
@@ -293,15 +297,16 @@ packages:
 ```
 
 **Update root `package.json`** (add scripts):
+
 ```json
 {
   "scripts": {
-    "add:api": "pnpm --filter trkn-api add",
-    "add:api:dev": "pnpm --filter trkn-api add -D",
-    "dev:api": "pnpm --filter trkn-api dev",
-    "build:api": "pnpm --filter trkn-api build",
-    "test:api": "pnpm --filter trkn-api test",
-    "dev:all": "concurrently \"pnpm dev:web\" \"pnpm dev:api\""
+    "add:vercel": "pnpm --filter trkn-vercel add",
+    "add:vercel:dev": "pnpm --filter trkn-vercel add -D",
+    "dev:vercel": "pnpm --filter trkn-vercel dev",
+    "build:vercel": "pnpm --filter trkn-vercel build",
+    "test:vercel": "pnpm --filter trkn-vercel test",
+    "dev:all": "concurrently \"pnpm dev:web\" \"pnpm dev:vercel\""
   }
 }
 ```
@@ -309,6 +314,7 @@ packages:
 #### 1.3 Create Vercel Configuration
 
 **`vercel.json`** (project root):
+
 ```json
 {
   "version": 2,
@@ -353,6 +359,7 @@ packages:
 #### 1.4 Environment Variables
 
 **Required Environment Variables**:
+
 ```bash
 # Supabase (existing)
 SUPABASE_URL=https://your-project.supabase.co
@@ -375,6 +382,7 @@ NODE_ENV=development
 #### 2.1 YAML Prompt Loader
 
 **`apps/vercel/src/lib/prompt-loader.ts`**:
+
 ```typescript
 import { readFileSync } from 'fs';
 import { join, dirname } from 'path';
@@ -401,14 +409,14 @@ export interface PromptConfig {
  */
 export function loadPrompt(relativePath: string): PromptConfig {
   const fullPath = join(PROMPTS_DIR, relativePath);
-  
+
   try {
     const fileContent = readFileSync(fullPath, 'utf-8');
     const parsed = yaml.load(fileContent) as PromptConfig;
-    
+
     // Convert $variable to {variable} for LangChain
     parsed.content = convertVariableSyntax(parsed.content);
-    
+
     return parsed;
   } catch (error) {
     throw new Error(`Failed to load prompt from ${relativePath}: ${error}`);
@@ -434,29 +442,20 @@ export function loadSystemPrompt(): string {
 /**
  * Load a workout-type-specific prompt.
  */
-export function loadWorkoutPrompt(
-  workoutType: 'hypertrophy' | 'strength' | 'conditioning'
-): PromptConfig {
+export function loadWorkoutPrompt(workoutType: 'hypertrophy' | 'strength' | 'conditioning'): PromptConfig {
   return loadPrompt(`${workoutType}_workout.prompt.yml`);
 }
 
 /**
  * Validate that all required variables are present in the input.
  */
-export function validatePromptVariables(
-  promptConfig: PromptConfig,
-  input: Record<string, unknown>
-): void {
+export function validatePromptVariables(promptConfig: PromptConfig, input: Record<string, unknown>): void {
   if (!promptConfig.variables) return;
-  
-  const missing = promptConfig.variables.filter(
-    (v) => !(v in input) || input[v] === undefined
-  );
-  
+
+  const missing = promptConfig.variables.filter((v) => !(v in input) || input[v] === undefined);
+
   if (missing.length > 0) {
-    throw new Error(
-      `Missing required prompt variables: ${missing.join(', ')}`
-    );
+    throw new Error(`Missing required prompt variables: ${missing.join(', ')}`);
   }
 }
 ```
@@ -464,6 +463,7 @@ export function validatePromptVariables(
 #### 2.2 Supabase Client Factory
 
 **`apps/vercel/src/lib/supabase.ts`**:
+
 ```typescript
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
@@ -527,6 +527,7 @@ export async function verifyToken(accessToken: string) {
 #### 2.3 LangChain Client Setup
 
 **`apps/vercel/src/lib/langchain.ts`**:
+
 ```typescript
 import { ChatAnthropic } from '@langchain/anthropic';
 import { z } from 'zod';
@@ -584,10 +585,7 @@ export function getChatModel(config?: LangChainConfig): ChatAnthropic {
  * Create a model with structured output enforcement.
  * Uses tool-calling under the hood to guarantee schema compliance.
  */
-export function getStructuredModel<T extends z.ZodType>(
-  schema: T,
-  config?: LangChainConfig & { schemaName?: string }
-) {
+export function getStructuredModel<T extends z.ZodType>(schema: T, config?: LangChainConfig & { schemaName?: string }) {
   const model = getChatModel(config);
 
   return model.withStructuredOutput(schema, {
@@ -601,6 +599,7 @@ export { z };
 #### 2.4 Error Handling
 
 **`apps/vercel/src/lib/errors.ts`**:
+
 ```typescript
 import type { VercelResponse } from '@vercel/node';
 
@@ -659,9 +658,7 @@ export function handleError(error: unknown, res: VercelResponse): void {
       error: {
         message: error.message,
         code: error.code,
-        ...(process.env.NODE_ENV !== 'production' && error.details
-          ? { details: error.details }
-          : {}),
+        ...(process.env.NODE_ENV !== 'production' && error.details ? { details: error.details } : {}),
       },
     });
     return;
@@ -685,9 +682,7 @@ export function handleError(error: unknown, res: VercelResponse): void {
       error: {
         message: 'AI service error',
         code: 'AI_GENERATION_ERROR',
-        ...(process.env.NODE_ENV !== 'production'
-          ? { details: error.message }
-          : {}),
+        ...(process.env.NODE_ENV !== 'production' ? { details: error.message } : {}),
       },
     });
     return;
@@ -706,6 +701,7 @@ export function handleError(error: unknown, res: VercelResponse): void {
 #### 2.5 Authentication Middleware
 
 **`apps/vercel/src/lib/auth.ts`**:
+
 ```typescript
 import type { VercelRequest } from '@vercel/node';
 import type { User } from '@supabase/supabase-js';
@@ -744,19 +740,12 @@ export async function authenticateRequest(req: VercelRequest): Promise<Authentic
 #### 3.1 Workout Generator Chain
 
 **`apps/vercel/src/chains/workout-generator.chain.ts`**:
+
 ```typescript
 import { RunnableSequence } from '@langchain/core/runnables';
-import {
-  ChatPromptTemplate,
-  SystemMessagePromptTemplate,
-  HumanMessagePromptTemplate,
-} from '@langchain/core/prompts';
+import { ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate } from '@langchain/core/prompts';
 import { getChatModel } from '@/lib/langchain';
-import {
-  loadSystemPrompt,
-  loadWorkoutPrompt,
-  validatePromptVariables,
-} from '@/lib/prompt-loader';
+import { loadSystemPrompt, loadWorkoutPrompt, validatePromptVariables } from '@/lib/prompt-loader';
 import {
   WorkoutInputSchema,
   HypertrophyOutputSchema,
@@ -783,9 +772,7 @@ function getSystemPrompt(): string {
 /**
  * Get the workout prompt content for a specific type (cached).
  */
-function getWorkoutPromptContent(
-  workoutType: 'hypertrophy' | 'strength' | 'conditioning'
-): string {
+function getWorkoutPromptContent(workoutType: 'hypertrophy' | 'strength' | 'conditioning'): string {
   if (!workoutPromptCache.has(workoutType)) {
     const promptConfig = loadWorkoutPrompt(workoutType);
     workoutPromptCache.set(workoutType, promptConfig.content);
@@ -796,9 +783,7 @@ function getWorkoutPromptContent(
 /**
  * Build a ChatPromptTemplate from loaded YAML prompts.
  */
-function buildPromptTemplate(
-  workoutType: 'hypertrophy' | 'strength' | 'conditioning'
-): ChatPromptTemplate {
+function buildPromptTemplate(workoutType: 'hypertrophy' | 'strength' | 'conditioning'): ChatPromptTemplate {
   const systemContent = getSystemPrompt();
   const userContent = getWorkoutPromptContent(workoutType);
 
@@ -884,9 +869,7 @@ export interface WorkoutGeneratorResult {
  * 3. Creates a model with structured output enforcement
  * 4. Invokes the chain and returns validated output
  */
-export async function generateWorkout(
-  rawInput: unknown
-): Promise<WorkoutGeneratorResult> {
+export async function generateWorkout(rawInput: unknown): Promise<WorkoutGeneratorResult> {
   // Validate input
   const input = WorkoutInputSchema.parse(rawInput);
 
@@ -903,10 +886,7 @@ export async function generateWorkout(
   });
 
   // Create the chain: prompt -> model with structured output
-  const chain = RunnableSequence.from([
-    promptTemplate,
-    structuredModel,
-  ]);
+  const chain = RunnableSequence.from([promptTemplate, structuredModel]);
 
   // Transform input to prompt format
   const promptInput = toPromptInput(input);
@@ -932,12 +912,9 @@ export function clearPromptCache(): void {
 #### 3.2 Chain Index
 
 **`apps/vercel/src/chains/index.ts`**:
+
 ```typescript
-export {
-  generateWorkout,
-  clearPromptCache,
-  type WorkoutGeneratorResult,
-} from './workout-generator.chain';
+export { generateWorkout, clearPromptCache, type WorkoutGeneratorResult } from './workout-generator.chain';
 ```
 
 ---
@@ -949,16 +926,14 @@ export {
 #### 4.1 Core Handler
 
 **`apps/vercel/src/functions/workouts/generate.ts`**:
+
 ```typescript
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { authenticateRequest } from '@/lib/auth';
 import { handleError } from '@/lib/errors';
 import { generateWorkout, type WorkoutGeneratorResult } from '@/chains';
 
-export async function handleGenerateWorkout(
-  req: VercelRequest,
-  res: VercelResponse
-): Promise<void> {
+export async function handleGenerateWorkout(req: VercelRequest, res: VercelResponse): Promise<void> {
   try {
     // Only allow POST
     if (req.method !== 'POST') {
@@ -984,6 +959,7 @@ export async function handleGenerateWorkout(
 #### 4.2 Vercel Entry Point
 
 **`apps/vercel/api/workouts/generate.ts`**:
+
 ```typescript
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { handleGenerateWorkout } from '../../src/functions/workouts/generate';
@@ -1008,6 +984,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 #### 5.1 Environment Configuration
 
 **`apps/vercel/.env.local`** (gitignored):
+
 ```bash
 # Supabase - Get from `supabase status` when running locally
 SUPABASE_URL=http://127.0.0.1:54321
@@ -1024,6 +1001,7 @@ NODE_ENV=development
 #### 5.2 Development Workflow
 
 **Running locally**:
+
 ```bash
 # Terminal 1: Start Supabase
 cd supabase && supabase start
@@ -1032,12 +1010,13 @@ cd supabase && supabase start
 pnpm dev:web  # Runs on http://localhost:4200
 
 # Terminal 3: Start Vercel API functions
-pnpm dev:api  # Runs on http://localhost:3001
+pnpm dev:vercel  # Runs on http://localhost:3001
 ```
 
 #### 5.3 Angular Proxy Configuration (Development)
 
 Create **`apps/web/proxy.conf.json`**:
+
 ```json
 {
   "/api": {
@@ -1059,6 +1038,7 @@ Update **`apps/web/angular.json`** serve configuration to include `proxyConfig`.
 #### 6.1 API Service
 
 **`apps/web/src/app/core/services/api.service.ts`**:
+
 ```typescript
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -1097,11 +1077,7 @@ export class ApiService {
   generateWorkout(input: WorkoutInput): Observable<GenerateWorkoutResponse> {
     return this.getAuthHeaders().pipe(
       switchMap((headers) =>
-        this.http.post<GenerateWorkoutResponse>(
-          `${this.baseUrl}/workouts/generate`,
-          input,
-          { headers }
-        )
+        this.http.post<GenerateWorkoutResponse>(`${this.baseUrl}/workouts/generate`, input, { headers })
       )
     );
   }
@@ -1117,6 +1093,7 @@ export class ApiService {
 #### 7.1 Unit Tests
 
 **`apps/vercel/src/lib/prompt-loader.test.ts`**:
+
 ```typescript
 import { describe, it, expect } from 'vitest';
 import { loadPrompt, loadSystemPrompt, loadWorkoutPrompt } from './prompt-loader';
@@ -1156,6 +1133,7 @@ describe('Prompt Loader', () => {
 ```
 
 **`apps/vercel/src/chains/workout-generator.chain.test.ts`**:
+
 ```typescript
 import { describe, it, expect, beforeEach } from 'vitest';
 import { WorkoutInputSchema } from 'trkn-shared';
@@ -1211,6 +1189,7 @@ describe('Workout Generator Chain', () => {
 #### 7.2 Integration Tests
 
 **`apps/vercel/src/chains/workout-generator.chain.integration.test.ts`**:
+
 ```typescript
 import { describe, it, expect, beforeEach } from 'vitest';
 import { generateWorkout, clearPromptCache } from './workout-generator.chain';
@@ -1328,6 +1307,7 @@ vercel env add SUPABASE_URL preview
 ## Implementation Checklist
 
 ### Phase 1: Setup
+
 - [ ] Create `apps/vercel/src/` directory structure
 - [ ] Create `apps/vercel/package.json` with dependencies (including `js-yaml`)
 - [ ] Create `apps/vercel/tsconfig.json`
@@ -1338,6 +1318,7 @@ vercel env add SUPABASE_URL preview
 - [ ] Create `.env.local` with development credentials
 
 ### Phase 2: Core Libraries
+
 - [ ] Implement `src/lib/prompt-loader.ts` (YAML loading + variable conversion)
 - [ ] Implement `src/lib/supabase.ts`
 - [ ] Implement `src/lib/langchain.ts`
@@ -1345,31 +1326,37 @@ vercel env add SUPABASE_URL preview
 - [ ] Implement `src/lib/auth.ts`
 
 ### Phase 3: LangChain Chain
+
 - [ ] Implement `src/chains/workout-generator.chain.ts` (uses prompt-loader)
 - [ ] Implement `src/chains/index.ts`
 - [ ] Test chain locally with YAML prompts
 
 ### Phase 4: Generation Function
+
 - [ ] Implement `src/functions/workouts/generate.ts`
 - [ ] Create `api/workouts/generate.ts` entry point
 - [ ] Test locally with `vercel dev`
 
 ### Phase 5: Local Development
+
 - [ ] Configure `.env.local`
 - [ ] Create Angular proxy configuration
 - [ ] Test full flow: Angular → Vercel → YAML prompts → LangChain → Claude → Response
 
 ### Phase 6: Angular Integration
+
 - [ ] Create `ApiService` in Angular app
 - [ ] Create workout generation UI component
 
 ### Phase 7: Testing
+
 - [ ] Write unit tests for prompt-loader
 - [ ] Write unit tests for input validation
 - [ ] Write integration tests (requires API key)
 - [ ] Verify all tests pass
 
 ### Phase 8: Deployment
+
 - [ ] Link project to Vercel
 - [ ] Configure environment variables
 - [ ] Verify YAML files are bundled (check `includeFiles`)
@@ -1378,6 +1365,7 @@ vercel env add SUPABASE_URL preview
 - [ ] Deploy to production
 
 ### Documentation
+
 - [ ] Update CLAUDE.md
 - [ ] Document YAML prompt format
 - [ ] Document API endpoints
@@ -1387,21 +1375,25 @@ vercel env add SUPABASE_URL preview
 ## Future Enhancements
 
 ### Prompt Versioning (Future)
+
 - Track prompt versions in YAML metadata
 - Log which prompt version generated each workout
 - A/B testing different prompt versions
 
 ### RAG Integration (Future)
+
 - Fetch user workout history before generation
 - Use LangChain's retrieval chains for context injection
 - Vector search for exercise recommendations via Supabase pgvector
 
 ### Streaming Support (Future)
+
 - Stream generation progress to client
 - Use Server-Sent Events (SSE) for real-time updates
 - Progressive UI rendering
 
 ### Additional Prompts (Future)
+
 - `plan_generator.prompt.yml` - Multi-week training plans
 - `exercise_suggestion.prompt.yml` - Exercise recommendations
 - `workout_modifier.prompt.yml` - Adjust existing workouts
@@ -1421,6 +1413,7 @@ vercel env add SUPABASE_URL preview
 ### Why `$variable` Syntax in YAML?
 
 The YAML prompts use `$variable_name` instead of `{variable_name}` because:
+
 1. **YAML compatibility**: Curly braces have special meaning in some YAML contexts
 2. **Readability**: `$variable` is familiar from shell scripts and other templating
 3. **Conversion**: The prompt-loader converts to LangChain's `{variable}` format automatically
@@ -1428,16 +1421,17 @@ The YAML prompts use `$variable_name` instead of `{variable_name}` because:
 ### Why Cache Loaded Prompts?
 
 The `workout-generator.chain.ts` caches loaded prompts because:
+
 1. **Performance**: Avoid repeated file reads on each request
 2. **Serverless**: Function instances may handle multiple requests
 3. **Testing**: `clearPromptCache()` allows cache reset for testing
 
 ### Why LangChain.js over Direct Anthropic SDK?
 
-| Factor | Direct SDK | LangChain.js |
-|--------|-----------|--------------|
+| Factor            | Direct SDK                       | LangChain.js                                |
+| ----------------- | -------------------------------- | ------------------------------------------- |
 | Structured output | Manual JSON parsing + validation | `withStructuredOutput(zodSchema)` automatic |
-| Prompt management | String templates | `ChatPromptTemplate` with typed variables |
-| Retry logic | Custom implementation | Built-in, configurable |
-| Model portability | Anthropic-specific | Easy to swap providers |
-| Future features | Manual implementation | RAG, agents, memory built-in |
+| Prompt management | String templates                 | `ChatPromptTemplate` with typed variables   |
+| Retry logic       | Custom implementation            | Built-in, configurable                      |
+| Model portability | Anthropic-specific               | Easy to swap providers                      |
+| Future features   | Manual implementation            | RAG, agents, memory built-in                |
