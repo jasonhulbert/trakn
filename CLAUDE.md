@@ -7,6 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Trakn is an offline-first Progressive Web App (PWA) for strength training tracking, built with Angular 20+ and Supabase. The application eliminates planning overhead by combining straightforward workout creation tools with AI-generated training plans across three workout types: hypertrophy (muscle growth), strength (maximal force), and conditioning (cardiovascular capacity).
 
 **Key Product Principles:**
+
 - Minimize planning friction - users should start a workout within seconds
 - Support both manual workout creation and AI-generated plans
 - Offline-first architecture with background sync
@@ -133,7 +134,7 @@ All services use `providedIn: 'root'` for singleton behavior:
 @Injectable({
   providedIn: 'root',
 })
-export class MyService { }
+export class MyService {}
 ```
 
 ### Supabase Integration
@@ -179,11 +180,13 @@ Migration naming: `YYYYMMDDHHMMSS_descriptive_name.sql`
 ### Shared Types
 
 Types in `packages/shared/src/types/` must:
+
 - Be framework-agnostic (no Angular/Supabase-specific code)
 - Export via `packages/shared/src/index.ts`
 - Use TypeScript interfaces/types only
 
 Import pattern:
+
 ```typescript
 import type { SyncOperation } from '@trakn/shared';
 ```
@@ -212,6 +215,7 @@ import type { SyncOperation } from '@trakn/shared';
 ### Row Level Security (RLS)
 
 All Supabase tables must have RLS policies. When adding new tables:
+
 1. Create table migration
 2. Add RLS policies in same or separate migration
 3. Test access patterns in Supabase Studio
@@ -219,6 +223,7 @@ All Supabase tables must have RLS policies. When adding new tables:
 ### Budget Constraints
 
 Production builds enforce bundle budgets (see `angular.json`):
+
 - Initial bundle: 500kB warning, 1MB error
 - Component styles: 4kB warning, 8kB error
 

@@ -133,9 +133,3 @@ url = ""
 
 [analytics]
 enabled = false
-
-[functions.generate-workout]
-enabled = true
-verify_jwt = true
-entrypoint = "./functions/generate-workout/index.ts"
-static_files = [ "./functions/_shared/static/prompts/system/**/*.yml" ]

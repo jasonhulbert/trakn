@@ -133,18 +133,7 @@ importers:
         specifier: ^4.3.6
         version: 4.3.6
 
-  supabase:
-    dependencies:
-      '@supabase/functions-js':
-        specifier: ^2.81.1
-        version: 2.81.1
-      '@supabase/supabase-js':
-        specifier: ^2.81.1
-        version: 2.81.1
-    devDependencies:
-      typescript:
-        specifier: ~5.9.2
-        version: 5.9.3
+  supabase: {}
 
 packages:
 
