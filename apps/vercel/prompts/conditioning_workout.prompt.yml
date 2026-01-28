@@ -103,7 +103,7 @@ content: |
 
   **Important Guidelines:**
   - Select exercises appropriate for the specified equipment access ($equipment_access)
-  - If equipment_notes ($equipment_notes) are provided, prioritize any speecific access or limitations mentioned regarding equipment
+  - If equipment_notes ($equipment_notes) are provided, prioritize any specific access or limitations mentioned regarding equipment
   - Structure intervals according to $interval_structure
   - Use the primary $cardio_modality for all or most intervals
   - If interval_structure is "HIIT": Use 20-60 second work periods, 10-60 second rest periods
