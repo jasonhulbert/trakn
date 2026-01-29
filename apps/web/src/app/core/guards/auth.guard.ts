@@ -6,8 +6,15 @@ export const authGuard = async () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  // Wait for auth initialization to complete
-  await authService.waitForInitialization();
+  try {
+    // Wait for auth initialization to complete
+    await authService.waitForInitialization();
+  } catch (error) {
+    // Log initialization error but don't block navigation
+    console.error('Auth initialization failed:', error);
+    // Treat failed initialization as unauthenticated
+    return router.parseUrl('/auth/login');
+  }
 
   if (authService.isAuthenticated()) {
     return true;
@@ -20,8 +27,15 @@ export const publicGuard = async () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  // Wait for auth initialization to complete
-  await authService.waitForInitialization();
+  try {
+    // Wait for auth initialization to complete
+    await authService.waitForInitialization();
+  } catch (error) {
+    // Log initialization error but don't block navigation
+    console.error('Auth initialization failed:', error);
+    // Treat failed initialization as unauthenticated, allow access to public routes
+    return true;
+  }
 
   if (!authService.isAuthenticated()) {
     return true;
