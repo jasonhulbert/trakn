@@ -30,4 +30,10 @@ export const environment = {
 
 fs.mkdirSync(path.dirname(OUT), { recursive: true });
 fs.writeFileSync(OUT, content, 'utf-8');
-console.log(`[set-env] Generated ${path.relative(ROOT, OUT)} (NODE_ENV=${NODE_ENV})`);
+console.log(
+  `[set-env] Generated ${path.relative(ROOT, OUT)}`,
+  `(NODE_ENV=${NODE_ENV},`,
+  `MAINTENANCE_MODE=${MAINTENANCE_MODE},`,
+  `SUPABASE_URL=${SUPABASE_URL ? 'set' : 'default'},`,
+  `SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY ? 'set' : 'default'})`,
+);
