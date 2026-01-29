@@ -75,15 +75,10 @@ export function handleError(error: unknown, res: VercelResponse): void {
 
   // LangChain / AI generation errors
   if (error instanceof Error) {
-    const errorName =
-      (error as Error).name ||
-      (error as { constructor?: { name?: string } }).constructor?.name ||
-      '';
+    const errorName = (error as Error).name || (error as { constructor?: { name?: string } }).constructor?.name || '';
     const isAIGenerationRelatedError =
-      typeof errorName === 'string' &&
-      (errorName.includes('Anthropic') ||
-        errorName.includes('LangChain') ||
-        errorName.includes('LLM')) ||
+      (typeof errorName === 'string' &&
+        (errorName.includes('Anthropic') || errorName.includes('LangChain') || errorName.includes('LLM'))) ||
       error.message.includes('Anthropic');
 
     if (isAIGenerationRelatedError) {
