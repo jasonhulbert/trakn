@@ -4,10 +4,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./out-tsc/app",
-    "types": [],
-    "paths": {
-      "@trakn/shared": ["../../packages/shared/src"]
-    }
+    "types": []
   },
   "include": ["src/**/*.ts"],
   "exclude": ["src/**/*.spec.ts"]

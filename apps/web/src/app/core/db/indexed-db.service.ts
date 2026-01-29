@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import Dexie, { Table } from 'dexie';
-import type { SyncOperation } from '@trakn/shared';
+import type { SyncOperation } from '@trkn-shared';
 
 export class TraknDatabase extends Dexie {
   // Tables

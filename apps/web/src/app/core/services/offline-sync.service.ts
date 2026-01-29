@@ -1,7 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { IndexedDbService } from '../db/indexed-db.service';
 import { SupabaseService } from './supabase.service';
-import type { SyncOperation, SyncOperationData, SyncStatus } from '@trakn/shared';
+import type { SyncOperation, SyncOperationData, SyncStatus } from '@trkn-shared';
 
 @Injectable({
   providedIn: 'root',

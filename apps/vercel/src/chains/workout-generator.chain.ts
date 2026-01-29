@@ -14,23 +14,23 @@ import {
 } from '@trkn-shared';
 
 // Cache loaded prompts to avoid repeated file reads
-let systemPromptContent: string | null = null;
+const systemPromptCache = new Map<string, string>();
 const workoutPromptCache = new Map<string, string>();
 
 /**
  * Get the system prompt content (cached).
  */
-function getSystemPrompt(): string {
-  if (!systemPromptContent) {
-    systemPromptContent = loadSystemPrompt('fitness_trainer');
+function getSystemPrompt(name: string): string {
+  if (!systemPromptCache.has(name)) {
+    systemPromptCache.set(name, loadSystemPrompt(name));
   }
-  return systemPromptContent;
+  return systemPromptCache.get(name)!;
 }
 
 /**
- * Get the workout prompt content for a specific type (cached).
+ * Get the workout prompt template for a specific type (cached).
  */
-function getWorkoutPromptContent(workoutType: WorkoutType): string {
+function getWorkoutPromptTemplate(workoutType: WorkoutType): string {
   if (!workoutPromptCache.has(workoutType)) {
     const promptConfig = loadUserPrompt(`${workoutType}_workout`);
     workoutPromptCache.set(workoutType, promptConfig.content);
@@ -42,12 +42,12 @@ function getWorkoutPromptContent(workoutType: WorkoutType): string {
  * Build a ChatPromptTemplate from loaded YAML prompts.
  */
 function buildPromptTemplate(workoutType: WorkoutType): ChatPromptTemplate {
-  const systemContent = getSystemPrompt();
-  const userContent = getWorkoutPromptContent(workoutType);
+  const systemContent = getSystemPrompt('fitness_trainer');
+  const userTemplate = getWorkoutPromptTemplate(workoutType);
 
   return ChatPromptTemplate.fromMessages([
     SystemMessagePromptTemplate.fromTemplate(systemContent),
-    HumanMessagePromptTemplate.fromTemplate(userContent),
+    HumanMessagePromptTemplate.fromTemplate(userTemplate),
   ]);
 }
 
@@ -157,6 +157,6 @@ export async function generateWorkout(rawInput: unknown): Promise<WorkoutGenerat
  * Clear the prompt cache (useful for testing or hot-reloading).
  */
 export function clearPromptCache(): void {
-  systemPromptContent = null;
+  systemPromptCache.clear();
   workoutPromptCache.clear();
 }

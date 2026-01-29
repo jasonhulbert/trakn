@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to LLMs when working with code in this repository.
 
 ## Project Overview
 
@@ -260,14 +260,14 @@ The app uses functional guards for access control:
 
 **Required environment variables:**
 
-| Variable | Description | Local Default |
-|---|---|---|
-| `SUPABASE_URL` | Supabase API URL | `http://127.0.0.1:54321` |
-| `SUPABASE_ANON_KEY` | Supabase anonymous key | From `supabase status` |
-| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key (Vercel Functions) | From `supabase status` |
-| `ANTHROPIC_API_KEY` | Anthropic API key (Vercel Functions) | — |
-| `MAINTENANCE_MODE` | Enable maintenance/coming-soon page | `false` |
-| `NODE_ENV` | Environment mode | `development` |
+| Variable                    | Description                                  | Local Default            |
+| --------------------------- | -------------------------------------------- | ------------------------ |
+| `SUPABASE_URL`              | Supabase API URL                             | `http://127.0.0.1:54321` |
+| `SUPABASE_ANON_KEY`         | Supabase anonymous key                       | From `supabase status`   |
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key (Vercel Functions) | From `supabase status`   |
+| `ANTHROPIC_API_KEY`         | Anthropic API key (Vercel Functions)         | —                        |
+| `MAINTENANCE_MODE`          | Enable maintenance/coming-soon page          | `false`                  |
+| `NODE_ENV`                  | Environment mode                             | `development`            |
 
 ### Database Migrations
 
