@@ -73,16 +73,29 @@ export function handleError(error: unknown, res: VercelResponse): void {
     return;
   }
 
-  // LangChain errors
-  if (error instanceof Error && error.message.includes('Anthropic')) {
-    res.status(502).json({
-      error: {
-        message: 'AI service error',
-        code: 'AI_GENERATION_ERROR',
-        ...(process.env.NODE_ENV !== 'production' ? { details: error.message } : {}),
-      },
-    });
-    return;
+  // LangChain / AI generation errors
+  if (error instanceof Error) {
+    const errorName =
+      (error as Error).name ||
+      (error as { constructor?: { name?: string } }).constructor?.name ||
+      '';
+    const isAIGenerationRelatedError =
+      typeof errorName === 'string' &&
+      (errorName.includes('Anthropic') ||
+        errorName.includes('LangChain') ||
+        errorName.includes('LLM')) ||
+      error.message.includes('Anthropic');
+
+    if (isAIGenerationRelatedError) {
+      res.status(502).json({
+        error: {
+          message: 'AI service error',
+          code: 'AI_GENERATION_ERROR',
+          ...(process.env.NODE_ENV !== 'production' ? { details: error.message } : {}),
+        },
+      });
+      return;
+    }
   }
 
   // Unknown errors
