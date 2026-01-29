@@ -9,7 +9,7 @@ export class TraknDatabase extends Dexie {
   constructor() {
     super('TraknDB');
 
-    this.version(2).stores({
+    this.version(1).stores({
       syncQueue: 'id, timestamp, type, table',
     });
   }

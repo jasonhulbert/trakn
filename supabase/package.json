@@ -1,5 +1,11 @@
 {
   "name": "trkn-supabase",
   "version": "0.0.1",
-  "private": true
+  "private": true,
+  "scripts": {
+    "lint": "echo 'No TypeScript files to lint in supabase workspace'",
+    "lint:fix": "echo 'No TypeScript files to lint in supabase workspace'",
+    "format": "echo 'No files to format in supabase workspace'",
+    "format:check": "echo 'No files to format in supabase workspace'"
+  }
 }

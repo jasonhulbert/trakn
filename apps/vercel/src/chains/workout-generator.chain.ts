@@ -10,6 +10,7 @@ import {
   type WorkoutInput,
   type WorkoutOutput,
   type WorkoutType,
+  WorkoutGeneratorResult,
 } from '@trkn-shared';
 
 // Cache loaded prompts to avoid repeated file reads

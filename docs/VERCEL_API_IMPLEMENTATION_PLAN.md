@@ -29,7 +29,7 @@ This document outlines the implementation plan for integrating Vercel Serverless
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                              Vercel                                      │
+│                              Vercel                                     │
 │  ┌─────────────────────────┐         ┌────────────────────────────────┐ │
 │  │   Angular PWA (web)     │         │   /api Serverless Functions    │ │
 │  │   • Static assets       │ ──────▶ │   • Workout generation         │ │
