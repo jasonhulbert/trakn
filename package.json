@@ -15,10 +15,10 @@
     "add:supabase:dev": "pnpm --filter trkn-supabase add -D",
     "add:shared": "pnpm --filter trkn-shared add",
     "add:shared:dev": "pnpm --filter trkn-shared add -D",
-    "dev:web": "pnpm --filter trkn-web start",
+    "dev:web": "node scripts/set-env.js && pnpm --filter trkn-web start",
     "dev:vercel": "vercel dev",
     "dev:all": "concurrently \"pnpm dev:web\" \"pnpm dev:vercel\"",
-    "build:web": "pnpm --filter trkn-web build",
+    "build:web": "node scripts/set-env.js && pnpm --filter trkn-web build",
     "build:vercel": "pnpm --filter trkn-vercel build",
     "test:web": "pnpm --filter trkn-web test",
     "test:vercel": "pnpm --filter trkn-vercel test",
@@ -26,7 +26,8 @@
     "lint:all": "pnpm -r lint",
     "lint:fix:all": "pnpm -r lint:fix",
     "format:all": "pnpm -r format",
-    "format:check:all": "pnpm -r format:check"
+    "format:check:all": "pnpm -r format:check",
+    "postinstall": "node scripts/set-env.js"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
@@ -37,7 +38,8 @@
     "typescript-eslint": "^8.54.0"
   },
   "dependencies": {
-    "concurrently": "^9.2.1"
+    "concurrently": "^9.2.1",
+    "dotenv": "^17.2.3"
   },
   "pnpm": {
     "overrides": {

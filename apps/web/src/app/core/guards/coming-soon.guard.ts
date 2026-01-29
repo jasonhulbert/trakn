@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 
 export const comingSoonGuard = () => {
-  if (environment.comingSoon) {
+  if (environment.maintenanceMode) {
     const router = inject(Router);
     return router.parseUrl('/coming-soon');
   }
@@ -11,7 +11,7 @@ export const comingSoonGuard = () => {
 };
 
 export const comingSoonPageGuard = () => {
-  if (!environment.comingSoon) {
+  if (!environment.maintenanceMode) {
     const router = inject(Router);
     return router.parseUrl('/');
   }
