@@ -3,7 +3,6 @@
   "buildCommand": "pnpm build:web",
   "outputDirectory": "apps/web/dist/trakn/browser",
   "installCommand": "pnpm install",
-  "devCommand": "pnpm dev:web",
   "framework": null,
   "functions": {
     "api/**/*.ts": {
