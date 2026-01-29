@@ -102,9 +102,9 @@ This will:
 
 - Drop existing database (if any)
 - Run all migrations in order:
-  - Create tables (profiles, exercises, workouts, sessions, etc.)
+  - Create tables
   - Apply Row Level Security policies
-  - Seed ~50 exercises
+  - Seed data
   - Create performance indexes
 
 **Verify migrations worked**:

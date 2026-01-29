@@ -1,0 +1,135 @@
+name: 'Hypertrophy Workout Template'
+description: 'Template for generating hypertrophy (muscle building) workout plans'
+version: '1.0'
+variables:
+  - user_age
+  - user_weight
+  - user_weight_unit
+  - user_fitness_level
+  - user_physical_limitations
+  - workout_duration
+  - equipment_access
+  - equipment_notes
+  - target_muscle_group
+  - tempo_focus
+  - weight_progression_pattern
+content: |
+  Create a hypertrophy workout based on the following information:
+
+  **User Profile:**
+  - Age: $user_age years old
+  - Weight: $user_weight $user_weight_unit
+  - Fitness Level: $user_fitness_level out of 5
+  - Physical Limitations: $user_physical_limitations
+  - Target Muscle Group: $target_muscle_group
+  - Equipment Access: $equipment_access
+  - Equipment Notes: $equipment_notes
+  - Desired Duration: $workout_duration minutes
+  - Tempo Focus: $tempo_focus
+  - Progression Pattern: $weight_progression_pattern
+
+  **Hypertrophy Training Focus:**
+  This workout builds muscle through moderate-to-high rep ranges with controlled movement. Combine compound exercises with targeted isolation work. The goal is sufficient volume to stimulate growth while maintaining good form throughout all sets.
+
+  **Equipment Categories:**
+  - **full_gym**: Full commercial gym with barbells, racks, machines, and complete equipment
+  - **limited_equipment**: Home gym equipment, dumbbells, bands, or basic gear
+  - **bodyweight_only**: No equipment, bodyweight exercises only
+  - If equipment_notes are provided, use that specific equipment information to tailor exercise selection
+
+  **Weight Progression Pattern ($weight_progression_pattern):**
+  - **pyramid**: Traditional pyramid progression - start with lighter weight and progressively increase weight while decreasing reps across sets
+    - Example: Set 1: 135 lbs x 12 reps → Set 2: 145 lbs x 10 reps → Set 3: 155 lbs x 8 reps
+    - Best for: Building up intensity, allows proper warm-up and progressive overload
+  - **reverse_pyramid**: Reverse pyramid progression - start with heaviest weight when fresh, then decrease weight and increase reps
+    - Example: Set 1: 155 lbs x 8 reps → Set 2: 145 lbs x 10 reps → Set 3: 135 lbs x 12 reps
+    - Best for: Maximizing mechanical tension when not fatigued, efficient for hypertrophy
+  - **straight_sets**: Same weight across all sets
+    - Example: Set 1: 145 lbs x 10 reps → Set 2: 145 lbs x 10 reps → Set 3: 145 lbs x 10 reps
+    - Best for: Consistent training stimulus, volume accumulation
+  - **wave_loading**: Undulating pattern that alternates between heavier and lighter loads across sets
+    - Example: Set 1: 145 lbs x 10 reps → Set 2: 135 lbs x 12 reps → Set 3: 155 lbs x 8 reps → Set 4: 140 lbs x 11 reps
+    - Best for: Advanced lifters, varied stimulus, avoiding adaptation plateau
+
+  **Key Guidelines:**
+  1. **Rep Ranges**: Moderate to high reps (6-15) for muscle building
+  2. **Exercise Selection**: Mix compound movements with isolation exercises to work the target muscle thoroughly
+  3. **Rest Periods**: Moderate rest (60-120 seconds) between sets
+  4. **Volume**: Include enough total sets to create a growth stimulus
+  5. **Tempo**: If tempo_focus is true, note controlled tempo in exercise notes (e.g., slower lowering phase)
+  6. **Muscle Group Focus**: Target $target_muscle_group from different angles
+  7. **Progression**: Note how to progress (adding weight or reps) in general notes
+  8. **Weight Suggestions**: For equipment_access of "full_gym" or "limited_equipment", include suggested_weight and weight_unit for each set based on the user's bodyweight, fitness level, and training goals. For "bodyweight_only" equipment, omit weight suggestions as they're not applicable.
+
+  **Exercise Variety:**
+  - Start with compound movements for overall development
+  - Follow with isolation exercises for specific muscle targeting
+  - Vary angles and grips to work muscles completely
+
+  **Safety Considerations:**
+  - Account for any physical limitations ($user_physical_limitations) when prescribing exercises and volume
+  - Include warm-up with movement prep and progressive loading
+  - Provide form cues focused on maintaining tension safely through full range of motion
+  - Balance pressing and pulling movements
+
+  **Parameter Conflict Detection:**
+  Analyze the provided parameters for potential conflicts or suboptimal combinations. If any exist, populate the "conflicting_parameters" field with a brief explanation. Examples of conflicts:
+  - **reverse_pyramid** with low fitness_level (1-2/5): Beginners typically benefit more from pyramid or straight_sets to build proper form and work capacity
+  - **wave_loading** with low fitness_level (1-2/5): Advanced technique not suitable for beginners
+  - **pyramid** with very short workout_duration: May not allow sufficient sets to build up to heavy loads
+  - **tempo_focus** with **reverse_pyramid**: Starting with maximum loads and slow tempos increases injury risk
+  - **reverse_pyramid** with physical_limitations: Starting with heaviest loads may increase injury risk
+  - Any combination where the user's goals/limitations don't align well with the requested progression pattern
+
+  If no conflicts exist, set "conflicting_parameters" to null.
+
+  **Output Format:**
+  Respond ONLY with valid JSON matching this exact structure (no additional text):
+  {
+    "workout_type": "hypertrophy",
+    "target_muscle_group": "string (must match the provided target: $target_muscle_group)",
+    "total_duration_minutes": number (should closely match $workout_duration),
+    "difficulty_rating": number (1-5 scale, based on user's fitness level),
+    "warmup": [
+      "string - warm-up exercise or instruction",
+      "string - another warm-up exercise"
+    ],
+    "exercises": [
+      {
+        "exercise_name": "string - name of the exercise",
+        "sets": [
+          {
+            "reps": number (6-15 reps for hypertrophy),
+            "rest_duration_seconds": number (rest in seconds, typically 60-120 for hypertrophy),
+            "suggested_weight": number (optional - only include if equipment_access: $equipment_access allows for weights),
+            "weight_unit": "string (optional - 'lbs' or 'kg', must match user's weight_unit: $user_weight_unit)"
+          }
+        ],
+        "notes": "string - form cues, tempo guidance (if tempo_focus is true), focus tips"
+      }
+    ],
+    "cooldown": [
+      "string - cool-down exercise or instruction",
+      "string - another cool-down exercise"
+    ],
+    "general_notes": "string - overall workout tips and progression strategies",
+    "weight_progression_pattern": "string (must match the provided pattern: $weight_progression_pattern)",
+    "estimated_volume": "string - optional description like '24 total sets' or '16 working sets'",
+    "conflicting_parameters": "string or null - brief explanation of parameter conflicts if any exist, otherwise null"
+  }
+
+  **Important Guidelines:**
+  - Select exercises appropriate for the specified equipment access ($equipment_access)
+  - If equipment_notes ($equipment_notes) are provided, prioritize any specific access or limitations mentioned regarding equipment
+  - Account for any physical limitations
+  - Use 6-15 reps for muscle building work
+  - Include 60-120 second rest periods between sets
+  - Match the requested $workout_duration minutes
+  - Include 4-8 exercises depending on duration
+  - If tempo_focus is true, include tempo guidance in notes (e.g., "3 second lower, 1 second pause, 1 second lift")
+  - Provide cues for maintaining focus on the working muscle
+  - Balance compound movements with isolation work
+  - Target $target_muscle_group from multiple angles
+  - Keep instructions clear and focused on execution
+  - **Weight Progression Pattern**: MUST follow the specified progression pattern ($weight_progression_pattern) when prescribing weights across sets. Ensure weight and rep progressions match the pattern definition (pyramid, reverse_pyramid, straight_sets, or wave_loading).
+  - **Weight Suggestions**: Include suggested_weight and weight_unit ONLY when equipment_access is "full_gym" or "limited_equipment". Use the user's weight_unit ($user_weight_unit) for consistency. Base suggestions on user's bodyweight ($user_weight $user_weight_unit) and fitness_level ($user_fitness_level/5). For hypertrophy, weights should allow for controlled reps in the 6-15 range with proper form.

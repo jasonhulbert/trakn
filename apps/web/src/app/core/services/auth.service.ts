@@ -2,6 +2,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { SupabaseService } from './supabase.service';
 import type { User, Session } from '@supabase/supabase-js';
+import { authRoutesTmpl } from '../../features/auth/auth.routes';
 
 @Injectable({
   providedIn: 'root',
@@ -15,9 +16,18 @@ export class AuthService {
 
   private readonly supabase = inject(SupabaseService);
   private readonly router = inject(Router);
+  private readonly initPromise: Promise<void>;
 
   constructor() {
-    this.initializeAuth();
+    this.initPromise = this.initializeAuth();
+  }
+
+  /**
+   * Wait for authentication initialization to complete.
+   * Guards should await this before checking auth state.
+   */
+  async waitForInitialization(): Promise<void> {
+    await this.initPromise;
   }
 
   private async initializeAuth() {
@@ -95,7 +105,7 @@ export class AuthService {
 
     if (error) throw error;
 
-    await this.router.navigate(['/auth/login']);
+    await this.router.navigate([`/auth/${authRoutesTmpl.Login()}`]);
   }
 
   async resetPassword(email: string) {

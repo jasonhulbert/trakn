@@ -1,0 +1,119 @@
+name: 'Conditioning Workout Template'
+description: 'Template for generating conditioning and cardio workout plans'
+version: '1.0'
+variables:
+  - user_age
+  - user_weight
+  - user_weight_unit
+  - user_fitness_level
+  - user_physical_limitations
+  - workout_duration
+  - equipment_access
+  - equipment_notes
+  - interval_structure
+  - cardio_modality
+  - distance_time_goal
+content: |
+  Create a conditioning workout based on the following information:
+
+  **User Profile:**
+  - Age: $user_age years old
+  - Weight: $user_weight $user_weight_unit
+  - Fitness Level: $user_fitness_level out of 5
+  - Physical Limitations: $user_physical_limitations
+  - Equipment Access: $equipment_access
+  - Equipment Notes: $equipment_notes
+  - Desired Duration: $workout_duration minutes
+  - Interval Structure: $interval_structure
+  - Cardio Modality: $cardio_modality
+  - Distance/Time Goal: $distance_time_goal
+
+  **Conditioning Training Focus:**
+  This workout improves cardiovascular endurance and work capacity using the specified interval structure and cardio modality. Structure the workout to match the user's fitness level and any distance or time goals.
+
+  **Equipment Categories:**
+  - **cardio_machines**: Access to treadmill, bike, rower, elliptical, stair climber, or assault bike
+  - **outdoor_space**: Outdoor running, cycling, or open space for cardio movement
+  - **minimal_space**: Jump rope, bodyweight cardio, indoor space-efficient exercises
+  - **pool_access**: Swimming pool available for aquatic conditioning
+  - If equipment_notes are provided, use that specific equipment information to tailor exercise selection
+
+  **Interval Structure Guidelines:**
+  - **HIIT (High-Intensity Interval Training)**: Short bursts of hard effort (20-60 seconds) with brief recovery periods
+  - **Steady State**: Continuous moderate-intensity effort at a sustainable pace
+  - **Mixed**: Combination of interval types - vary between hard efforts and moderate steady-state periods
+  - **Tabata**: 20 seconds hard work, 10 seconds rest, repeated for 8 rounds (4 minutes total per set)
+  - **EMOM (Every Minute on the Minute)**: Work at the start of each minute, rest for the remainder. Adjust work volume based on fitness level
+
+  **Key Guidelines:**
+  1. **Intensity Management**: Structure intervals appropriately for the user's fitness level
+  2. **Progressive Build**: Increase intensity gradually after warm-up
+  3. **Modality**: Use the specified cardio modality ($cardio_modality) consistently unless "mixed" is specified
+  4. **Timing**: Work and rest periods should match the interval structure ($interval_structure)
+  5. **Recovery**: Include adequate recovery between hard intervals to maintain quality
+  6. **Goal-Oriented**: If distance_time_goal is specified, structure the workout toward that objective
+
+  **Intensity Reference:**
+  - **Low**: Easy pace, can hold a conversation
+  - **Moderate**: Somewhat hard, breathing elevated but controlled
+  - **High**: Hard effort, breathing heavy
+  - **Max**: Near-maximal effort, very hard breathing
+
+  **Safety Considerations:**
+  - Account for any physical limitations ($user_physical_limitations) when prescribing exercises and intensity
+  - Include proper warm-up with gradual intensity build
+  - Provide clear pacing guidance to prevent starting too hard
+  - Include adequate cool-down for recovery
+
+  **Parameter Conflict Detection:**
+  Analyze the provided parameters for potential conflicts or suboptimal combinations. If any exist, populate the "conflicting_parameters" field with a brief explanation. Examples of conflicts:
+  - A high-intensity interval structure (e.g., HIIT or Tabata) combined with a low fitness level (1-2 out of 5) may be too challenging and could lead to overexertion.
+  - A distance_time_goal that requires sustained moderate effort may conflict with a primarily high-intensity interval structure.
+  - Specifying a cardio modality that the user has physical limitations against (e.g., running with knee issues) should be noted.
+
+  **Output Format:**
+  Respond ONLY with valid JSON matching this exact structure (no additional text):
+  {
+    "workout_type": "conditioning",
+    "cardio_modality": "string (must match: $cardio_modality)",
+    "total_duration_minutes": number (should closely match $workout_duration),
+    "difficulty_rating": number (1-5 scale, based on user's fitness level and interval structure),
+    "warmup": [
+      "string - warm-up activity or instruction",
+      "string - another warm-up activity"
+    ],
+    "intervals": [
+      {
+        "interval_number": number (sequential, starting from 1),
+        "work_duration_seconds": number (duration of work period in seconds),
+        "rest_duration_seconds": number (duration of rest/recovery period in seconds),
+        "intensity": "string (low/moderate/high/max)",
+        "modality": "string (must be a valid cardio modality: running, cycling, rowing, swimming, jump_rope, assault_bike, elliptical, stair_climber, or mixed)",
+        "notes": "string - optional pacing guidance or intensity targets"
+      }
+    ],
+    "cooldown": [
+      "string - cool-down activity or instruction",
+      "string - another cool-down activity"
+    ],
+    "general_notes": "string - overall pacing strategy and progression advice",
+    "estimated_calories": number (optional - rough estimate of calories burned),
+    "conflicting_parameters": "string or null - brief explanation of parameter conflicts if any exist, otherwise null"
+  }
+
+  **Important Guidelines:**
+  - Select exercises appropriate for the specified equipment access ($equipment_access)
+  - If equipment_notes ($equipment_notes) are provided, prioritize any specific access or limitations mentioned regarding equipment
+  - Structure intervals according to $interval_structure
+  - Use the primary $cardio_modality for all or most intervals
+  - If interval_structure is "HIIT": Use 20-60 second work periods, 10-60 second rest periods
+  - If interval_structure is "steady_state": Use longer continuous intervals (5-20+ minutes) at moderate intensity
+  - If interval_structure is "tabata": Use exactly 20 seconds work, 10 seconds rest for 8 rounds per set
+  - If interval_structure is "EMOM": Structure intervals within 60-second windows
+  - If interval_structure is "mixed": Vary interval types throughout the workout
+  - Total duration (including warmup, intervals, cooldown) should match $workout_duration minutes
+  - Scale intensity to the user's fitness_level ($user_fitness_level out of 5)
+  - Account for physical_limitations ($user_physical_limitations) in modality selection and intensity
+  - If distance_time_goal is provided, reference it in general_notes with progression advice
+  - Provide clear pacing cues in interval notes (e.g., "moderate pace", "hard effort", "easy recovery")
+  - Keep instructions straightforward and focused on what to do

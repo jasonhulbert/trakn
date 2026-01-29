@@ -1,0 +1,127 @@
+name: 'Strength Workout Template'
+description: 'Template for generating strength training workout plans'
+version: '1.0'
+variables:
+  - user_age
+  - user_weight
+  - user_weight_unit
+  - user_fitness_level
+  - user_physical_limitations
+  - workout_duration
+  - equipment_access
+  - equipment_notes
+  - target_muscle_group
+  - load_percentage
+  - weight_progression_pattern
+content: |
+  Create a strength training workout based on the following information:
+
+  **User Profile:**
+  - Age: $user_age years old
+  - Weight: $user_weight $user_weight_unit
+  - Fitness Level: $user_fitness_level out of 5
+  - Physical Limitations: $user_physical_limitations
+  - Target Muscle Group: $target_muscle_group
+  - Equipment Access: $equipment_access
+  - Equipment Notes: $equipment_notes
+  - Desired Duration: $workout_duration minutes
+  - Load Percentage: $load_percentage
+  - Progression Pattern: $weight_progression_pattern
+
+  **Strength Training Focus:**
+  This workout builds strength through compound movements with heavy loads and low rep ranges. Focus on exercises that allow the user to lift safely and effectively. Keep it straightforward - quality lifts with adequate rest between sets.
+
+  **Equipment Categories:**
+  - **full_gym**: Full commercial gym with barbells, racks, machines, and complete equipment
+  - **limited_equipment**: Home gym equipment, dumbbells, bands, or basic gear
+  - **bodyweight_only**: No equipment, bodyweight exercises only
+  - If equipment_notes are provided, use that specific equipment information to tailor exercise selection
+
+  **Weight Progression Pattern ($weight_progression_pattern):**
+  - **pyramid**: Traditional pyramid progression - start with lighter weight and progressively increase weight while decreasing reps across sets
+    - Example: Set 1: 135 lbs x 6 reps → Set 2: 155 lbs x 4 reps → Set 3: 175 lbs x 2 reps
+    - Best for: Building to a top set, allows proper warm-up and neuromuscular adaptation
+  - **reverse_pyramid**: Reverse pyramid progression - start with heaviest weight when fresh, then decrease weight and increase reps
+    - Example: Set 1: 175 lbs x 2 reps → Set 2: 155 lbs x 4 reps → Set 3: 135 lbs x 6 reps
+    - Best for: Maximizing performance on the heaviest set when not fatigued
+  - **straight_sets**: Same weight across all sets
+    - Example: Set 1: 155 lbs x 5 reps → Set 2: 155 lbs x 5 reps → Set 3: 155 lbs x 5 reps
+    - Best for: Consistent intensity, skill practice, volume accumulation
+  - **wave_loading**: Undulating pattern that alternates between heavier and lighter loads across sets
+    - Example: Set 1: 155 lbs x 5 reps → Set 2: 135 lbs x 6 reps → Set 3: 165 lbs x 4 reps → Set 4: 145 lbs x 5 reps
+    - Best for: Advanced lifters, potentiation effects, avoiding monotony
+
+  **Key Guidelines:**
+  1. **Rep Ranges**: Low reps (1-6) for building strength
+  2. **Exercise Selection**: Compound movements like squats, deadlifts, presses, and rows that work multiple muscle groups
+  3. **Rest Periods**: Longer rest (2-5 minutes) between sets so the user can maintain quality on each set
+  4. **Load Reference**: If load_percentage is specified, note working loads around that intensity
+  5. **Form Emphasis**: Include clear cues for safe execution in exercise notes
+  6. **Muscle Group Focus**: Target $target_muscle_group while maintaining balanced training
+  7. **Weight Suggestions**: For equipment_access of "full_gym" or "limited_equipment", include suggested_weight and weight_unit for each set based on the user's bodyweight, fitness level, and load_percentage. For "bodyweight_only" equipment, omit weight suggestions as they're not applicable.
+
+  **Safety Considerations:**
+  - Account for any physical limitations ($user_physical_limitations) when prescribing exercises and volume
+  - Include warm-up with movement prep and lighter sets to prepare for working loads
+  - Provide form cues focused on injury prevention
+  - Keep instructions clear and actionable
+
+  **Parameter Conflict Detection:**
+  Analyze the provided parameters for potential conflicts or suboptimal combinations. If any exist, populate the "conflicting_parameters" field with a brief explanation. Examples of conflicts:
+  - **reverse_pyramid** with low fitness_level (1-2/5): Beginners typically benefit more from pyramid or straight_sets to build proper form before maxing out
+  - **wave_loading** with low fitness_level (1-2/5): Advanced technique not suitable for beginners
+  - **pyramid** with very short workout_duration: May not allow sufficient sets to build up to heavy loads
+  - **reverse_pyramid** with high load_percentage (85%+) and physical_limitations: Starting with maximum loads may increase injury risk
+  - Any combination where the user's goals/limitations don't align well with the requested progression pattern
+
+  If no conflicts exist, set "conflicting_parameters" to null.
+
+  **Output Format:**
+  Respond ONLY with valid JSON matching this exact structure (no additional text):
+  {
+    "workout_type": "strength",
+    "target_muscle_group": "string (must match the provided target: $target_muscle_group)",
+    "total_duration_minutes": number (should closely match $workout_duration),
+    "difficulty_rating": number (1-5 scale, based on user's fitness level),
+    "warmup": [
+      "string - warm-up exercise or instruction",
+      "string - another warm-up exercise"
+    ],
+    "exercises": [
+      {
+        "exercise_name": "string - name of the exercise",
+        "sets": [
+          {
+            "reps": number (1-6 reps for strength),
+            "rest_duration_seconds": number (rest in seconds, typically 120-300 for strength),
+            "suggested_weight": number (optional - only include for gym-based equipment access),
+            "weight_unit": "string (optional - 'lbs' or 'kg', must match user's weight_unit: $user_weight_unit)"
+          }
+        ],
+        "notes": "string - form cues, load guidance, or safety tips"
+      }
+    ],
+    "cooldown": [
+      "string - cool-down exercise or instruction",
+      "string - another cool-down exercise"
+    ],
+    "general_notes": "string - overall workout tips, progression advice, or safety reminders",
+    "weight_progression_pattern": "string (must match the provided pattern: $weight_progression_pattern)",
+    "estimated_intensity": "string - optional description like 'Heavy loads around 80-90%' or 'Moderate intensity'",
+    "conflicting_parameters": "string or null - brief explanation of parameter conflicts if any exist, otherwise null"
+  }
+
+  **Important Guidelines:**
+  - Select exercises appropriate for the specified equipment access ($equipment_access)
+  - If equipment_notes ($equipment_notes) are provided, prioritize any specific access or limitations mentioned regarding equipment
+  - Account for any physical limitations
+  - Use 1-6 reps for strength work
+  - Include 2-5 minute rest periods between sets
+  - Match the requested $workout_duration minutes
+  - Include 3-6 main exercises depending on duration
+  - Provide clear form cues in the notes field
+  - If load_percentage is provided (e.g., 75), reference that intensity in your guidance
+  - Focus primarily on $target_muscle_group with complementary movements as needed
+  - Keep instructions straightforward and action-oriented
+  - **Weight Progression Pattern**: MUST follow the specified progression pattern ($weight_progression_pattern) when prescribing weights across sets. Ensure weight and rep progressions match the pattern definition (pyramid, reverse_pyramid, straight_sets, or wave_loading).
+  - **Weight Suggestions**: Include suggested_weight and weight_unit ONLY when equipment_access is "full_gym" or "limited_equipment". Omit these fields for "bodyweight_only" unless specific weighted exercises are prescribed. Use the user's weight_unit ($user_weight_unit) for consistency. Base suggestions on user's bodyweight ($user_weight $user_weight_unit), fitness_level ($user_fitness_level/5), and load_percentage if provided.
