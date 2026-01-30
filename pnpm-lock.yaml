@@ -45,6 +45,9 @@ importers:
       '@langchain/core':
         specifier: ^0.3.42
         version: 0.3.80
+      '@supabase/auth-js':
+        specifier: 2.81.1
+        version: 2.81.1
       '@supabase/supabase-js':
         specifier: ^2.81.1
         version: 2.81.1
