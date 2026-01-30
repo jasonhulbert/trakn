@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { ConditioningEquipmentSchema } from '../common/equipment.schema';
-import { BaseWorkoutInputSchema } from './base-workout-input.schema';
+import { ConditioningEquipmentSchema } from '../common/equipment.schema.js';
+import { BaseWorkoutInputSchema } from './base-workout-input.schema.js';
 
 export const IntervalStructureSchema = z.enum(['hiit', 'steady_state', 'mixed', 'tabata', 'emom']);
 

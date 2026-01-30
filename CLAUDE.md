@@ -20,12 +20,14 @@ Trakn is an offline-first Progressive Web App (PWA) for strength training tracki
 
 ```
 trakn/
-├── api/                   # Vercel serverless function entry points (thin wrappers)
-│   └── workouts/
-│       └── generate.ts
+├── api/                   # Vercel serverless functions (AI workout generation)
+│   ├── workouts/
+│   │   └── generate.ts    # Endpoint: workout generation
+│   ├── _chains/           # LangChain chains (underscore prefix = not an endpoint)
+│   ├── _lib/              # Shared utilities (auth, errors, Supabase, LangChain config)
+│   └── _prompts/          # YAML prompt templates
 ├── apps/
-│   ├── web/               # Angular 21+ PWA application
-│   └── vercel/            # Vercel Functions implementation (AI workout generation)
+│   └── web/               # Angular 21+ PWA application
 ├── packages/shared/       # Shared TypeScript types, Zod schemas, and validators
 ├── supabase/              # Database migrations and configuration
 └── docs/                  # Project documentation
@@ -56,7 +58,7 @@ trakn/
 
 **Shared Types and Schemas:** All TypeScript types and Zod validation schemas shared between frontend and backend live in `packages/shared/src/`. Import via `@trakn/shared`.
 
-**Vercel Functions (not Supabase Edge Functions):** AI workout generation runs on Vercel Functions using LangChain chains with structured output. The `api/` directory at the project root contains thin entry points that delegate to implementation in `apps/vercel/src/`.
+**Vercel Functions (not Supabase Edge Functions):** AI workout generation runs on Vercel Functions using LangChain chains with structured output. All function code lives in `api/`, with helper directories prefixed with `_` (e.g., `_lib/`, `_chains/`, `_prompts/`) to prevent Vercel from treating them as endpoints.
 
 **Service Worker:** PWA capabilities are enabled via `@angular/service-worker` with configuration in `ngsw-config.json`. Only active in production builds.
 
@@ -64,33 +66,32 @@ trakn/
 
 ### Architecture
 
-AI-powered workout generation uses Vercel serverless functions with LangChain and Anthropic Claude. The architecture follows a thin-entry-point pattern:
+AI-powered workout generation uses Vercel serverless functions with LangChain and Anthropic Claude. All code lives in the `api/` directory, using Vercel's `_` prefix convention for helper directories:
 
-- **`api/`** (root): Vercel discovers these files as serverless functions. They handle CORS preflight and delegate to handlers in `apps/vercel/`.
-- **`apps/vercel/src/functions/`**: HTTP request handlers (authentication, validation, error handling).
-- **`apps/vercel/src/chains/`**: LangChain chains that orchestrate prompt loading, model invocation, and structured output parsing.
-- **`apps/vercel/src/lib/`**: Shared utilities (Supabase client, ChatAnthropic config, JWT auth, error classes, YAML prompt loader).
-- **`apps/vercel/prompts/`**: YAML prompt templates with `$variable` syntax for LangChain interpolation.
+- **`api/workouts/`**: Endpoint files discovered by Vercel as serverless functions. Each handles CORS, auth, validation, and error handling.
+- **`api/_chains/`**: LangChain chains that orchestrate prompt loading, model invocation, and structured output parsing.
+- **`api/_lib/`**: Shared utilities (Supabase client, ChatAnthropic config, JWT auth, error classes, YAML prompt loader).
+- **`api/_prompts/`**: YAML prompt templates with `$variable` syntax for LangChain interpolation.
 
 ### Request Flow
 
 ```
 Angular App → POST /api/workouts/generate (with JWT)
-  → api/workouts/generate.ts (thin entry point)
-    → handleGenerateWorkout() (JWT auth + validation)
-      → generateWorkout() (LangChain chain)
-        → Load YAML prompts (system + workout-type-specific)
-        → Build ChatPromptTemplate
-        → Invoke ChatAnthropic with withStructuredOutput(zodSchema)
-        → Return Zod-validated WorkoutOutput
+  → api/workouts/generate.ts (endpoint handler)
+    → authenticateRequest() (JWT auth via api/_lib/auth.ts)
+    → generateWorkout() (LangChain chain via api/_chains/)
+      → Load YAML prompts from api/_prompts/
+      → Build ChatPromptTemplate
+      → Invoke ChatAnthropic with withStructuredOutput(zodSchema)
+      → Return Zod-validated WorkoutOutput
 ```
 
 ### Prompt Management
 
-Prompts are stored as YAML files in `apps/vercel/prompts/`:
+Prompts are stored as YAML files in `api/_prompts/`:
 
 ```
-prompts/
+_prompts/
 ├── system/
 │   └── fitness_trainer.prompt.yml    # System prompt for all workout types
 ├── hypertrophy_workout.prompt.yml    # Hypertrophy-specific user prompt
@@ -110,7 +111,7 @@ Input and output schemas live in `packages/shared/src/models/` and are shared be
 
 ### Error Handling
 
-Custom error hierarchy in `apps/vercel/src/lib/errors.ts`:
+Custom error hierarchy in `api/_lib/errors.ts`:
 
 - `ApiError` (base), `ValidationError` (400), `AuthenticationError` (401), `ForbiddenError` (403), `NotFoundError` (404), `AIGenerationError` (502)
 - Environment-aware detail disclosure (full details in development, sanitized in production)
@@ -120,7 +121,7 @@ Custom error hierarchy in `apps/vercel/src/lib/errors.ts`:
 `vercel.json` configures:
 
 - Functions runtime: `@vercel/node@5.1.8`, 1024MB memory, 30s max duration
-- YAML prompts bundled via `includeFiles: apps/vercel/prompts/**/*.yml`
+- YAML prompts bundled via `includeFiles: api/_prompts/**/*.yml`
 - SPA rewrite: all non-API routes → `/index.html`
 - CORS headers for `/api/*` routes
 
@@ -168,8 +169,8 @@ pnpm format:check:all        # Check formatting
 # Package Management
 pnpm add:web <package>       # Add dependency to apps/web
 pnpm add:web:dev <package>   # Add dev dependency to apps/web
-pnpm add:vercel <package>    # Add dependency to apps/vercel
-pnpm add:vercel:dev <package># Add dev dependency to apps/vercel
+pnpm add:vercel <package>    # Add dependency to api/
+pnpm add:vercel:dev <package># Add dev dependency to api/
 pnpm add:shared <package>    # Add dependency to packages/shared
 pnpm add:all <package>       # Add to workspace root
 
@@ -349,12 +350,12 @@ Keep bundle size minimal by avoiding large third-party libraries.
 
 ### Adding a New API Endpoint
 
-1. Create handler in `apps/vercel/src/functions/` following existing patterns
-2. Create thin entry point in `api/` that delegates to the handler
+1. Create endpoint file in `api/<resource>/<action>.ts` following existing patterns
+2. Add shared helpers in `api/_lib/` or `api/_chains/` as needed (underscore prefix prevents Vercel from treating them as endpoints)
 3. Add input/output Zod schemas in `packages/shared/src/models/`
 4. Export new schemas from `packages/shared/src/index.ts`
-5. Add YAML prompt templates in `apps/vercel/prompts/` if AI-powered
-6. Add tests in `apps/vercel/` using Vitest
+5. Add YAML prompt templates in `api/_prompts/` if AI-powered
+6. Add tests in `api/` using Vitest
 
 ### Adding a Database Table
 

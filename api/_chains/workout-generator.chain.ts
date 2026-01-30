@@ -1,7 +1,7 @@
 import { RunnableSequence } from '@langchain/core/runnables';
 import { ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate } from '@langchain/core/prompts';
-import { getChatModel } from '@/lib/langchain';
-import { loadSystemPrompt, loadUserPrompt } from '@/lib/prompt-loader';
+import { getChatModel } from '../_lib/langchain.js';
+import { loadSystemPrompt, loadUserPrompt } from '../_lib/prompt-loader.js';
 import {
   WorkoutInputSchema,
   HypertrophyOutputSchema,
@@ -11,7 +11,7 @@ import {
   type WorkoutOutput,
   type WorkoutType,
   WorkoutGeneratorResult,
-} from '@trkn-shared';
+} from 'trkn-shared';
 
 // Cache loaded prompts to avoid repeated file reads
 const systemPromptCache = new Map<string, string>();

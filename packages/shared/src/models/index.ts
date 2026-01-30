@@ -1,3 +1,3 @@
-export * from './common';
-export * from './workout-input';
-export * from './workout-output';
+export * from './common/index.js';
+export * from './workout-input/index.js';
+export * from './workout-output/index.js';

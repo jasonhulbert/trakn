@@ -6,8 +6,8 @@ import yaml from 'js-yaml';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Path to prompts directory (relative to compiled output location)
-const PROMPTS_DIR = join(__dirname, '../../../prompts');
+// Path to prompts directory (relative from api/_lib/ up to api/, then into _prompts/)
+const PROMPTS_DIR = join(__dirname, '../_prompts');
 
 export interface PromptConfig {
   name: string;
@@ -39,10 +39,15 @@ export function loadPrompt(relativePath: string): PromptConfig {
 
 /**
  * Convert $variable_name to {variable_name} for LangChain interpolation.
+ * First escapes all literal { and } as {{ and }} so LangChain's f-string
+ * parser doesn't choke on JSON examples in the prompt content.
  */
 function convertVariableSyntax(content: string): string {
-  // Match $word_characters but not $$escaped
-  return content.replace(/\$([a-zA-Z_][a-zA-Z0-9_]*)/g, '{$1}');
+  // 1. Escape all existing braces so they're treated as literals by LangChain
+  let escaped = content.replace(/\{/g, '{{').replace(/\}/g, '}}');
+  // 2. Convert $variable to {variable} (single braces = LangChain interpolation)
+  escaped = escaped.replace(/\$([a-zA-Z_][a-zA-Z0-9_]*)/g, '{$1}');
+  return escaped;
 }
 
 /**

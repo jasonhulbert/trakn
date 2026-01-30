@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { UserProfileSchema } from '../common/user-profile.schema';
+import { UserProfileSchema } from '../common/user-profile.schema.js';
 
 export const BaseWorkoutInputSchema = UserProfileSchema.extend({
   workout_duration: z.number().int().positive().describe('Desired workout duration in minutes'),

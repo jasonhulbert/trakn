@@ -1,3 +1,3 @@
-export * from './weight-unit.schema';
-export * from './user-profile.schema';
-export * from './equipment.schema';
+export * from './weight-unit.schema.js';
+export * from './user-profile.schema.js';
+export * from './equipment.schema.js';

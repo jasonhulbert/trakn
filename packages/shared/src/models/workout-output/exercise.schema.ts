@@ -1,10 +1,10 @@
 import { z } from 'zod';
-import { WeightUnitSchema } from '../common/weight-unit.schema';
+import { WeightUnitSchema } from '../common/weight-unit.schema.js';
 
 export const ExerciseSetSchema = z.object({
   reps: z.number().int().positive().describe('Number of repetitions'),
   rest_duration_seconds: z.number().int().nonnegative().describe('Rest duration in seconds after this set'),
-  suggested_weight: z.number().positive().optional().describe('Suggested weight for this set'),
+  suggested_weight: z.number().nonnegative().optional().describe('Suggested weight for this set'),
   weight_unit: WeightUnitSchema.optional().describe('Unit for the suggested weight'),
 });
 

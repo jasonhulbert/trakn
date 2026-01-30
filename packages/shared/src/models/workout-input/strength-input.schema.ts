@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { GymEquipmentSchema } from '../common/equipment.schema';
-import { BaseWorkoutInputSchema } from './base-workout-input.schema';
-import { TargetMuscleGroupSchema, WeightProgressionPatternSchema } from './hypertrophy-input.schema';
+import { GymEquipmentSchema } from '../common/equipment.schema.js';
+import { BaseWorkoutInputSchema } from './base-workout-input.schema.js';
+import { TargetMuscleGroupSchema, WeightProgressionPatternSchema } from './hypertrophy-input.schema.js';
 
 export const StrengthInputSchema = BaseWorkoutInputSchema.merge(GymEquipmentSchema).extend({
   target_muscle_group: TargetMuscleGroupSchema.describe('Primary muscle group to target'),

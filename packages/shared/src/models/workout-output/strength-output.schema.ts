@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { TargetMuscleGroupSchema } from '../workout-input/hypertrophy-input.schema';
-import { WeightProgressionPatternSchema } from '../workout-input/hypertrophy-input.schema';
-import { ExerciseSchema } from './exercise.schema';
+import { TargetMuscleGroupSchema } from '../workout-input/hypertrophy-input.schema.js';
+import { WeightProgressionPatternSchema } from '../workout-input/hypertrophy-input.schema.js';
+import { ExerciseSchema } from './exercise.schema.js';
 
 export const StrengthOutputSchema = z.object({
   workout_type: z.literal('strength'),

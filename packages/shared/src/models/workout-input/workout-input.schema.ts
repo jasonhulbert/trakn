@@ -1,7 +1,7 @@
 import { z } from 'zod';
-import { HypertrophyInputSchema } from './hypertrophy-input.schema';
-import { StrengthInputSchema } from './strength-input.schema';
-import { ConditioningInputSchema } from './conditioning-input.schema';
+import { HypertrophyInputSchema } from './hypertrophy-input.schema.js';
+import { StrengthInputSchema } from './strength-input.schema.js';
+import { ConditioningInputSchema } from './conditioning-input.schema.js';
 
 export const WorkoutTypeSchema = z.enum(['hypertrophy', 'strength', 'conditioning']);
 

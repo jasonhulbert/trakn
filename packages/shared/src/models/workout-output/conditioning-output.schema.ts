@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { CardioModalitySchema } from '../workout-input/conditioning-input.schema';
-import { IntervalSchema } from './interval.schema';
+import { CardioModalitySchema } from '../workout-input/conditioning-input.schema.js';
+import { IntervalSchema } from './interval.schema.js';
 
 export const ConditioningOutputSchema = z.object({
   workout_type: z.literal('conditioning'),
