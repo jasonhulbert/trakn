@@ -1,7 +1,7 @@
 import { RunnableSequence } from '@langchain/core/runnables';
 import { ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate } from '@langchain/core/prompts';
-import { getChatModel } from '@/lib/langchain';
-import { loadSystemPrompt, loadUserPrompt } from '@/lib/prompt-loader';
+import { getChatModel } from '../_lib/langchain.js';
+import { loadSystemPrompt, loadUserPrompt } from '../_lib/prompt-loader.js';
 import {
   WorkoutInputSchema,
   HypertrophyOutputSchema,
@@ -11,26 +11,27 @@ import {
   type WorkoutOutput,
   type WorkoutType,
   WorkoutGeneratorResult,
-} from '@trkn-shared';
+  WorkoutTypeSchema,
+} from 'trkn-shared';
 
 // Cache loaded prompts to avoid repeated file reads
-let systemPromptContent: string | null = null;
+const systemPromptCache = new Map<string, string>();
 const workoutPromptCache = new Map<string, string>();
 
 /**
  * Get the system prompt content (cached).
  */
-function getSystemPrompt(): string {
-  if (!systemPromptContent) {
-    systemPromptContent = loadSystemPrompt('fitness_trainer');
+function getSystemPrompt(name: string): string {
+  if (!systemPromptCache.has(name)) {
+    systemPromptCache.set(name, loadSystemPrompt(name));
   }
-  return systemPromptContent;
+  return systemPromptCache.get(name)!;
 }
 
 /**
- * Get the workout prompt content for a specific type (cached).
+ * Get the workout prompt template for a specific type (cached).
  */
-function getWorkoutPromptContent(workoutType: WorkoutType): string {
+function getWorkoutPromptTemplate(workoutType: WorkoutType): string {
   if (!workoutPromptCache.has(workoutType)) {
     const promptConfig = loadUserPrompt(`${workoutType}_workout`);
     workoutPromptCache.set(workoutType, promptConfig.content);
@@ -42,12 +43,12 @@ function getWorkoutPromptContent(workoutType: WorkoutType): string {
  * Build a ChatPromptTemplate from loaded YAML prompts.
  */
 function buildPromptTemplate(workoutType: WorkoutType): ChatPromptTemplate {
-  const systemContent = getSystemPrompt();
-  const userContent = getWorkoutPromptContent(workoutType);
+  const systemContent = getSystemPrompt('fitness_trainer');
+  const userTemplate = getWorkoutPromptTemplate(workoutType);
 
   return ChatPromptTemplate.fromMessages([
     SystemMessagePromptTemplate.fromTemplate(systemContent),
-    HumanMessagePromptTemplate.fromTemplate(userContent),
+    HumanMessagePromptTemplate.fromTemplate(userTemplate),
   ]);
 }
 
@@ -68,7 +69,7 @@ function toPromptInput(input: WorkoutInput): Record<string, string | number> {
   };
 
   switch (input.workout_type) {
-    case 'hypertrophy':
+    case WorkoutTypeSchema.enum.hypertrophy:
       return {
         ...base,
         target_muscle_group: input.target_muscle_group,
@@ -76,7 +77,7 @@ function toPromptInput(input: WorkoutInput): Record<string, string | number> {
         weight_progression_pattern: input.weight_progression_pattern,
       };
 
-    case 'strength':
+    case WorkoutTypeSchema.enum.strength:
       return {
         ...base,
         target_muscle_group: input.target_muscle_group,
@@ -84,7 +85,7 @@ function toPromptInput(input: WorkoutInput): Record<string, string | number> {
         weight_progression_pattern: input.weight_progression_pattern,
       };
 
-    case 'conditioning':
+    case WorkoutTypeSchema.enum.conditioning:
       return {
         ...base,
         interval_structure: input.interval_structure,
@@ -102,11 +103,11 @@ function toPromptInput(input: WorkoutInput): Record<string, string | number> {
  */
 function getOutputSchema(workoutType: WorkoutType) {
   switch (workoutType) {
-    case 'hypertrophy':
+    case WorkoutTypeSchema.enum.hypertrophy:
       return HypertrophyOutputSchema;
-    case 'strength':
+    case WorkoutTypeSchema.enum.strength:
       return StrengthOutputSchema;
-    case 'conditioning':
+    case WorkoutTypeSchema.enum.conditioning:
       return ConditioningOutputSchema;
     default:
       throw new Error(`Unknown workout type: ${workoutType}`);
@@ -157,6 +158,6 @@ export async function generateWorkout(rawInput: unknown): Promise<WorkoutGenerat
  * Clear the prompt cache (useful for testing or hot-reloading).
  */
 export function clearPromptCache(): void {
-  systemPromptContent = null;
+  systemPromptCache.clear();
   workoutPromptCache.clear();
 }

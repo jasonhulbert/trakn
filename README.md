@@ -20,8 +20,8 @@ trakn/
 
 ## Resources
 
-- [Project Brief](./docs/PROJECT_BRIEF.md) - Product vision and scope
-- [Setup Guide](./docs/SETUP_GUIDE.md) - Detailed setup and migration instructions
+- [Project Brief](./docs/project_brief.md) - Product vision and scope
+- [Setup Guide](./docs/setup_guide.md) - Detailed setup and migration instructions
 
 ## License
 

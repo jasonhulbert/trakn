@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CardioModalitySchema } from '../workout-input/conditioning-input.schema';
+import { CardioModalitySchema } from '../workout-input/conditioning-input.schema.js';
 
 export const IntensityLevelSchema = z.enum(['low', 'moderate', 'high', 'max']);
 

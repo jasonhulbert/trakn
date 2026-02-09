@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { GymEquipmentSchema } from '../common/equipment.schema';
-import { BaseWorkoutInputSchema } from './base-workout-input.schema';
+import { GymEquipmentSchema } from '../common/equipment.schema.js';
+import { BaseWorkoutInputSchema } from './base-workout-input.schema.js';
 
 export const WeightProgressionPatternSchema = z.enum(['pyramid', 'reverse_pyramid', 'straight_sets', 'wave_loading']);
 

@@ -1,7 +1,7 @@
 import type { VercelRequest } from '@vercel/node';
 import type { User } from '@supabase/supabase-js';
-import { verifyToken } from './supabase';
-import { AuthenticationError } from './errors';
+import { verifyToken } from './supabase.js';
+import { AuthenticationError } from './errors.js';
 
 export interface AuthenticatedRequest extends VercelRequest {
   user: User;

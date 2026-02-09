@@ -72,24 +72,13 @@ content: |
   - Provide form cues focused on maintaining tension safely through full range of motion
   - Balance pressing and pulling movements
 
-  **Parameter Conflict Detection:**
-  Analyze the provided parameters for potential conflicts or suboptimal combinations. If any exist, populate the "conflicting_parameters" field with a brief explanation. Examples of conflicts:
-  - **reverse_pyramid** with low fitness_level (1-2/5): Beginners typically benefit more from pyramid or straight_sets to build proper form and work capacity
-  - **wave_loading** with low fitness_level (1-2/5): Advanced technique not suitable for beginners
-  - **pyramid** with very short workout_duration: May not allow sufficient sets to build up to heavy loads
-  - **tempo_focus** with **reverse_pyramid**: Starting with maximum loads and slow tempos increases injury risk
-  - **reverse_pyramid** with physical_limitations: Starting with heaviest loads may increase injury risk
-  - Any combination where the user's goals/limitations don't align well with the requested progression pattern
-
-  If no conflicts exist, set "conflicting_parameters" to null.
-
   **Output Format:**
   Respond ONLY with valid JSON matching this exact structure (no additional text):
   {
     "workout_type": "hypertrophy",
     "target_muscle_group": "string (must match the provided target: $target_muscle_group)",
     "total_duration_minutes": number (should closely match $workout_duration),
-    "difficulty_rating": number (1-5 scale, based on user's fitness level),
+    "difficulty_rating": number (1-5 scale, based on user's fitness level, must be a single integer),
     "warmup": [
       "string - warm-up exercise or instruction",
       "string - another warm-up exercise"
@@ -99,7 +88,7 @@ content: |
         "exercise_name": "string - name of the exercise",
         "sets": [
           {
-            "reps": number (6-15 reps for hypertrophy),
+            "reps": number (6-15 reps for hypertrophy, must be a single integer),
             "rest_duration_seconds": number (rest in seconds, typically 60-120 for hypertrophy),
             "suggested_weight": number (optional - only include if equipment_access: $equipment_access allows for weights),
             "weight_unit": "string (optional - 'lbs' or 'kg', must match user's weight_unit: $user_weight_unit)"
@@ -133,3 +122,14 @@ content: |
   - Keep instructions clear and focused on execution
   - **Weight Progression Pattern**: MUST follow the specified progression pattern ($weight_progression_pattern) when prescribing weights across sets. Ensure weight and rep progressions match the pattern definition (pyramid, reverse_pyramid, straight_sets, or wave_loading).
   - **Weight Suggestions**: Include suggested_weight and weight_unit ONLY when equipment_access is "full_gym" or "limited_equipment". Use the user's weight_unit ($user_weight_unit) for consistency. Base suggestions on user's bodyweight ($user_weight $user_weight_unit) and fitness_level ($user_fitness_level/5). For hypertrophy, weights should allow for controlled reps in the 6-15 range with proper form.
+
+  **Parameter Conflict Detection:**
+  Analyze the provided parameters for potential conflicts or suboptimal combinations. If any exist, populate the "conflicting_parameters" field with a brief explanation. If no conflicts exist, set "conflicting_parameters" to null. Examples of conflicts:
+  - **reverse_pyramid** with low fitness_level (1-2/5): Beginners typically benefit more from pyramid or straight_sets to build proper form and work capacity
+  - **physical_limitations** that restrict the ability to perform key exercises for the **target_muscle_group**
+  - **target_muscle_group** that requires specialized equipment not available in **equipment_access**
+  - **wave_loading** with low fitness_level (1-2/5): Advanced technique not suitable for beginners
+  - **pyramid** with very short workout_duration: May not allow sufficient sets to build up to heavy loads
+  - **tempo_focus** with **reverse_pyramid**: Starting with maximum loads and slow tempos increases injury risk
+  - **reverse_pyramid** with physical_limitations: Starting with heaviest loads may increase injury risk
+  - Any combination where the user's goals/limitations don't align well with the requested progression pattern

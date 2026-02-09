@@ -3,14 +3,12 @@
   "buildCommand": "pnpm build:web",
   "outputDirectory": "apps/web/dist/trakn/browser",
   "installCommand": "pnpm install",
-  "devCommand": "pnpm dev:web",
   "framework": null,
   "functions": {
     "api/**/*.ts": {
-      "runtime": "@vercel/node@5.1.8",
       "memory": 1024,
       "maxDuration": 30,
-      "includeFiles": "apps/vercel/prompts/**/*.yml"
+      "includeFiles": "api/_prompts/**/*.yml"
     }
   },
   "rewrites": [

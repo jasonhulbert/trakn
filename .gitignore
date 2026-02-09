@@ -56,6 +56,9 @@ supabase/.temp/
 Thumbs.db
 .DS_Store
 
+# Local llm settings
+.claude/
+
 # Temporary files
 *.tmp
 .cache/

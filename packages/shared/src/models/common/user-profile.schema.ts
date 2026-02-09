@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { WeightUnitSchema } from './weight-unit.schema';
+import { WeightUnitSchema } from './weight-unit.schema.js';
 
 export const UserProfileSchema = z.object({
   user_age: z.number().int().positive().describe('User age in years'),
