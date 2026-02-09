@@ -11,6 +11,7 @@ import {
   type WorkoutOutput,
   type WorkoutType,
   WorkoutGeneratorResult,
+  WorkoutTypeSchema,
 } from 'trkn-shared';
 
 // Cache loaded prompts to avoid repeated file reads
@@ -68,7 +69,7 @@ function toPromptInput(input: WorkoutInput): Record<string, string | number> {
   };
 
   switch (input.workout_type) {
-    case 'hypertrophy':
+    case WorkoutTypeSchema.enum.hypertrophy:
       return {
         ...base,
         target_muscle_group: input.target_muscle_group,
@@ -76,7 +77,7 @@ function toPromptInput(input: WorkoutInput): Record<string, string | number> {
         weight_progression_pattern: input.weight_progression_pattern,
       };
 
-    case 'strength':
+    case WorkoutTypeSchema.enum.strength:
       return {
         ...base,
         target_muscle_group: input.target_muscle_group,
@@ -84,7 +85,7 @@ function toPromptInput(input: WorkoutInput): Record<string, string | number> {
         weight_progression_pattern: input.weight_progression_pattern,
       };
 
-    case 'conditioning':
+    case WorkoutTypeSchema.enum.conditioning:
       return {
         ...base,
         interval_structure: input.interval_structure,
@@ -102,11 +103,11 @@ function toPromptInput(input: WorkoutInput): Record<string, string | number> {
  */
 function getOutputSchema(workoutType: WorkoutType) {
   switch (workoutType) {
-    case 'hypertrophy':
+    case WorkoutTypeSchema.enum.hypertrophy:
       return HypertrophyOutputSchema;
-    case 'strength':
+    case WorkoutTypeSchema.enum.strength:
       return StrengthOutputSchema;
-    case 'conditioning':
+    case WorkoutTypeSchema.enum.conditioning:
       return ConditioningOutputSchema;
     default:
       throw new Error(`Unknown workout type: ${workoutType}`);

@@ -10,7 +10,6 @@ export const StrengthInputSchema = BaseWorkoutInputSchema.merge(GymEquipmentSche
     .int()
     .min(1)
     .max(100)
-    .optional()
     .describe('Target load as percentage of estimated max (e.g., 75 for 75%)'),
   weight_progression_pattern: WeightProgressionPatternSchema.describe('Pattern for progressing weight across sets'),
 });

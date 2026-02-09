@@ -65,19 +65,13 @@ content: |
   - Provide clear pacing guidance to prevent starting too hard
   - Include adequate cool-down for recovery
 
-  **Parameter Conflict Detection:**
-  Analyze the provided parameters for potential conflicts or suboptimal combinations. If any exist, populate the "conflicting_parameters" field with a brief explanation. Examples of conflicts:
-  - A high-intensity interval structure (e.g., HIIT or Tabata) combined with a low fitness level (1-2 out of 5) may be too challenging and could lead to overexertion.
-  - A distance_time_goal that requires sustained moderate effort may conflict with a primarily high-intensity interval structure.
-  - Specifying a cardio modality that the user has physical limitations against (e.g., running with knee issues) should be noted.
-
   **Output Format:**
   Respond ONLY with valid JSON matching this exact structure (no additional text):
   {
     "workout_type": "conditioning",
     "cardio_modality": "string (must match: $cardio_modality)",
     "total_duration_minutes": number (should closely match $workout_duration),
-    "difficulty_rating": number (1-5 scale, based on user's fitness level and interval structure),
+    "difficulty_rating": number (1-5 scale, based on user's fitness level and interval structure, must be a single integer),
     "warmup": [
       "string - warm-up activity or instruction",
       "string - another warm-up activity"
@@ -117,3 +111,9 @@ content: |
   - If distance_time_goal is provided, reference it in general_notes with progression advice
   - Provide clear pacing cues in interval notes (e.g., "moderate pace", "hard effort", "easy recovery")
   - Keep instructions straightforward and focused on what to do
+
+  **Parameter Conflict Detection:**
+  Analyze the provided parameters for potential conflicts or suboptimal combinations. If any exist, populate the "conflicting_parameters" field with a brief explanation. If no conflicts exist, set "conflicting_parameters" to null. Examples of conflicts:
+  - A high-intensity interval structure (e.g., "HIIT" or "Tabata") combined with a low "user_fitness_level" (1-2 out of 5) may be too challenging and could lead to overexertion.
+  - A "distance_time_goal" that requires sustained moderate effort may conflict with a primarily high-intensity interval structure.
+  - Specifying a "cardio_modality" that the user has physical limitations against (e.g., running with knee issues) should be noted.
