@@ -19,6 +19,14 @@ describe('ApiService', () => {
     user: { id: 'user-123', email: 'test@example.com' },
   };
 
+  const mockUser = {
+    age: 30,
+    weight: 180,
+    weight_unit: 'lbs' as const,
+    fitness_level: 3,
+    physical_limitations: '',
+  };
+
   beforeEach(() => {
     const authSpy = {
       getSession: jasmine.createSpy('getSession').and.returnValue(
@@ -59,11 +67,7 @@ describe('ApiService', () => {
     it('should generate a hypertrophy workout with correct headers', (done) => {
       const mockInput: WorkoutInput = {
         workout_type: 'hypertrophy',
-        user_age: 30,
-        user_weight: 180,
-        user_weight_unit: 'lbs',
-        user_fitness_level: 3,
-        user_physical_limitations: '',
+        user: mockUser,
         workout_duration: 60,
         equipment_access: 'full_gym',
         target_muscle_group: 'chest',
@@ -121,11 +125,7 @@ describe('ApiService', () => {
     it('should generate a strength workout', (done) => {
       const mockInput: WorkoutInput = {
         workout_type: 'strength',
-        user_age: 25,
-        user_weight: 200,
-        user_weight_unit: 'lbs',
-        user_fitness_level: 4,
-        user_physical_limitations: '',
+        user: { ...mockUser, age: 25, weight: 200, fitness_level: 4 },
         workout_duration: 45,
         equipment_access: 'full_gym',
         target_muscle_group: 'legs',
@@ -178,11 +178,7 @@ describe('ApiService', () => {
     it('should generate a conditioning workout', (done) => {
       const mockInput: WorkoutInput = {
         workout_type: 'conditioning',
-        user_age: 28,
-        user_weight: 160,
-        user_weight_unit: 'lbs',
-        user_fitness_level: 3,
-        user_physical_limitations: '',
+        user: { ...mockUser, age: 28, weight: 160 },
         workout_duration: 30,
         equipment_access: 'minimal_space',
         interval_structure: 'tabata',
@@ -239,11 +235,7 @@ describe('ApiService', () => {
 
       const mockInput: WorkoutInput = {
         workout_type: 'hypertrophy',
-        user_age: 30,
-        user_weight: 180,
-        user_weight_unit: 'lbs',
-        user_fitness_level: 3,
-        user_physical_limitations: '',
+        user: mockUser,
         workout_duration: 60,
         equipment_access: 'full_gym',
         target_muscle_group: 'chest',
@@ -263,11 +255,7 @@ describe('ApiService', () => {
     it('should handle HTTP error responses', (done) => {
       const mockInput: WorkoutInput = {
         workout_type: 'hypertrophy',
-        user_age: 30,
-        user_weight: 180,
-        user_weight_unit: 'lbs',
-        user_fitness_level: 3,
-        user_physical_limitations: '',
+        user: mockUser,
         workout_duration: 60,
         equipment_access: 'full_gym',
         target_muscle_group: 'chest',
@@ -298,11 +286,7 @@ describe('ApiService', () => {
     it('should handle network errors', (done) => {
       const mockInput: WorkoutInput = {
         workout_type: 'hypertrophy',
-        user_age: 30,
-        user_weight: 180,
-        user_weight_unit: 'lbs',
-        user_fitness_level: 3,
-        user_physical_limitations: '',
+        user: mockUser,
         workout_duration: 60,
         equipment_access: 'full_gym',
         target_muscle_group: 'chest',
