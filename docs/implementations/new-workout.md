@@ -91,6 +91,7 @@ The "revise workout" and "revise exercise" endpoints will send the full original
 **File to Modify:** `packages/shared/src/models/common/user-profile.schema.ts`
 
 **Change:**
+
 ```typescript
 // Before:
 physical_limitations: z.string().describe('Description of any physical limitations or injuries'),
@@ -100,12 +101,14 @@ physical_limitations: z.string().optional().describe('Description of any physica
 ```
 
 **Impact:**
+
 - TypeScript type becomes: `UserProfile.physical_limitations?: string | undefined`
 - Database column should allow NULL values (already does via Postgres default behavior)
 - Form validation no longer requires this field
 - API endpoints must handle `undefined` value
 
 **Validation:**
+
 ```typescript
 // Test that parse succeeds without the field
 const result = UserProfileSchema.safeParse({
@@ -130,16 +133,16 @@ console.assert(result2.success === true);
 
 ### Phase 1 File Manifest
 
-| Action | File Path                                                                       | Description                          |
-| ------ | ------------------------------------------------------------------------------- | ------------------------------------ |
-| Create | `supabase/migrations/YYYYMMDDHHMMSS_create_user_profiles.sql`                   | User profiles table + RLS            |
-| Create | `supabase/migrations/YYYYMMDDHHMMSS_create_workouts.sql`                        | Workouts table + RLS                 |
-| Create | `packages/shared/src/models/workout-revision/workout-revision-input.schema.ts`  | Revision input schema                |
-| Create | `packages/shared/src/models/workout-revision/exercise-revision-input.schema.ts` | Exercise revision input schema       |
-| Create | `packages/shared/src/models/workout-revision/index.ts`                          | Barrel export                        |
-| Modify | `packages/shared/src/models/index.ts`                                           | Add new barrel exports               |
-| Modify | `packages/shared/src/index.ts`                                                  | Ensure new models are exported       |
-| Modify | `packages/shared/src/models/common/user-profile.schema.ts`                      | Make physical_limitations optional   |
+| Action | File Path                                                                       | Description                        |
+| ------ | ------------------------------------------------------------------------------- | ---------------------------------- |
+| Create | `supabase/migrations/YYYYMMDDHHMMSS_create_user_profiles.sql`                   | User profiles table + RLS          |
+| Create | `supabase/migrations/YYYYMMDDHHMMSS_create_workouts.sql`                        | Workouts table + RLS               |
+| Create | `packages/shared/src/models/workout-revision/workout-revision-input.schema.ts`  | Revision input schema              |
+| Create | `packages/shared/src/models/workout-revision/exercise-revision-input.schema.ts` | Exercise revision input schema     |
+| Create | `packages/shared/src/models/workout-revision/index.ts`                          | Barrel export                      |
+| Modify | `packages/shared/src/models/index.ts`                                           | Add new barrel exports             |
+| Modify | `packages/shared/src/index.ts`                                                  | Ensure new models are exported     |
+| Modify | `packages/shared/src/models/common/user-profile.schema.ts`                      | Make physical_limitations optional |
 
 ---
 
@@ -213,6 +216,7 @@ console.assert(result2.success === true);
 During implementation, we encountered a race condition where the profile form would not populate on page refresh. The root cause: the component's `ngOnInit()` ran before the async profile loading completed.
 
 **Problem:**
+
 ```typescript
 // ❌ Race condition: ngOnInit() may run before profile loads
 ngOnInit(): void {
@@ -224,6 +228,7 @@ ngOnInit(): void {
 ```
 
 **Solution:**
+
 1. Create a resolver (`profile.resolver.ts`) that ensures profile data loads before route activation
 2. Use `effect()` in component constructor instead of `ngOnInit()` for reactive form population
 3. Combine resolver + effect for immediate form population on navigation
@@ -253,30 +258,28 @@ constructor() {
 ```
 
 **UserProfileService - Critical Supabase Upsert Pattern:**
+
 ```typescript
 // CORRECT: Include onConflict parameter to specify conflict resolution column
-const { error } = await this.supabase
-  .from('user_profiles')
-  .upsert(row, { onConflict: 'user_id' });
+const { error } = await this.supabase.from('user_profiles').upsert(row, { onConflict: 'user_id' });
 
 // INCORRECT: Missing onConflict causes duplicate key constraint violations on updates
-const { error } = await this.supabase
-  .from('user_profiles')
-  .upsert(row);  // ❌ Will fail on second save
+const { error } = await this.supabase.from('user_profiles').upsert(row); // ❌ Will fail on second save
 ```
 
 The `onConflict` parameter tells Supabase which column to use for determining if a row exists. Without it, upsert() cannot properly handle updates and will throw `duplicate key value violates unique constraint` errors.
 
 **IndexedDB Schema (Version 1):**
+
 ```typescript
 export interface UserProfileRow {
-  user_id: string;            // Primary key (auth user ID)
+  user_id: string; // Primary key (auth user ID)
   age: number;
   weight: number;
   weight_unit: 'lbs' | 'kg';
-  fitness_level: number;      // 1-5
-  physical_limitations?: string;  // Optional
-  updated_at: string;         // ISO timestamp
+  fitness_level: number; // 1-5
+  physical_limitations?: string; // Optional
+  updated_at: string; // ISO timestamp
 }
 
 export class TraknDatabase extends Dexie {
@@ -288,13 +291,14 @@ export class TraknDatabase extends Dexie {
 
     this.version(1).stores({
       syncQueue: 'id, timestamp, type, table',
-      userProfiles: 'user_id',  // Add to existing version 1
+      userProfiles: 'user_id', // Add to existing version 1
     });
   }
 }
 ```
 
 **Profile Guard Pattern:**
+
 ```typescript
 import { toObservable } from '@angular/core/rxjs-interop';
 import { firstValueFrom, filter, take, timeout } from 'rxjs';
@@ -310,9 +314,9 @@ export const profileGuard: CanActivateFn = async () => {
   // Wait for profile service to finish loading (reactive approach)
   await firstValueFrom(
     toObservable(userProfileService.isLoading).pipe(
-      filter(loading => !loading),
+      filter((loading) => !loading),
       take(1),
-      timeout(10000)  // 10 second timeout
+      timeout(10000) // 10 second timeout
     )
   );
 
@@ -325,6 +329,7 @@ export const profileGuard: CanActivateFn = async () => {
 ```
 
 **Reactive Forms with Signals:**
+
 ```typescript
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { effect } from '@angular/core';
@@ -356,7 +361,7 @@ export class ProfileComponent {
       validators: [Validators.required, Validators.min(1), Validators.max(5)],
       nonNullable: true,
     }),
-    physical_limitations: this.fb.control<string>(''),  // Optional, no validators
+    physical_limitations: this.fb.control<string>(''), // Optional, no validators
   });
 
   isSaving = signal(false);
@@ -412,34 +417,38 @@ export class ProfileComponent {
 
 ### Phase 2 File Manifest
 
-| Action | File Path                                                | Description                                        |
-| ------ | -------------------------------------------------------- | -------------------------------------------------- |
-| Create | `apps/web/src/app/core/services/user-profile.service.ts` | Profile CRUD, caching, signal state                |
-| Create | `apps/web/src/app/core/guards/profile.guard.ts`          | Check profile completeness, reactive waiting       |
-| Create | `apps/web/src/app/core/resolvers/profile.resolver.ts`   | Pre-load profile data before route activation      |
-| Create | `apps/web/src/app/features/profile/profile.component.ts` | Profile form with ReactiveFormsModule + effect()   |
-| Create | `apps/web/src/app/features/profile/profile.routes.ts`    | Profile routing                                    |
+| Action | File Path                                                | Description                                           |
+| ------ | -------------------------------------------------------- | ----------------------------------------------------- |
+| Create | `apps/web/src/app/core/services/user-profile.service.ts` | Profile CRUD, caching, signal state                   |
+| Create | `apps/web/src/app/core/guards/profile.guard.ts`          | Check profile completeness, reactive waiting          |
+| Create | `apps/web/src/app/core/resolvers/profile.resolver.ts`    | Pre-load profile data before route activation         |
+| Create | `apps/web/src/app/features/profile/profile.component.ts` | Profile form with ReactiveFormsModule + effect()      |
+| Create | `apps/web/src/app/features/profile/profile.routes.ts`    | Profile routing                                       |
 | Modify | `apps/web/src/app/core/db/indexed-db.service.ts`         | Add userProfiles table to version 1 (no version bump) |
-| Modify | `apps/web/src/app/app.routes.ts`                         | Add profile route with resolver                    |
-| Modify | `apps/web/src/app/features/home/home.component.ts`       | Add profile nav link + conditional CTA             |
+| Modify | `apps/web/src/app/app.routes.ts`                         | Add profile route with resolver                       |
+| Modify | `apps/web/src/app/features/home/home.component.ts`       | Add profile nav link + conditional CTA                |
 
 ### Phase 2 Lessons Learned
 
 **Zoneless Angular Patterns:**
+
 - In zoneless Angular apps with async data loading, race conditions between component initialization and data availability are common
 - The resolver + effect() pattern is the recommended approach: resolver ensures data loads before route activation, effect() handles reactive updates
 - Avoid relying on `ngOnInit()` for populating forms from async sources in zoneless apps
 
 **Supabase Upsert Requirements:**
+
 - Always specify `onConflict` parameter when using `.upsert()` on tables with unique constraints
 - Without `onConflict`, Supabase cannot determine which column to use for conflict resolution, causing duplicate key errors on updates
 - Format: `.upsert(data, { onConflict: 'column_name' })`
 
 **Type Safety:**
+
 - Avoid explicit `any` types even in mapping functions - use proper type annotations
 - TypeScript's strict mode catches these issues during development
 
 **UI Refinements:**
+
 - User added Header component to profile page for consistent navigation
 - Cancel button removed (unnecessary with browser back navigation)
 - Auto-navigation timeout removed after successful save (better UX to show success message and let user navigate manually)
