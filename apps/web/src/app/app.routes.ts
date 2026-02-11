@@ -8,6 +8,7 @@ export const routeTmpl = {
   AuthLogin: () => `auth/login`,
   AuthRegister: () => `auth/register`,
   Maintenance: () => `maintenance`,
+  Profile: () => `profile`,
 } as const;
 
 export const routes: Routes = [
@@ -25,6 +26,14 @@ export const routes: Routes = [
     path: routeTmpl.Auth(),
     canActivate: [maintenanceModeGuard],
     loadChildren: () => import('./features/auth/auth.routes').then((m) => m.authRoutes),
+  },
+  {
+    path: routeTmpl.Profile(),
+    canActivate: [maintenanceModeGuard, authGuard],
+    resolve: {
+      profile: () => import('./core/resolvers/profile.resolver').then((m) => m.profileResolver),
+    },
+    loadComponent: () => import('./features/profile/profile.component').then((m) => m.ProfileComponent),
   },
   {
     path: '**',
