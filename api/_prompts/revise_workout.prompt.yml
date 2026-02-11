@@ -1,0 +1,72 @@
+name: 'Workout Revision Template'
+description: 'Template for revising an existing workout based on user feedback'
+version: '1.0'
+variables:
+  - current_workout
+  - workout_type
+  - revision_text
+  - user_age
+  - user_weight
+  - user_weight_unit
+  - user_fitness_level
+  - user_physical_limitations
+  - workout_duration
+  - equipment_access
+  - equipment_notes
+content: |
+  You are revising an existing workout based on user feedback.
+
+  **Current Workout:**
+  ```json
+  $current_workout
+  ```
+
+  **Original User Profile:**
+  - Age: $user_age years old
+  - Weight: $user_weight $user_weight_unit
+  - Fitness Level: $user_fitness_level out of 5
+  - Physical Limitations: $user_physical_limitations
+  - Equipment Access: $equipment_access
+  - Equipment Notes: $equipment_notes
+  - Desired Duration: $workout_duration minutes
+
+  **User's Revision Request:**
+  "$revision_text"
+
+  **Your Task:**
+  1. Carefully read the current workout structure above
+  2. Understand what the user wants to change from their revision request
+  3. Apply ONLY the changes requested - preserve everything else
+  4. Maintain the same workout type ($workout_type) and overall structure
+  5. Ensure the revised workout still respects the user's profile and limitations
+
+  **Important Guidelines:**
+  - **Preserve unmodified fields**: If the user doesn't mention something, keep it exactly as is
+  - **Maintain schema compliance**: The output must match the exact same structure as the current workout
+  - **Respect the workout type**: Do not change the workout_type field
+  - **Apply specific changes**: If the user says "make it harder", increase weights/intensity. If they say "add more exercises", add exercises. If they say "replace X with Y", swap the exercises.
+  - **Keep workout duration similar**: The revised workout should still fit within $workout_duration minutes
+  - **Account for limitations**: Still respect $user_physical_limitations when making changes
+  - **Maintain consistency**: Ensure any changes are consistent with the workout's overall progression pattern and training goals
+
+  **Examples of Revision Types:**
+  - "Make it harder" → Increase weights, reduce rest times, add sets, or increase reps
+  - "Make it easier" → Decrease weights, increase rest times, reduce sets, or decrease reps
+  - "Add more exercises" → Insert additional exercises while maintaining workout flow
+  - "Remove the last exercise" → Remove the specified exercise and adjust flow
+  - "Replace X with Y" → Swap out exercise X for exercise Y, maintaining set/rep structure
+  - "Focus more on upper body" → Adjust exercise selection to emphasize upper body movements
+  - "Reduce rest times" → Decrease rest_duration_seconds across sets
+  - "Make the warmup longer" → Add more warmup exercises or extend warmup descriptions
+  - "Increase weight by 10%" → Increase all suggested weights by approximately 10%
+  - "Add more volume" → Add sets to existing exercises or add new exercises
+
+  **Safety Considerations:**
+  - Never suggest exercises that conflict with $user_physical_limitations
+  - Ensure equipment requirements match $equipment_access
+  - If equipment_notes specify limitations, respect those constraints
+  - Maintain safe progression - don't increase difficulty too dramatically
+  - Balance pushing/pulling movements and avoid overtraining patterns
+
+  **Output Format:**
+  Respond ONLY with valid JSON matching the EXACT structure of the current workout (same schema as workout_type: $workout_type). Do not add explanatory text before or after the JSON.
