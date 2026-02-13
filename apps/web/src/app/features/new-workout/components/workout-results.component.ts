@@ -48,7 +48,7 @@ import { IntervalCardComponent } from './interval-card.component';
         @case ('hypertrophy') {
           <div class="mb-6">
             <h3 class="text-xl font-semibold mb-3">Exercises</h3>
-            <div class="space-y-4">
+            <div class="flex flex-col gap-4">
               @for (exercise of getHypertrophyWorkout().exercises; track $index) {
                 <app-exercise-card [exercise]="exercise" />
               }
@@ -86,7 +86,7 @@ import { IntervalCardComponent } from './interval-card.component';
         @case ('conditioning') {
           <div class="mb-6">
             <h3 class="text-xl font-semibold mb-3">Intervals</h3>
-            <div class="space-y-4">
+            <div class="flex flex-col gap-4">
               @for (interval of getConditioningWorkout().intervals; track interval.interval_number) {
                 <app-interval-card [interval]="interval" />
               }
