@@ -23,8 +23,11 @@ export class UserProfileService {
       if (user) {
         this.loadProfile();
       } else {
-        this.profile.set(null);
-        this.isLoading.set(false);
+        // Only clear profile if auth is not loading (to avoid clearing during session refresh)
+        if (!this.auth.isLoading()) {
+          this.profile.set(null);
+          this.isLoading.set(false);
+        }
       }
     });
   }

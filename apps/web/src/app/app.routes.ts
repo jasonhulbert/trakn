@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { maintenanceModeGuard, maintenanceModePageGuard } from './core/guards/maintenance.guard';
+import { profileGuard } from './core/guards/profile.guard';
 
 export const routeTmpl = {
   Home: () => ``,
@@ -9,6 +10,7 @@ export const routeTmpl = {
   AuthRegister: () => `auth/register`,
   Maintenance: () => `maintenance`,
   Profile: () => `profile`,
+  NewWorkout: () => `workouts/new`,
 } as const;
 
 export const routes: Routes = [
@@ -34,6 +36,11 @@ export const routes: Routes = [
       profile: () => import('./core/resolvers/profile.resolver').then((m) => m.profileResolver),
     },
     loadComponent: () => import('./features/profile/profile.component').then((m) => m.ProfileComponent),
+  },
+  {
+    path: routeTmpl.NewWorkout(),
+    canActivate: [maintenanceModeGuard, authGuard, profileGuard],
+    loadChildren: () => import('./features/new-workout/new-workout.routes').then((m) => m.newWorkoutRoutes),
   },
   {
     path: '**',
