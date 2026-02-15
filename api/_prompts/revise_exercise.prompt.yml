@@ -1,0 +1,88 @@
+name: 'Exercise Revision Template'
+description: 'Template for revising a single exercise within a workout'
+version: '1.0'
+variables:
+  - current_exercise
+  - workout_context
+  - workout_type
+  - revision_text
+  - user_age
+  - user_weight
+  - user_weight_unit
+  - user_fitness_level
+  - user_physical_limitations
+  - equipment_access
+  - equipment_notes
+content: |
+  You are revising a single exercise within an existing workout.
+
+  **Current Exercise:**
+  ```json
+  $current_exercise
+  ```
+
+  **Full Workout Context (for reference):**
+  ```json
+  $workout_context
+  ```
+
+  **User Profile:**
+  - Age: $user_age years old
+  - Weight: $user_weight $user_weight_unit
+  - Fitness Level: $user_fitness_level out of 5
+  - Physical Limitations: $user_physical_limitations
+  - Equipment Access: $equipment_access
+  - Equipment Notes: $equipment_notes
+
+  **User's Revision Request:**
+  "$revision_text"
+
+  **Your Task:**
+  1. Read the current exercise structure and the workout context
+  2. Understand what the user wants to change
+  3. Apply ONLY the requested changes to this exercise
+  4. Ensure the revised exercise still fits within the overall workout
+
+  **Important Guidelines:**
+  - **Preserve unmodified fields**: If the user doesn't mention a field, keep it exactly as is
+  - **Maintain schema compliance**: Output must match ExerciseSchema structure exactly
+  - **Maintain workout coherence**: The revised exercise should still make sense within the workout (same muscle group focus, compatible difficulty, etc.)
+  - **Respect equipment**: Only suggest exercises compatible with $equipment_access
+  - **Account for limitations**: Respect $user_physical_limitations when making changes
+  - **Keep set structure reasonable**: Number of sets and reps should make sense for the workout type ($workout_type)
+  - **Preserve training intent**: If the original exercise was a compound movement, keep it compound. If isolation, keep it isolation (unless explicitly requested otherwise)
+
+  **Examples of Exercise Revisions:**
+  - "Make this exercise harder" → Increase weight, add sets, reduce rest, or increase reps
+  - "Make this exercise easier" → Decrease weight, reduce sets, increase rest, or decrease reps
+  - "Replace with [exercise name]" → Change exercise_name and adjust sets/notes appropriately to match the new exercise
+  - "Add more sets" → Increase the number of sets in the sets array with appropriate progression
+  - "Increase weight by 10 pounds" → Increase suggested_weight by 10 for each set
+  - "Reduce rest time" → Decrease rest_duration_seconds for each set
+  - "Change to 8-12 rep range" → Adjust reps in each set to fall within 8-12 range
+  - "Add drop sets" → Add additional sets with decreasing weight
+  - "Switch to tempo work" → Adjust notes to include tempo instructions and possibly reduce weight
+
+  **Safety Considerations:**
+  - Never suggest exercises that conflict with $user_physical_limitations
+  - Ensure the exercise is appropriate for the user's fitness level ($user_fitness_level out of 5)
+  - If replacing an exercise, choose one that targets similar muscle groups (based on workout context)
+  - Maintain safe weight progressions across sets
+  - Include appropriate form cues in notes if changing to a technically demanding exercise
+
+  **Output Format:**
+  Respond ONLY with valid JSON matching the ExerciseSchema structure. Do not include explanatory text before or after the JSON.
+
+  Expected structure:
+  {
+    "exercise_name": "string",
+    "sets": [
+      {
+        "reps": number,
+        "rest_duration_seconds": number,
+        "suggested_weight": number (optional),
+        "weight_unit": "lbs" or "kg" (optional)
+      }
+    ],
+    "notes": "string (optional)"
+  }

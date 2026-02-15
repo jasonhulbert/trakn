@@ -2,7 +2,13 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, from, switchMap, map } from 'rxjs';
 import { SupabaseService } from './supabase.service';
-import type { WorkoutInput, WorkoutGeneratorResult } from '@trkn-shared';
+import type {
+  WorkoutInput,
+  WorkoutGeneratorResult,
+  WorkoutRevisionInput,
+  ExerciseRevisionInput,
+  Exercise,
+} from '@trkn-shared';
 
 @Injectable({
   providedIn: 'root',
@@ -41,6 +47,30 @@ export class ApiService {
       switchMap((headers) =>
         this.http.post<WorkoutGeneratorResult>(`${this.baseUrl}/workouts/generate`, input, { headers })
       )
+    );
+  }
+
+  /**
+   * Revises an entire workout using natural language instructions.
+   * @param input - Revision input containing current workout, original input, and revision text
+   * @returns Observable of WorkoutGeneratorResult containing the revised workout
+   */
+  reviseWorkout(input: WorkoutRevisionInput): Observable<WorkoutGeneratorResult> {
+    return this.getAuthHeaders().pipe(
+      switchMap((headers) =>
+        this.http.post<WorkoutGeneratorResult>(`${this.baseUrl}/workouts/revise`, input, { headers })
+      )
+    );
+  }
+
+  /**
+   * Revises a specific exercise using natural language instructions.
+   * @param input - Revision input containing current exercise, workout context, original input, and revision text
+   * @returns Observable of the revised Exercise
+   */
+  reviseExercise(input: ExerciseRevisionInput): Observable<Exercise> {
+    return this.getAuthHeaders().pipe(
+      switchMap((headers) => this.http.post<Exercise>(`${this.baseUrl}/workouts/revise-exercise`, input, { headers }))
     );
   }
 }

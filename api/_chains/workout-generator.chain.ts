@@ -58,11 +58,11 @@ function buildPromptTemplate(workoutType: WorkoutType): ChatPromptTemplate {
  */
 function toPromptInput(input: WorkoutInput): Record<string, string | number> {
   const base = {
-    user_age: input.user_age,
-    user_weight: input.user_weight,
-    user_weight_unit: input.user_weight_unit,
-    user_fitness_level: input.user_fitness_level,
-    user_physical_limitations: input.user_physical_limitations || 'None reported',
+    user_age: input.user.age,
+    user_weight: input.user.weight,
+    user_weight_unit: input.user.weight_unit,
+    user_fitness_level: input.user.fitness_level,
+    user_physical_limitations: input.user.physical_limitations || 'None reported',
     workout_duration: input.workout_duration,
     equipment_access: input.equipment_access,
     equipment_notes: input.equipment_notes || 'None specified',
