@@ -1,7 +1,10 @@
 import { Injectable, inject, signal, computed, effect } from '@angular/core';
-import type { WorkoutInput, WorkoutOutput, Exercise } from '@trkn-shared';
+import type { WorkoutInput, WorkoutOutput, ConditioningOutput } from '@trkn-shared';
 import { ApiService } from './api.service';
 import { UserProfileService } from './user-profile.service';
+import { AuthService } from './auth.service';
+import { SupabaseService } from './supabase.service';
+import { IndexedDbService, type WorkoutRow } from '../db/indexed-db.service';
 import { firstValueFrom } from 'rxjs';
 
 export type WorkoutFlowStep = 'type-selection' | 'params' | 'generating' | 'results';
@@ -23,6 +26,9 @@ const WORKOUT_STATE_KEY = 'trakn_workout_state';
 export class WorkoutService {
   private readonly api = inject(ApiService);
   private readonly userProfile = inject(UserProfileService);
+  private readonly auth = inject(AuthService);
+  private readonly supabase = inject(SupabaseService);
+  private readonly indexedDb = inject(IndexedDbService);
 
   // Workout generation flow state
   private readonly formState = signal<WorkoutFormState>(this.loadStateFromSession());
@@ -36,6 +42,13 @@ export class WorkoutService {
   readonly error = computed(() => this.formState().error);
   readonly isGenerating = computed(() => this.formState().step === 'generating');
   readonly hasWorkout = computed(() => this.formState().generatedWorkout !== null);
+
+  // Phase 5: Revision and save state
+  readonly isSaving = signal(false);
+  readonly isRevising = signal(false);
+  readonly revisingExerciseIndex = signal<number | null>(null);
+  readonly revisingIntervalIndex = signal<number | null>(null);
+  readonly savedWorkoutId = signal<string | null>(null);
 
   constructor() {
     // Persist state to sessionStorage whenever it changes
@@ -133,6 +146,9 @@ export class WorkoutService {
       error: null,
     }));
 
+    // Reset save state for new generation
+    this.savedWorkoutId.set(null);
+
     try {
       const result = await firstValueFrom(this.api.generateWorkout(input));
 
@@ -157,9 +173,8 @@ export class WorkoutService {
 
   /**
    * Revise the entire workout using natural language instructions
-   * (Will be implemented in Phase 5)
    */
-  async reviseWorkout(_revisionText: string): Promise<void> {
+  async reviseWorkout(revisionText: string): Promise<void> {
     const workout = this.generatedWorkout();
     const input = this.originalInput();
 
@@ -167,15 +182,35 @@ export class WorkoutService {
       throw new Error('No workout to revise');
     }
 
-    // TODO: Implement in Phase 5
-    throw new Error('Workout revision not yet implemented');
+    this.isRevising.set(true);
+    this.formState.update((state) => ({ ...state, error: null }));
+
+    try {
+      const result = await firstValueFrom(
+        this.api.reviseWorkout({
+          workout,
+          original_input: input,
+          revision_text: revisionText,
+        })
+      );
+
+      this.formState.update((state) => ({
+        ...state,
+        generatedWorkout: result.workout,
+      }));
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to revise workout';
+      this.formState.update((state) => ({ ...state, error: errorMessage }));
+      throw err;
+    } finally {
+      this.isRevising.set(false);
+    }
   }
 
   /**
    * Revise a specific exercise using natural language instructions
-   * (Will be implemented in Phase 5)
    */
-  async reviseExercise(_exercise: Exercise, _revisionText: string): Promise<Exercise> {
+  async reviseExercise(exerciseIndex: number, revisionText: string): Promise<void> {
     const workout = this.generatedWorkout();
     const input = this.originalInput();
 
@@ -183,13 +218,113 @@ export class WorkoutService {
       throw new Error('No workout context for exercise revision');
     }
 
-    // TODO: Implement in Phase 5
-    throw new Error('Exercise revision not yet implemented');
+    if (workout.workout_type === 'conditioning') {
+      throw new Error('Cannot revise exercises on conditioning workouts');
+    }
+
+    const exercises = workout.exercises;
+    const exercise = exercises[exerciseIndex];
+    if (!exercise) {
+      throw new Error('Exercise not found');
+    }
+
+    this.isRevising.set(true);
+    this.revisingExerciseIndex.set(exerciseIndex);
+    this.formState.update((state) => ({ ...state, error: null }));
+
+    try {
+      const revisedExercise = await firstValueFrom(
+        this.api.reviseExercise({
+          exercise,
+          workout_context: workout,
+          original_input: input,
+          revision_text: revisionText,
+        })
+      );
+
+      // Replace the exercise at the given index
+      const updatedExercises = [...exercises];
+      updatedExercises[exerciseIndex] = revisedExercise;
+
+      const updatedWorkout = {
+        ...workout,
+        exercises: updatedExercises,
+      } as WorkoutOutput;
+
+      this.formState.update((state) => ({
+        ...state,
+        generatedWorkout: updatedWorkout,
+      }));
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to revise exercise';
+      this.formState.update((state) => ({ ...state, error: errorMessage }));
+      throw err;
+    } finally {
+      this.isRevising.set(false);
+      this.revisingExerciseIndex.set(null);
+    }
   }
 
   /**
-   * Save the current workout to Supabase
-   * (Will be implemented in Phase 5)
+   * Revise a specific interval using natural language instructions
+   */
+  async reviseInterval(intervalIndex: number, revisionText: string): Promise<void> {
+    const workout = this.generatedWorkout();
+    const input = this.originalInput();
+
+    if (!workout || !input) {
+      throw new Error('No workout context for interval revision');
+    }
+
+    if (workout.workout_type !== 'conditioning') {
+      throw new Error('Can only revise intervals on conditioning workouts');
+    }
+
+    const intervals = (workout as ConditioningOutput).intervals;
+    const interval = intervals[intervalIndex];
+    if (!interval) {
+      throw new Error('Interval not found');
+    }
+
+    this.isRevising.set(true);
+    this.revisingIntervalIndex.set(intervalIndex);
+    this.formState.update((state) => ({ ...state, error: null }));
+
+    try {
+      const revisedInterval = await firstValueFrom(
+        this.api.reviseInterval({
+          interval,
+          workout_context: workout,
+          original_input: input,
+          revision_text: revisionText,
+        })
+      );
+
+      // Replace the interval at the given index
+      const updatedIntervals = [...intervals];
+      updatedIntervals[intervalIndex] = revisedInterval;
+
+      const updatedWorkout = {
+        ...workout,
+        intervals: updatedIntervals,
+      } as WorkoutOutput;
+
+      this.formState.update((state) => ({
+        ...state,
+        generatedWorkout: updatedWorkout,
+      }));
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to revise interval';
+      this.formState.update((state) => ({ ...state, error: errorMessage }));
+      throw err;
+    } finally {
+      this.isRevising.set(false);
+      this.revisingIntervalIndex.set(null);
+    }
+  }
+
+  /**
+   * Save the current workout to Supabase (with offline IndexedDB fallback)
    */
   async saveWorkout(): Promise<void> {
     const workout = this.generatedWorkout();
@@ -199,8 +334,70 @@ export class WorkoutService {
       throw new Error('No workout to save');
     }
 
-    // TODO: Implement in Phase 5
-    throw new Error('Workout saving not yet implemented');
+    const userId = this.auth.currentUser()?.id;
+    if (!userId) {
+      throw new Error('No authenticated user');
+    }
+
+    this.isSaving.set(true);
+    this.formState.update((state) => ({ ...state, error: null }));
+
+    const workoutId = crypto.randomUUID();
+    const now = new Date().toISOString();
+    const row: WorkoutRow = {
+      id: workoutId,
+      user_id: userId,
+      workout_type: workout.workout_type,
+      data: workout,
+      input,
+      created_at: now,
+      updated_at: now,
+    };
+
+    try {
+      const { error } = await this.supabase.from('workouts').insert({
+        id: row.id,
+        user_id: row.user_id,
+        workout_type: row.workout_type,
+        data: row.data,
+        input: row.input,
+        created_at: row.created_at,
+        updated_at: row.updated_at,
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      // Also cache in IndexedDB
+      await this.indexedDb.saveWorkout(row);
+      this.savedWorkoutId.set(workoutId);
+    } catch (err) {
+      // Offline fallback: save to IndexedDB + sync queue
+      await this.indexedDb.saveWorkout(row);
+      await this.indexedDb.addToSyncQueue({
+        id: crypto.randomUUID(),
+        type: 'create',
+        table: 'workouts',
+        data: { ...row, id: row.id },
+        timestamp: Date.now(),
+        retries: 0,
+      });
+      this.savedWorkoutId.set(workoutId);
+      console.warn('Workout saved offline, will sync when online:', err);
+    } finally {
+      this.isSaving.set(false);
+    }
+  }
+
+  /**
+   * Update the generated workout (for manual edits)
+   */
+  updateWorkout(workout: WorkoutOutput): void {
+    this.formState.update((state) => ({
+      ...state,
+      generatedWorkout: workout,
+    }));
   }
 
   /**
@@ -216,21 +413,12 @@ export class WorkoutService {
       error: null,
     };
     this.formState.set(resetState);
+    this.savedWorkoutId.set(null);
     // Clear from sessionStorage as well
     try {
       sessionStorage.removeItem(WORKOUT_STATE_KEY);
     } catch (err) {
       console.error('Failed to clear workout state from session:', err);
     }
-  }
-
-  /**
-   * Update the generated workout (for manual edits in Phase 5)
-   */
-  updateWorkout(workout: WorkoutOutput): void {
-    this.formState.update((state) => ({
-      ...state,
-      generatedWorkout: workout,
-    }));
   }
 }

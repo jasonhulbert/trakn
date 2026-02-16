@@ -7,7 +7,9 @@ import type {
   WorkoutGeneratorResult,
   WorkoutRevisionInput,
   ExerciseRevisionInput,
+  IntervalRevisionInput,
   Exercise,
+  Interval,
 } from '@trkn-shared';
 
 @Injectable({
@@ -71,6 +73,17 @@ export class ApiService {
   reviseExercise(input: ExerciseRevisionInput): Observable<Exercise> {
     return this.getAuthHeaders().pipe(
       switchMap((headers) => this.http.post<Exercise>(`${this.baseUrl}/workouts/revise-exercise`, input, { headers }))
+    );
+  }
+
+  /**
+   * Revises a specific interval using natural language instructions.
+   * @param input - Revision input containing current interval, workout context, original input, and revision text
+   * @returns Observable of the revised Interval
+   */
+  reviseInterval(input: IntervalRevisionInput): Observable<Interval> {
+    return this.getAuthHeaders().pipe(
+      switchMap((headers) => this.http.post<Interval>(`${this.baseUrl}/workouts/revise-interval`, input, { headers }))
     );
   }
 }
