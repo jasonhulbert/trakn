@@ -307,6 +307,87 @@ import { WorkoutInputSchema } from '@trakn/shared';
 - Avoid relying on automatic change detection from Zone.js
 - Prefer signals over `ChangeDetectorRef.markForCheck()` for new code
 
+### Signals Over Lifecycle Hooks
+
+Prefer signal-based patterns over traditional lifecycle hooks. Lifecycle hooks like `ngOnInit` run once synchronously, which causes bugs when they depend on async state (e.g., checking a signal that hasn't resolved yet). Signal-based alternatives are reactive and fire at the right time automatically.
+
+**`effect()` instead of `ngOnInit` — reactive initialization:**
+
+```typescript
+// BAD: hasProfile() may be false on first load if profile loads async
+ngOnInit(): void {
+  if (this.userProfileService.hasProfile()) {
+    this.workoutService.loadWorkouts();
+  }
+}
+
+// GOOD: effect re-runs when hasProfile() becomes true
+constructor() {
+  effect(() => {
+    if (this.userProfileService.hasProfile()) {
+      this.workoutService.loadWorkouts();
+    }
+  });
+}
+```
+
+**`input()` + `effect()` instead of `@Input()` + `ngOnChanges` — reacting to input changes:**
+
+```typescript
+// GOOD: signal input with reactive side effect
+userId = input.required<number>();
+
+constructor() {
+  effect(() => {
+    this.loadUserData(this.userId());
+  });
+}
+```
+
+**`computed()` for read-only derived state, `linkedSignal()` for writable derived state:**
+
+```typescript
+// Read-only derived value (replaces getter + ngOnChanges)
+fullName = computed(() => `${this.firstName()} ${this.lastName()}`);
+
+// Writable derived value that resets when source changes
+selectedOption = linkedSignal(() => this.options()[0]);
+```
+
+**`afterNextRender()` instead of `ngAfterViewInit` — one-time DOM access:**
+
+```typescript
+constructor() {
+  afterNextRender(() => {
+    document.querySelector('#myElement')?.focus();
+  });
+}
+```
+
+**`afterRenderEffect()` instead of `ngAfterViewChecked` — repeated DOM work:**
+
+```typescript
+constructor() {
+  afterRenderEffect(() => {
+    if (this.selectedId()) {
+      document.querySelector(`[data-id="${this.selectedId()}"]`)?.scrollIntoView();
+    }
+  });
+}
+```
+
+**`DestroyRef.onDestroy()` instead of `ngOnDestroy` — cleanup:**
+
+```typescript
+private destroyRef = inject(DestroyRef);
+
+constructor() {
+  this.destroyRef.onDestroy(() => {
+    // cleanup subscriptions, timers, etc.
+  });
+}
+```
+
 ### PWA Service Worker
 
 - Service worker only registers in production (`enabled: !isDevMode()`)

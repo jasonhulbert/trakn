@@ -98,6 +98,7 @@ import type { WorkoutInput, WorkoutOutput } from '@trkn-shared';
                   [revisingIntervalIndex]="revisingIntervalIndex()"
                   [isSaving]="isSaving()"
                   [isSaved]="isSaved()"
+                  [savedWorkoutId]="savedWorkoutId()"
                   [error]="error()"
                   (backToEdit)="onBackToParams()"
                   (startOver)="onStartOver()"
@@ -143,6 +144,7 @@ export class NewWorkoutComponent {
   revisingIntervalIndex = this.workoutService.revisingIntervalIndex;
   isSaving = this.workoutService.isSaving;
   isSaved = computed(() => this.workoutService.savedWorkoutId() !== null);
+  savedWorkoutId = this.workoutService.savedWorkoutId;
 
   onTypeSelected(type: WorkoutType): void {
     this.workoutService.selectWorkoutType(type);

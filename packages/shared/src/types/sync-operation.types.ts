@@ -9,6 +9,7 @@ export interface SyncOperation {
 
 export interface SyncOperationData {
   id: string;
+  [key: string]: unknown;
 }
 
 export interface SyncStatus {

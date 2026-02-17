@@ -1,4 +1,4 @@
-import { Component, input, output, inject, OnInit } from '@angular/core';
+import { Component, input, output, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import type { WorkoutInput } from '@trkn-shared';
@@ -283,7 +283,7 @@ type WorkoutType = 'hypertrophy' | 'strength' | 'conditioning';
   `,
   styles: ``,
 })
-export class WorkoutParamsFormComponent implements OnInit {
+export class WorkoutParamsFormComponent {
   private readonly fb = inject(FormBuilder);
 
   workoutType = input.required<WorkoutType>();
@@ -301,8 +301,11 @@ export class WorkoutParamsFormComponent implements OnInit {
     equipment_notes: this.fb.control<string>(''),
   });
 
-  ngOnInit(): void {
-    this.setupFormForWorkoutType();
+  constructor() {
+    effect(() => {
+      this.workoutType(); // track the signal
+      this.setupFormForWorkoutType();
+    });
   }
 
   private setupFormForWorkoutType(): void {

@@ -50,6 +50,12 @@ export class WorkoutService {
   readonly revisingIntervalIndex = signal<number | null>(null);
   readonly savedWorkoutId = signal<string | null>(null);
 
+  // Workout list/detail state
+  readonly workouts = signal<WorkoutRow[]>([]);
+  readonly currentWorkout = signal<WorkoutRow | null>(null);
+  readonly isLoadingWorkouts = signal(false);
+  readonly isDeleting = signal(false);
+
   constructor() {
     // Persist state to sessionStorage whenever it changes
     effect(() => {
@@ -387,6 +393,245 @@ export class WorkoutService {
       console.warn('Workout saved offline, will sync when online:', err);
     } finally {
       this.isSaving.set(false);
+    }
+  }
+
+  /**
+   * Load all workouts for the current user
+   */
+  async loadWorkouts(): Promise<void> {
+    const userId = this.auth.currentUser()?.id;
+    if (!userId) return;
+
+    this.isLoadingWorkouts.set(true);
+
+    try {
+      const { data, error } = await this.supabase
+        .from('workouts')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      const rows = (data ?? []) as WorkoutRow[];
+      this.workouts.set(rows);
+
+      // Cache in IndexedDB
+      for (const row of rows) {
+        await this.indexedDb.saveWorkout(row);
+      }
+    } catch {
+      // Offline fallback: load from IndexedDB
+      const rows = await this.indexedDb.getWorkoutsByUser(userId);
+      this.workouts.set(rows);
+    } finally {
+      this.isLoadingWorkouts.set(false);
+    }
+  }
+
+  /**
+   * Load a single workout by ID
+   */
+  async loadWorkout(id: string): Promise<void> {
+    this.isLoadingWorkouts.set(true);
+    this.currentWorkout.set(null);
+
+    try {
+      const { data, error } = await this.supabase.from('workouts').select('*').eq('id', id).single();
+
+      if (error) throw error;
+
+      const row = data as WorkoutRow;
+      this.currentWorkout.set(row);
+      await this.indexedDb.saveWorkout(row);
+    } catch {
+      // Offline fallback
+      const row = await this.indexedDb.getWorkout(id);
+      this.currentWorkout.set(row ?? null);
+    } finally {
+      this.isLoadingWorkouts.set(false);
+    }
+  }
+
+  /**
+   * Delete a saved workout
+   */
+  async deleteWorkout(id: string): Promise<void> {
+    this.isDeleting.set(true);
+
+    try {
+      const { error } = await this.supabase.from('workouts').delete().eq('id', id);
+
+      if (error) throw error;
+
+      await this.indexedDb.deleteWorkout(id);
+    } catch {
+      // Offline fallback: delete from IndexedDB + queue sync
+      await this.indexedDb.deleteWorkout(id);
+      await this.indexedDb.addToSyncQueue({
+        id: crypto.randomUUID(),
+        type: 'delete',
+        table: 'workouts',
+        data: { id },
+        timestamp: Date.now(),
+        retries: 0,
+      });
+    } finally {
+      this.workouts.update((list) => list.filter((w) => w.id !== id));
+      if (this.currentWorkout()?.id === id) {
+        this.currentWorkout.set(null);
+      }
+      this.isDeleting.set(false);
+    }
+  }
+
+  /**
+   * Update an already-saved workout's data
+   */
+  async updateSavedWorkout(id: string, data: WorkoutOutput): Promise<void> {
+    this.isSaving.set(true);
+    this.formState.update((state) => ({ ...state, error: null }));
+
+    const now = new Date().toISOString();
+
+    try {
+      const { error } = await this.supabase.from('workouts').update({ data, updated_at: now }).eq('id', id);
+
+      if (error) throw error;
+
+      await this.indexedDb.updateWorkout(id, { data, updated_at: now });
+    } catch {
+      // Offline fallback
+      await this.indexedDb.updateWorkout(id, { data, updated_at: now });
+      await this.indexedDb.addToSyncQueue({
+        id: crypto.randomUUID(),
+        type: 'update',
+        table: 'workouts',
+        data: { id, data, updated_at: now },
+        timestamp: Date.now(),
+        retries: 0,
+      });
+    } finally {
+      this.currentWorkout.update((w) => (w && w.id === id ? { ...w, data, updated_at: now } : w));
+      this.workouts.update((list) => list.map((w) => (w.id === id ? { ...w, data, updated_at: now } : w)));
+      this.isSaving.set(false);
+    }
+  }
+
+  /**
+   * Revise a saved workout using natural language instructions.
+   * Operates on currentWorkout() context. Returns the revised WorkoutOutput
+   * without mutating currentWorkout, so the caller can hold it as a pending edit.
+   */
+  async reviseSavedWorkout(workout: WorkoutOutput, revisionText: string): Promise<WorkoutOutput> {
+    const row = this.currentWorkout();
+    if (!row?.input) {
+      throw new Error('No saved workout context for revision');
+    }
+
+    this.isRevising.set(true);
+
+    try {
+      const result = await firstValueFrom(
+        this.api.reviseWorkout({
+          workout,
+          original_input: row.input,
+          revision_text: revisionText,
+        })
+      );
+      return result.workout;
+    } finally {
+      this.isRevising.set(false);
+    }
+  }
+
+  /**
+   * Revise a specific exercise within a saved workout.
+   */
+  async reviseSavedExercise(
+    workout: WorkoutOutput,
+    exerciseIndex: number,
+    revisionText: string
+  ): Promise<WorkoutOutput> {
+    const row = this.currentWorkout();
+    if (!row?.input) {
+      throw new Error('No saved workout context for exercise revision');
+    }
+
+    if (workout.workout_type === 'conditioning') {
+      throw new Error('Cannot revise exercises on conditioning workouts');
+    }
+
+    const exercise = workout.exercises[exerciseIndex];
+    if (!exercise) {
+      throw new Error('Exercise not found');
+    }
+
+    this.isRevising.set(true);
+    this.revisingExerciseIndex.set(exerciseIndex);
+
+    try {
+      const revisedExercise = await firstValueFrom(
+        this.api.reviseExercise({
+          exercise,
+          workout_context: workout,
+          original_input: row.input,
+          revision_text: revisionText,
+        })
+      );
+
+      const updatedExercises = [...workout.exercises];
+      updatedExercises[exerciseIndex] = revisedExercise;
+      return { ...workout, exercises: updatedExercises } as WorkoutOutput;
+    } finally {
+      this.isRevising.set(false);
+      this.revisingExerciseIndex.set(null);
+    }
+  }
+
+  /**
+   * Revise a specific interval within a saved conditioning workout.
+   */
+  async reviseSavedInterval(
+    workout: WorkoutOutput,
+    intervalIndex: number,
+    revisionText: string
+  ): Promise<WorkoutOutput> {
+    const row = this.currentWorkout();
+    if (!row?.input) {
+      throw new Error('No saved workout context for interval revision');
+    }
+
+    if (workout.workout_type !== 'conditioning') {
+      throw new Error('Can only revise intervals on conditioning workouts');
+    }
+
+    const intervals = (workout as ConditioningOutput).intervals;
+    const interval = intervals[intervalIndex];
+    if (!interval) {
+      throw new Error('Interval not found');
+    }
+
+    this.isRevising.set(true);
+    this.revisingIntervalIndex.set(intervalIndex);
+
+    try {
+      const revisedInterval = await firstValueFrom(
+        this.api.reviseInterval({
+          interval,
+          workout_context: workout,
+          original_input: row.input,
+          revision_text: revisionText,
+        })
+      );
+
+      const updatedIntervals = [...intervals];
+      updatedIntervals[intervalIndex] = revisedInterval;
+      return { ...workout, intervals: updatedIntervals } as WorkoutOutput;
+    } finally {
+      this.isRevising.set(false);
+      this.revisingIntervalIndex.set(null);
     }
   }
 

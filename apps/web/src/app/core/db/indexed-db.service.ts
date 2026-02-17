@@ -101,6 +101,10 @@ export class IndexedDbService {
     return this.db.workouts.put(workout);
   }
 
+  async updateWorkout(id: string, changes: Partial<WorkoutRow>): Promise<void> {
+    await this.db.workouts.update(id, changes);
+  }
+
   async deleteWorkout(id: string): Promise<void> {
     await this.db.workouts.delete(id);
   }
