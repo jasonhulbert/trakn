@@ -10,7 +10,8 @@
     "lint": "ng lint",
     "lint:fix": "ng lint --fix",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "analyze": "ng build --configuration=production --stats-json && npx esbuild-visualizer --metadata=./dist/trakn/stats.json --open"
   },
   "private": true,
   "dependencies": {
@@ -39,6 +40,8 @@
     "@tailwindcss/postcss": "^4.1.17",
     "@types/jasmine": "~5.1.0",
     "angular-eslint": "^21.1.0",
+    "baseline-browser-mapping": "^2.9.19",
+    "esbuild-visualizer": "^0.7.0",
     "jasmine-core": "~5.9.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",

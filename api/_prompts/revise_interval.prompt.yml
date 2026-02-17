@@ -1,0 +1,82 @@
+name: 'Interval Revision Template'
+description: 'Template for revising a single interval within a conditioning workout'
+version: '1.0'
+variables:
+  - current_interval
+  - workout_context
+  - revision_text
+  - user_age
+  - user_weight
+  - user_weight_unit
+  - user_fitness_level
+  - user_physical_limitations
+  - equipment_access
+  - equipment_notes
+content: |
+  You are revising a single interval within an existing conditioning workout.
+
+  **Current Interval:**
+  ```json
+  $current_interval
+  ```
+
+  **Full Workout Context (for reference):**
+  ```json
+  $workout_context
+  ```
+
+  **User Profile:**
+  - Age: $user_age years old
+  - Weight: $user_weight $user_weight_unit
+  - Fitness Level: $user_fitness_level out of 5
+  - Physical Limitations: $user_physical_limitations
+  - Equipment Access: $equipment_access
+  - Equipment Notes: $equipment_notes
+
+  **User's Revision Request:**
+  "$revision_text"
+
+  **Your Task:**
+  1. Read the current interval structure and the workout context
+  2. Understand what the user wants to change
+  3. Apply ONLY the requested changes to this interval
+  4. Ensure the revised interval still fits within the overall conditioning workout
+
+  **Important Guidelines:**
+  - **Preserve unmodified fields**: If the user doesn't mention a field, keep it exactly as is
+  - **Maintain schema compliance**: Output must match IntervalSchema structure exactly
+  - **Maintain workout coherence**: The revised interval should still make sense within the conditioning workout (compatible intensity progression, reasonable work/rest ratios, etc.)
+  - **Respect equipment**: Only suggest modalities compatible with $equipment_access
+  - **Account for limitations**: Respect $user_physical_limitations when making changes
+  - **Keep the interval_number unchanged**: Always preserve the original interval_number
+
+  **Examples of Interval Revisions:**
+  - "Make this interval harder" -> Increase work duration, decrease rest, raise intensity, or switch to a more demanding modality
+  - "Make this interval easier" -> Decrease work duration, increase rest, lower intensity, or switch to a lower-impact modality
+  - "Change to rowing" -> Switch modality to rowing, adjust durations if needed for the new modality
+  - "Increase work time to 60 seconds" -> Set work_duration_seconds to 60
+  - "Add more rest" -> Increase rest_duration_seconds
+  - "Make it a sprint interval" -> Set intensity to max, reduce work duration, increase rest for recovery
+  - "Switch to active recovery" -> Set intensity to low, adjust modality and durations appropriately
+  - "Make it longer" -> Increase work_duration_seconds
+  - "Reduce rest to 15 seconds" -> Set rest_duration_seconds to 15
+
+  **Safety Considerations:**
+  - Never suggest modalities that conflict with $user_physical_limitations
+  - Ensure the interval is appropriate for the user's fitness level ($user_fitness_level out of 5)
+  - Maintain safe work-to-rest ratios (high/max intensity intervals need adequate rest)
+  - If switching modalities, choose one that fits the user's equipment access
+  - Include appropriate pacing cues in notes if changing intensity significantly
+
+  **Output Format:**
+  Respond ONLY with valid JSON matching the IntervalSchema structure. Do not include explanatory text before or after the JSON.
+
+  Expected structure:
+  {
+    "interval_number": number,
+    "work_duration_seconds": number,
+    "rest_duration_seconds": number,
+    "intensity": "low" | "moderate" | "high" | "max",
+    "modality": "running" | "cycling" | "rowing" | "swimming" | "jump_rope" | "assault_bike" | "elliptical" | "stair_climber" | "mixed",
+    "notes": "string (optional)"
+  }

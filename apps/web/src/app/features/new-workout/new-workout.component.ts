@@ -1,11 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { WorkoutService } from '../../core/services/workout.service';
 import { WorkoutTypeSelectorComponent, WorkoutType } from './components/workout-type-selector.component';
 import { WorkoutParamsFormComponent } from './components/workout-params-form.component';
 import { WorkoutResultsComponent } from './components/workout-results.component';
-import type { WorkoutInput } from '@trkn-shared';
+import type { WorkoutInput, WorkoutOutput } from '@trkn-shared';
 
 @Component({
   selector: 'app-new-workout',
@@ -93,8 +93,20 @@ import type { WorkoutInput } from '@trkn-shared';
               @if (generatedWorkout()) {
                 <app-workout-results
                   [workout]="generatedWorkout()!"
+                  [isRevising]="isRevising()"
+                  [revisingExerciseIndex]="revisingExerciseIndex()"
+                  [revisingIntervalIndex]="revisingIntervalIndex()"
+                  [isSaving]="isSaving()"
+                  [isSaved]="isSaved()"
+                  [savedWorkoutId]="savedWorkoutId()"
+                  [error]="error()"
                   (backToEdit)="onBackToParams()"
                   (startOver)="onStartOver()"
+                  (saveRequested)="onSaveRequested()"
+                  (workoutRevisionRequested)="onWorkoutRevisionRequested($event)"
+                  (exerciseRevisionRequested)="onExerciseRevisionRequested($event)"
+                  (intervalRevisionRequested)="onIntervalRevisionRequested($event)"
+                  (workoutChanged)="onWorkoutChanged($event)"
                 />
               }
             }
@@ -126,6 +138,14 @@ export class NewWorkoutComponent {
   error = this.workoutService.error;
   isGenerating = this.workoutService.isGenerating;
 
+  // Phase 5 signals
+  isRevising = this.workoutService.isRevising;
+  revisingExerciseIndex = this.workoutService.revisingExerciseIndex;
+  revisingIntervalIndex = this.workoutService.revisingIntervalIndex;
+  isSaving = this.workoutService.isSaving;
+  isSaved = computed(() => this.workoutService.savedWorkoutId() !== null);
+  savedWorkoutId = this.workoutService.savedWorkoutId;
+
   onTypeSelected(type: WorkoutType): void {
     this.workoutService.selectWorkoutType(type);
   }
@@ -135,7 +155,6 @@ export class NewWorkoutComponent {
       await this.workoutService.generateWorkout(params);
     } catch (err) {
       console.error('Failed to generate workout:', err);
-      // Error is already handled by the service and exposed via the error signal
     }
   }
 
@@ -149,5 +168,41 @@ export class NewWorkoutComponent {
 
   onStartOver(): void {
     this.workoutService.reset();
+  }
+
+  async onSaveRequested(): Promise<void> {
+    try {
+      await this.workoutService.saveWorkout();
+    } catch (err) {
+      console.error('Failed to save workout:', err);
+    }
+  }
+
+  async onWorkoutRevisionRequested(revisionText: string): Promise<void> {
+    try {
+      await this.workoutService.reviseWorkout(revisionText);
+    } catch (err) {
+      console.error('Failed to revise workout:', err);
+    }
+  }
+
+  async onExerciseRevisionRequested(event: { index: number; text: string }): Promise<void> {
+    try {
+      await this.workoutService.reviseExercise(event.index, event.text);
+    } catch (err) {
+      console.error('Failed to revise exercise:', err);
+    }
+  }
+
+  async onIntervalRevisionRequested(event: { index: number; text: string }): Promise<void> {
+    try {
+      await this.workoutService.reviseInterval(event.index, event.text);
+    } catch (err) {
+      console.error('Failed to revise interval:', err);
+    }
+  }
+
+  onWorkoutChanged(workout: WorkoutOutput): void {
+    this.workoutService.updateWorkout(workout);
   }
 }

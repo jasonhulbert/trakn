@@ -109,7 +109,7 @@ export class UserProfileService {
         id: crypto.randomUUID(),
         type: 'update',
         table: 'user_profiles',
-        data: { ...row, id: userId }, // Add id field for SyncOperationData
+        data: { ...row, id: userId },
         timestamp: Date.now(),
         retries: 0,
       });

@@ -10,6 +10,8 @@ export const routeTmpl = {
   AuthRegister: () => `auth/register`,
   Maintenance: () => `maintenance`,
   Profile: () => `profile`,
+  Workouts: () => `workouts`,
+  WorkoutDetail: (id: string) => `workouts/${id}`,
   NewWorkout: () => `workouts/new`,
 } as const;
 
@@ -41,6 +43,11 @@ export const routes: Routes = [
     path: routeTmpl.NewWorkout(),
     canActivate: [maintenanceModeGuard, authGuard, profileGuard],
     loadChildren: () => import('./features/new-workout/new-workout.routes').then((m) => m.newWorkoutRoutes),
+  },
+  {
+    path: routeTmpl.Workouts(),
+    canActivate: [maintenanceModeGuard, authGuard],
+    loadChildren: () => import('./features/workouts/workouts.routes').then((m) => m.workoutsRoutes),
   },
   {
     path: '**',
