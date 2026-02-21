@@ -10,85 +10,86 @@ import type { WorkoutOutput } from '@trkn-shared';
   standalone: true,
   imports: [RouterLink, WorkoutEditorComponent],
   template: `
-    <div class="w-full max-w-2xl mx-auto py-8 px-4">
-      @if (workoutService.isLoadingWorkouts()) {
-        <div class="flex justify-center py-12">
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
-        </div>
-      } @else if (!workout()) {
-        <div class="text-center py-12">
-          <p class="text-gray-500 mb-4">Workout not found.</p>
-          <a routerLink="/workouts" class="text-indigo-600 hover:text-indigo-800">Back to Workouts</a>
-        </div>
-      } @else {
-        <div class="flex items-center justify-between mb-6">
-          <a routerLink="/workouts" class="text-sm text-gray-500 hover:text-gray-700">&larr; Back to Workouts</a>
-          <div class="flex items-center gap-3">
-            @if (!isEditing()) {
-              <button
-                type="button"
-                (click)="isEditing.set(true)"
-                class="px-4 py-2 text-sm font-medium text-indigo-600 border border-indigo-300 rounded-md hover:bg-indigo-50"
-              >
-                Edit Workout
-              </button>
-            } @else {
-              <button
-                type="button"
-                (click)="cancelEditing()"
-                class="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-            }
+    @if (workoutService.isLoadingWorkouts()) {
+      <div class="flex justify-center py-12">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+      </div>
+    } @else if (!workout()) {
+      <div class="text-center py-12">
+        <p class="text-gray-500 mb-4">Workout not found.</p>
+        <a routerLink="/workouts" class="text-indigo-600 hover:text-indigo-800">Back to Workouts</a>
+      </div>
+    } @else {
+      <div class="flex items-center justify-between mb-6">
+        <a routerLink="/workouts" class="text-sm text-gray-500 hover:text-gray-700">&larr; Back to Workouts</a>
+        <div class="flex items-center gap-3">
+          @if (!isEditing()) {
             <button
               type="button"
-              (click)="onDelete()"
-              [disabled]="workoutService.isDeleting()"
-              class="px-4 py-2 text-sm font-medium text-red-600 border border-red-300 rounded-md hover:bg-red-50 disabled:opacity-50"
+              (click)="isEditing.set(true)"
+              class="px-4 py-2 text-sm font-medium text-indigo-600 border border-indigo-300 rounded-md hover:bg-indigo-50"
             >
-              Delete
+              Edit Workout
+            </button>
+          } @else {
+            <button
+              type="button"
+              (click)="cancelEditing()"
+              class="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+          }
+          <button
+            type="button"
+            (click)="onDelete()"
+            [disabled]="workoutService.isDeleting()"
+            class="px-4 py-2 text-sm font-medium text-red-600 border border-red-300 rounded-md hover:bg-red-50 disabled:opacity-50"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <app-workout-editor
+          [workout]="workout()!"
+          [editable]="isEditing()"
+          [isRevising]="workoutService.isRevising()"
+          [revisingExerciseIndex]="workoutService.revisingExerciseIndex()"
+          [revisingIntervalIndex]="workoutService.revisingIntervalIndex()"
+          [error]="error()"
+          (workoutRevisionRequested)="onWorkoutRevisionRequested($event)"
+          (exerciseRevisionRequested)="onExerciseRevisionRequested($event)"
+          (intervalRevisionRequested)="onIntervalRevisionRequested($event)"
+          (workoutChanged)="onWorkoutChanged($event)"
+        />
+
+        @if (isEditing()) {
+          <div class="flex justify-end pt-6 border-t border-gray-200">
+            <button
+              type="button"
+              (click)="onSave()"
+              [disabled]="workoutService.isSaving()"
+              class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 flex items-center gap-2"
+            >
+              @if (workoutService.isSaving()) {
+                <span
+                  class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"
+                ></span>
+                Saving...
+              } @else {
+                Save Changes
+              }
             </button>
           </div>
-        </div>
-
-        <div class="bg-white rounded-lg shadow-md p-6">
-          <app-workout-editor
-            [workout]="workout()!"
-            [editable]="isEditing()"
-            [isRevising]="workoutService.isRevising()"
-            [revisingExerciseIndex]="workoutService.revisingExerciseIndex()"
-            [revisingIntervalIndex]="workoutService.revisingIntervalIndex()"
-            [error]="error()"
-            (workoutRevisionRequested)="onWorkoutRevisionRequested($event)"
-            (exerciseRevisionRequested)="onExerciseRevisionRequested($event)"
-            (intervalRevisionRequested)="onIntervalRevisionRequested($event)"
-            (workoutChanged)="onWorkoutChanged($event)"
-          />
-
-          @if (isEditing()) {
-            <div class="flex justify-end pt-6 border-t border-gray-200">
-              <button
-                type="button"
-                (click)="onSave()"
-                [disabled]="workoutService.isSaving()"
-                class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 flex items-center gap-2"
-              >
-                @if (workoutService.isSaving()) {
-                  <span
-                    class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"
-                  ></span>
-                  Saving...
-                } @else {
-                  Save Changes
-                }
-              </button>
-            </div>
-          }
-        </div>
-      }
-    </div>
+        }
+      </div>
+    }
   `,
+  host: {
+    class: 'flex-1 w-full max-w-4xl mx-auto py-8 px-4',
+  },
   styles: `
     @keyframes spin {
       to {

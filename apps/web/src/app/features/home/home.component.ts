@@ -43,49 +43,46 @@ import { WorkoutService } from '../../core/services/workout.service';
         </a>
       </div>
 
-      <!-- Recent Workouts Card -->
-      <div class="max-w-2xl mx-auto">
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-          <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
-            <h3 class="text-sm font-semibold text-gray-700">Recent Workouts</h3>
-            @if (recentWorkouts().length > 0) {
-              <a routerLink="/workouts" class="text-xs text-indigo-600 hover:text-indigo-800">View All</a>
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+          <h3 class="text-sm font-semibold text-gray-700">Recent Workouts</h3>
+          @if (recentWorkouts().length > 0) {
+            <a routerLink="/workouts" class="text-xs text-indigo-600 hover:text-indigo-800">View All</a>
+          }
+        </div>
+        <div class="divide-y divide-gray-100">
+          @if (workoutService.isLoadingWorkouts()) {
+            <div class="flex justify-center py-6">
+              <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-600"></div>
+            </div>
+          } @else if (recentWorkouts().length === 0) {
+            <div class="text-center py-6">
+              <p class="text-sm text-gray-400">No workouts yet</p>
+            </div>
+          } @else {
+            @for (workout of recentWorkouts(); track workout.id) {
+              <a
+                [routerLink]="['/workouts', workout.id]"
+                class="flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors"
+              >
+                <div class="flex items-center gap-3">
+                  <span
+                    class="px-2 py-0.5 text-xs font-medium rounded-full"
+                    [class.bg-purple-100]="workout.workout_type === 'hypertrophy'"
+                    [class.text-purple-800]="workout.workout_type === 'hypertrophy'"
+                    [class.bg-red-100]="workout.workout_type === 'strength'"
+                    [class.text-red-800]="workout.workout_type === 'strength'"
+                    [class.bg-green-100]="workout.workout_type === 'conditioning'"
+                    [class.text-green-800]="workout.workout_type === 'conditioning'"
+                  >
+                    {{ formatWorkoutType(workout.workout_type) }}
+                  </span>
+                  <span class="text-sm text-gray-600">{{ workout.data.total_duration_minutes }} min</span>
+                </div>
+                <span class="text-xs text-gray-400">{{ workout.created_at | date: 'MMM d' }}</span>
+              </a>
             }
-          </div>
-          <div class="divide-y divide-gray-100">
-            @if (workoutService.isLoadingWorkouts()) {
-              <div class="flex justify-center py-6">
-                <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-600"></div>
-              </div>
-            } @else if (recentWorkouts().length === 0) {
-              <div class="text-center py-6">
-                <p class="text-sm text-gray-400">No workouts yet</p>
-              </div>
-            } @else {
-              @for (workout of recentWorkouts(); track workout.id) {
-                <a
-                  [routerLink]="['/workouts', workout.id]"
-                  class="flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors"
-                >
-                  <div class="flex items-center gap-3">
-                    <span
-                      class="px-2 py-0.5 text-xs font-medium rounded-full"
-                      [class.bg-purple-100]="workout.workout_type === 'hypertrophy'"
-                      [class.text-purple-800]="workout.workout_type === 'hypertrophy'"
-                      [class.bg-red-100]="workout.workout_type === 'strength'"
-                      [class.text-red-800]="workout.workout_type === 'strength'"
-                      [class.bg-green-100]="workout.workout_type === 'conditioning'"
-                      [class.text-green-800]="workout.workout_type === 'conditioning'"
-                    >
-                      {{ formatWorkoutType(workout.workout_type) }}
-                    </span>
-                    <span class="text-sm text-gray-600">{{ workout.data.total_duration_minutes }} min</span>
-                  </div>
-                  <span class="text-xs text-gray-400">{{ workout.created_at | date: 'MMM d' }}</span>
-                </a>
-              }
-            }
-          </div>
+          }
         </div>
       </div>
     }
