@@ -40,9 +40,8 @@ import { RevisionInputComponent } from '../../../features/new-workout/components
       <!-- Workout-Level Revision -->
       @if (editable()) {
         <div class="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
-          <h3 class="text-sm font-semibold text-gray-700 mb-2">Revise Entire Workout</h3>
           <app-revision-input
-            label="Describe changes to the whole workout..."
+            label="Want to make some changes?"
             placeholder="e.g. 'Make it shorter' or 'Add more core work' or 'Reduce rest times'"
             [isLoading]="isRevising()"
             (submitted)="onWorkoutRevisionSubmitted($event)"

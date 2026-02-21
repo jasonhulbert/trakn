@@ -5,7 +5,7 @@ import { UserProfileService } from 'src/app/core/services/user-profile.service';
 import { IconComponent } from '../icon/icon.component';
 
 @Component({
-  selector: 'app-header',
+  selector: 'app-navbar',
   imports: [RouterLink, IconComponent],
   template: `
     <nav class="bg-white shadow">
@@ -29,7 +29,7 @@ import { IconComponent } from '../icon/icon.component';
     </nav>
   `,
 })
-export class Header {
+export class Navbar {
   private readonly authService = inject(AuthService);
   readonly userProfileService = inject(UserProfileService);
 

@@ -1,22 +1,24 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, HostBinding, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { IconComponent } from 'src/app/shared/components';
 
 @Component({
   selector: 'app-revision-input',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, IconComponent],
   template: `
     @if (!isExpanded()) {
       <button
         type="button"
         (click)="isExpanded.set(true)"
-        class="text-sm text-blue-600 hover:text-blue-800 font-medium"
+        class="inline-flex items-center gap-2 w-auto h-full text-sm text-blue-600 hover:text-blue-800 font-medium"
         [disabled]="isLoading()"
       >
-        {{ label() }}
+        <app-icon name="sparks" class="w-6 h-6 inline-block"></app-icon>
+        <span>{{ label() }}</span>
       </button>
     } @else {
-      <div class="mt-2 space-y-2">
+      <div class="w-full mt-2 space-y-2">
         <textarea
           [(ngModel)]="revisionText"
           [placeholder]="placeholder()"
@@ -68,6 +70,8 @@ import { FormsModule } from '@angular/forms';
   `,
 })
 export class RevisionInputComponent {
+  @HostBinding('class') class = 'flex items-center';
+
   label = input<string>('Revise with AI');
   placeholder = input<string>('Describe how you want this changed...');
   isLoading = input<boolean>(false);

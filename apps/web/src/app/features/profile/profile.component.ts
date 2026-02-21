@@ -3,126 +3,120 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import type { UserProfile } from '@trkn-shared';
 import { UserProfileService } from '../../core/services/user-profile.service';
-import { Header } from 'src/app/shared/components/header/header';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [ReactiveFormsModule, Header],
+  imports: [ReactiveFormsModule],
   template: `
-    <div class="min-h-screen bg-gray-50">
-      <app-header></app-header>
+    <div class="w-full max-w-2xl mx-auto py-8 px-4">
+      @if (userProfileService.isLoading()) {
+        <div class="text-center">
+          <p class="text-gray-600">Loading profile...</p>
+        </div>
+      } @else {
+        <div class="bg-white shadow rounded-lg">
+          <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="p-6 space-y-6">
+            @if (error()) {
+              <div class="rounded-md bg-red-50 p-4">
+                <p class="text-sm text-red-800">{{ error() }}</p>
+              </div>
+            }
 
-      <!-- Form -->
-      <div class="max-w-3xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
-        @if (userProfileService.isLoading()) {
-          <div class="text-center">
-            <p class="text-gray-600">Loading profile...</p>
-          </div>
-        } @else {
-          <div class="bg-white shadow rounded-lg">
-            <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="p-6 space-y-6">
-              @if (error()) {
-                <div class="rounded-md bg-red-50 p-4">
-                  <p class="text-sm text-red-800">{{ error() }}</p>
-                </div>
+            @if (successMessage()) {
+              <div class="rounded-md bg-green-50 p-4">
+                <p class="text-sm text-green-800">{{ successMessage() }}</p>
+              </div>
+            }
+
+            <!-- Age -->
+            <div>
+              <label for="age" class="block text-sm font-medium text-gray-700"> Age * </label>
+              <input
+                id="age"
+                formControlName="age"
+                type="number"
+                class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                [class.border-red-300]="profileForm.get('age')?.touched && profileForm.get('age')?.invalid"
+              />
+              @if (getFieldError('age')) {
+                <p class="mt-1 text-sm text-red-600">{{ getFieldError('age') }}</p>
               }
+            </div>
 
-              @if (successMessage()) {
-                <div class="rounded-md bg-green-50 p-4">
-                  <p class="text-sm text-green-800">{{ successMessage() }}</p>
-                </div>
-              }
-
-              <!-- Age -->
+            <!-- Weight + Unit -->
+            <div class="grid grid-cols-2 gap-4">
               <div>
-                <label for="age" class="block text-sm font-medium text-gray-700"> Age * </label>
+                <label for="weight" class="block text-sm font-medium text-gray-700"> Weight * </label>
                 <input
-                  id="age"
-                  formControlName="age"
+                  id="weight"
+                  formControlName="weight"
                   type="number"
+                  step="0.1"
                   class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                  [class.border-red-300]="profileForm.get('age')?.touched && profileForm.get('age')?.invalid"
+                  [class.border-red-300]="profileForm.get('weight')?.touched && profileForm.get('weight')?.invalid"
                 />
-                @if (getFieldError('age')) {
-                  <p class="mt-1 text-sm text-red-600">{{ getFieldError('age') }}</p>
+                @if (getFieldError('weight')) {
+                  <p class="mt-1 text-sm text-red-600">{{ getFieldError('weight') }}</p>
                 }
               </div>
-
-              <!-- Weight + Unit -->
-              <div class="grid grid-cols-2 gap-4">
-                <div>
-                  <label for="weight" class="block text-sm font-medium text-gray-700"> Weight * </label>
-                  <input
-                    id="weight"
-                    formControlName="weight"
-                    type="number"
-                    step="0.1"
-                    class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                    [class.border-red-300]="profileForm.get('weight')?.touched && profileForm.get('weight')?.invalid"
-                  />
-                  @if (getFieldError('weight')) {
-                    <p class="mt-1 text-sm text-red-600">{{ getFieldError('weight') }}</p>
-                  }
-                </div>
-                <div>
-                  <label for="weight_unit" class="block text-sm font-medium text-gray-700"> Unit * </label>
-                  <select
-                    id="weight_unit"
-                    formControlName="weight_unit"
-                    class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                  >
-                    <option value="lbs">lbs</option>
-                    <option value="kg">kg</option>
-                  </select>
-                </div>
-              </div>
-
-              <!-- Fitness Level -->
               <div>
-                <label for="fitness_level" class="block text-sm font-medium text-gray-700"> Fitness Level * </label>
+                <label for="weight_unit" class="block text-sm font-medium text-gray-700"> Unit * </label>
                 <select
-                  id="fitness_level"
-                  formControlName="fitness_level"
+                  id="weight_unit"
+                  formControlName="weight_unit"
                   class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 >
-                  <option [value]="1">1 - Beginner (little to no experience)</option>
-                  <option [value]="2">2 - Novice (some experience)</option>
-                  <option [value]="3">3 - Intermediate (regular training)</option>
-                  <option [value]="4">4 - Advanced (experienced lifter)</option>
-                  <option [value]="5">5 - Elite (competitive athlete)</option>
+                  <option value="lbs">lbs</option>
+                  <option value="kg">kg</option>
                 </select>
               </div>
+            </div>
 
-              <!-- Physical Limitations (Optional) -->
-              <div>
-                <label for="physical_limitations" class="block text-sm font-medium text-gray-700">
-                  Physical Limitations <span class="text-gray-500 font-normal">(optional)</span>
-                </label>
-                <textarea
-                  id="physical_limitations"
-                  formControlName="physical_limitations"
-                  rows="3"
-                  placeholder="Describe any injuries, limitations, or accommodations needed"
-                  class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                ></textarea>
-                <p class="mt-1 text-sm text-gray-500">Leave blank if you have no physical limitations</p>
-              </div>
+            <!-- Fitness Level -->
+            <div>
+              <label for="fitness_level" class="block text-sm font-medium text-gray-700"> Fitness Level * </label>
+              <select
+                id="fitness_level"
+                formControlName="fitness_level"
+                class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+              >
+                <option [value]="1">1 - Beginner (little to no experience)</option>
+                <option [value]="2">2 - Novice (some experience)</option>
+                <option [value]="3">3 - Intermediate (regular training)</option>
+                <option [value]="4">4 - Advanced (experienced lifter)</option>
+                <option [value]="5">5 - Elite (competitive athlete)</option>
+              </select>
+            </div>
 
-              <!-- Submit Button -->
-              <div class="flex justify-end space-x-3">
-                <button
-                  type="submit"
-                  [disabled]="isSaving() || profileForm.invalid"
-                  class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {{ isSaving() ? 'Saving...' : 'Save Profile' }}
-                </button>
-              </div>
-            </form>
-          </div>
-        }
-      </div>
+            <!-- Physical Limitations (Optional) -->
+            <div>
+              <label for="physical_limitations" class="block text-sm font-medium text-gray-700">
+                Physical Limitations <span class="text-gray-500 font-normal">(optional)</span>
+              </label>
+              <textarea
+                id="physical_limitations"
+                formControlName="physical_limitations"
+                rows="3"
+                placeholder="Describe any injuries, limitations, or accommodations needed"
+                class="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+              ></textarea>
+              <p class="mt-1 text-sm text-gray-500">Leave blank if you have no physical limitations</p>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex justify-end space-x-3">
+              <button
+                type="submit"
+                [disabled]="isSaving() || profileForm.invalid"
+                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {{ isSaving() ? 'Saving...' : 'Save Profile' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      }
     </div>
   `,
   styles: [],
