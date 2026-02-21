@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { maintenanceModeGuard, maintenanceModePageGuard } from './core/guards/maintenance.guard';
 import { profileGuard } from './core/guards/profile.guard';
+import { DefaultLayoutComponent } from './default-layout';
+import { MinimalLayoutComponent } from './minimal-layout';
 
 export const routeTmpl = {
   Home: () => ``,
@@ -17,41 +19,53 @@ export const routeTmpl = {
 
 export const routes: Routes = [
   {
-    path: routeTmpl.Maintenance(),
-    canActivate: [maintenanceModePageGuard],
-    loadComponent: () => import('./features/maintenance/maintenance.component').then((m) => m.MaintenanceComponent),
-  },
-  {
-    path: routeTmpl.Home(),
-    canActivate: [maintenanceModeGuard, authGuard],
-    loadComponent: () => import('./features/home/home.component').then((m) => m.HomeComponent),
-  },
-  {
-    path: routeTmpl.Auth(),
+    path: '',
+    component: DefaultLayoutComponent,
     canActivate: [maintenanceModeGuard],
-    loadChildren: () => import('./features/auth/auth.routes').then((m) => m.authRoutes),
+    children: [
+      {
+        path: routeTmpl.Home(),
+        canActivate: [authGuard],
+        loadComponent: () => import('./features/home/home.component').then((m) => m.HomeComponent),
+      },
+      {
+        path: routeTmpl.Profile(),
+        canActivate: [authGuard],
+        resolve: {
+          profile: () => import('./core/resolvers/profile.resolver').then((m) => m.profileResolver),
+        },
+        loadComponent: () => import('./features/profile/profile.component').then((m) => m.ProfileComponent),
+      },
+      {
+        path: routeTmpl.NewWorkout(),
+        canActivate: [authGuard, profileGuard],
+        loadChildren: () => import('./features/new-workout/new-workout.routes').then((m) => m.newWorkoutRoutes),
+      },
+      {
+        path: routeTmpl.Workouts(),
+        canActivate: [authGuard],
+        loadChildren: () => import('./features/workouts/workouts.routes').then((m) => m.workoutsRoutes),
+      },
+    ],
   },
   {
-    path: routeTmpl.Profile(),
-    canActivate: [maintenanceModeGuard, authGuard],
-    resolve: {
-      profile: () => import('./core/resolvers/profile.resolver').then((m) => m.profileResolver),
-    },
-    loadComponent: () => import('./features/profile/profile.component').then((m) => m.ProfileComponent),
-  },
-  {
-    path: routeTmpl.NewWorkout(),
-    canActivate: [maintenanceModeGuard, authGuard, profileGuard],
-    loadChildren: () => import('./features/new-workout/new-workout.routes').then((m) => m.newWorkoutRoutes),
-  },
-  {
-    path: routeTmpl.Workouts(),
-    canActivate: [maintenanceModeGuard, authGuard],
-    loadChildren: () => import('./features/workouts/workouts.routes').then((m) => m.workoutsRoutes),
+    path: '',
+    component: MinimalLayoutComponent,
+    children: [
+      {
+        path: routeTmpl.Maintenance(),
+        canActivate: [maintenanceModePageGuard],
+        loadComponent: () => import('./features/maintenance/maintenance.component').then((m) => m.MaintenanceComponent),
+      },
+      {
+        path: routeTmpl.Auth(),
+        canActivate: [maintenanceModeGuard],
+        loadChildren: () => import('./features/auth/auth.routes').then((m) => m.authRoutes),
+      },
+    ],
   },
   {
     path: '**',
-    canActivate: [maintenanceModeGuard],
-    loadComponent: () => import('./features/home/home.component').then((m) => m.HomeComponent),
+    redirectTo: routeTmpl.Home(),
   },
 ];
