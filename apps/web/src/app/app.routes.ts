@@ -2,8 +2,8 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { maintenanceModeGuard, maintenanceModePageGuard } from './core/guards/maintenance.guard';
 import { profileGuard } from './core/guards/profile.guard';
-import { DefaultLayoutComponent } from './default-layout';
-import { MinimalLayoutComponent } from './minimal-layout';
+import { LayoutDefaultComponent } from './layout-default';
+import { LayoutMinimalComponent } from './layout-minimal';
 
 export const routeTmpl = {
   Home: () => ``,
@@ -20,7 +20,7 @@ export const routeTmpl = {
 export const routes: Routes = [
   {
     path: '',
-    component: DefaultLayoutComponent,
+    component: LayoutDefaultComponent,
     canActivate: [maintenanceModeGuard],
     children: [
       {
@@ -50,7 +50,7 @@ export const routes: Routes = [
   },
   {
     path: '',
-    component: MinimalLayoutComponent,
+    component: LayoutMinimalComponent,
     children: [
       {
         path: routeTmpl.Maintenance(),
