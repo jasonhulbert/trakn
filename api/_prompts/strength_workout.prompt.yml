@@ -85,7 +85,8 @@ content: |
             "reps": number (1-6 reps for strength, must be a single integer),
             "rest_duration_seconds": number (rest in seconds, typically 120-300 for strength),
             "suggested_weight": number (optional - only include for gym-based equipment access),
-            "weight_unit": "string (optional - 'lbs' or 'kg', must match user's weight_unit: $user_weight_unit)"
+            "weight_unit": "string (optional - 'lbs' or 'kg', must match user's weight_unit: $user_weight_unit)",
+            "notes": "string (optional) - per-set cues such as load rationale, bracing focus, or set-specific technique reminders"
           }
         ],
         "notes": "string - form cues, load guidance, or safety tips"

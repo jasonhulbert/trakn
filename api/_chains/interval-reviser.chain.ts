@@ -1,5 +1,5 @@
-import { RunnableSequence } from '@langchain/core/runnables';
 import { ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate } from '@langchain/core/prompts';
+import { invokeWithRetry } from '../_lib/output-parser-retry.js';
 import { getChatModel } from '../_lib/langchain.js';
 import { loadSystemPrompt, loadUserPrompt } from '../_lib/prompt-loader.js';
 import { IntervalRevisionInputSchema, type IntervalRevisionInput, type Interval, IntervalSchema } from 'trkn-shared';
@@ -85,14 +85,11 @@ export async function reviseInterval(rawInput: unknown): Promise<Interval> {
     name: 'revise_interval',
   });
 
-  // Create the chain: prompt -> model with structured output
-  const chain = RunnableSequence.from([promptTemplate, structuredModel]);
-
   // Transform input to prompt format
   const promptInput = toPromptInput(input);
 
-  // Invoke the chain
-  const revisedInterval = await chain.invoke(promptInput);
+  // Invoke with retry on schema validation failure
+  const revisedInterval = await invokeWithRetry(promptTemplate, structuredModel, promptInput);
 
   return revisedInterval as Interval;
 }
