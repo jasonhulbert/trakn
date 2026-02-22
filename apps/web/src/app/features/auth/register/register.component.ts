@@ -9,7 +9,7 @@ import { AuthService } from '../../../core/services/auth.service';
   standalone: true,
   imports: [FormsModule, RouterLink],
   template: `
-    <div class="flex flex-col w-full max-w-md space-y-8 m-auto">
+    <div class="flex flex-col space-y-6 w-full">
       <div>
         <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Create your account</h2>
       </div>
@@ -34,7 +34,7 @@ import { AuthService } from '../../../core/services/auth.service';
               type="email"
               [(ngModel)]="email"
               required
-              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10"
               placeholder="Email address"
             />
           </div>
@@ -46,7 +46,7 @@ import { AuthService } from '../../../core/services/auth.service';
               type="password"
               [(ngModel)]="password"
               required
-              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10"
               placeholder="Password (min. 8 characters)"
             />
           </div>
@@ -70,6 +70,9 @@ import { AuthService } from '../../../core/services/auth.service';
       </form>
     </div>
   `,
+  host: {
+    class: 'block w-full max-w-md m-auto',
+  },
   styles: [],
 })
 export class RegisterComponent {

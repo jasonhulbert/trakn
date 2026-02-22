@@ -12,106 +12,107 @@ import type { WorkoutInput, WorkoutOutput } from '@trkn-shared';
   standalone: true,
   imports: [CommonModule, WorkoutTypeSelectorComponent, WorkoutParamsFormComponent, WorkoutResultsComponent],
   template: `
-    <div class="w-full max-w-2xl mx-auto py-8 px-4">
-      <!-- Progress Indicator -->
-      <div class="mb-8">
-        <div class="flex items-center justify-center space-x-4">
-          <div class="flex items-center">
-            <div
-              class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium"
-              [class.bg-blue-600]="step() === 'type-selection'"
-              [class.text-white]="step() === 'type-selection'"
-              [class.bg-gray-300]="step() !== 'type-selection'"
-              [class.text-gray-600]="step() !== 'type-selection'"
-            >
-              1
-            </div>
-            <span class="ml-2 text-sm font-medium" [class.text-blue-600]="step() === 'type-selection'"> Type </span>
+    <!-- Progress Indicator -->
+    <div class="mb-8">
+      <div class="flex items-center justify-center space-x-4">
+        <div class="flex items-center">
+          <div
+            class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium"
+            [class.bg-blue-600]="step() === 'type-selection'"
+            [class.text-white]="step() === 'type-selection'"
+            [class.bg-gray-300]="step() !== 'type-selection'"
+            [class.text-gray-600]="step() !== 'type-selection'"
+          >
+            1
           </div>
+          <span class="ml-2 text-sm font-medium" [class.text-blue-600]="step() === 'type-selection'"> Type </span>
+        </div>
 
-          <div class="w-12 h-0.5 bg-gray-300"></div>
+        <div class="w-12 h-0.5 bg-gray-300"></div>
 
-          <div class="flex items-center">
-            <div
-              class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium"
-              [class.bg-blue-600]="step() === 'params'"
-              [class.text-white]="step() === 'params'"
-              [class.bg-gray-300]="step() !== 'params'"
-              [class.text-gray-600]="step() !== 'params'"
-            >
-              2
-            </div>
-            <span class="ml-2 text-sm font-medium" [class.text-blue-600]="step() === 'params'"> Parameters </span>
+        <div class="flex items-center">
+          <div
+            class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium"
+            [class.bg-blue-600]="step() === 'params'"
+            [class.text-white]="step() === 'params'"
+            [class.bg-gray-300]="step() !== 'params'"
+            [class.text-gray-600]="step() !== 'params'"
+          >
+            2
           </div>
+          <span class="ml-2 text-sm font-medium" [class.text-blue-600]="step() === 'params'"> Parameters </span>
+        </div>
 
-          <div class="w-12 h-0.5 bg-gray-300"></div>
+        <div class="w-12 h-0.5 bg-gray-300"></div>
 
-          <div class="flex items-center">
-            <div
-              class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium"
-              [class.bg-blue-600]="step() === 'generating' || step() === 'results'"
-              [class.text-white]="step() === 'generating' || step() === 'results'"
-              [class.bg-gray-300]="step() !== 'generating' && step() !== 'results'"
-              [class.text-gray-600]="step() !== 'generating' && step() !== 'results'"
-            >
-              3
-            </div>
-            <span
-              class="ml-2 text-sm font-medium"
-              [class.text-blue-600]="step() === 'generating' || step() === 'results'"
-            >
-              Workout
-            </span>
+        <div class="flex items-center">
+          <div
+            class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium"
+            [class.bg-blue-600]="step() === 'generating' || step() === 'results'"
+            [class.text-white]="step() === 'generating' || step() === 'results'"
+            [class.bg-gray-300]="step() !== 'generating' && step() !== 'results'"
+            [class.text-gray-600]="step() !== 'generating' && step() !== 'results'"
+          >
+            3
           </div>
+          <span
+            class="ml-2 text-sm font-medium"
+            [class.text-blue-600]="step() === 'generating' || step() === 'results'"
+          >
+            Workout
+          </span>
         </div>
       </div>
+    </div>
 
-      <!-- Main Content -->
+    <!-- Main Content -->
 
-      @switch (step()) {
-        @case ('type-selection') {
-          <app-workout-type-selector (typeSelected)="onTypeSelected($event)" />
-        }
-        @case ('params') {
-          <app-workout-params-form
-            [workoutType]="selectedType() || 'hypertrophy'"
-            [errorMessage]="error()"
-            [isSubmitting]="isGenerating()"
-            (paramsSubmitted)="onParamsSubmitted($event)"
-            (backClicked)="onBackToTypeSelection()"
+    @switch (step()) {
+      @case ('type-selection') {
+        <app-workout-type-selector (typeSelected)="onTypeSelected($event)" />
+      }
+      @case ('params') {
+        <app-workout-params-form
+          [workoutType]="selectedType() || 'hypertrophy'"
+          [errorMessage]="error()"
+          [isSubmitting]="isGenerating()"
+          (paramsSubmitted)="onParamsSubmitted($event)"
+          (backClicked)="onBackToTypeSelection()"
+        />
+      }
+      @case ('generating') {
+        <div class="flex flex-col items-center justify-center py-12">
+          <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mb-4"></div>
+          <h2 class="text-2xl font-semibold text-gray-900 mb-2">Generating Your Workout</h2>
+          <p class="text-gray-600">This may take up to 30 seconds...</p>
+        </div>
+      }
+      @case ('results') {
+        @if (generatedWorkout()) {
+          <app-workout-results
+            [workout]="generatedWorkout()!"
+            [isRevising]="isRevising()"
+            [revisingExerciseIndex]="revisingExerciseIndex()"
+            [revisingIntervalIndex]="revisingIntervalIndex()"
+            [isSaving]="isSaving()"
+            [isSaved]="isSaved()"
+            [savedWorkoutId]="savedWorkoutId()"
+            [error]="error()"
+            (backToEdit)="onBackToParams()"
+            (startOver)="onStartOver()"
+            (saveRequested)="onSaveRequested()"
+            (workoutRevisionRequested)="onWorkoutRevisionRequested($event)"
+            (exerciseRevisionRequested)="onExerciseRevisionRequested($event)"
+            (intervalRevisionRequested)="onIntervalRevisionRequested($event)"
+            (workoutChanged)="onWorkoutChanged($event)"
           />
         }
-        @case ('generating') {
-          <div class="flex flex-col items-center justify-center py-12">
-            <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mb-4"></div>
-            <h2 class="text-2xl font-semibold text-gray-900 mb-2">Generating Your Workout</h2>
-            <p class="text-gray-600">This may take up to 30 seconds...</p>
-          </div>
-        }
-        @case ('results') {
-          @if (generatedWorkout()) {
-            <app-workout-results
-              [workout]="generatedWorkout()!"
-              [isRevising]="isRevising()"
-              [revisingExerciseIndex]="revisingExerciseIndex()"
-              [revisingIntervalIndex]="revisingIntervalIndex()"
-              [isSaving]="isSaving()"
-              [isSaved]="isSaved()"
-              [savedWorkoutId]="savedWorkoutId()"
-              [error]="error()"
-              (backToEdit)="onBackToParams()"
-              (startOver)="onStartOver()"
-              (saveRequested)="onSaveRequested()"
-              (workoutRevisionRequested)="onWorkoutRevisionRequested($event)"
-              (exerciseRevisionRequested)="onExerciseRevisionRequested($event)"
-              (intervalRevisionRequested)="onIntervalRevisionRequested($event)"
-              (workoutChanged)="onWorkoutChanged($event)"
-            />
-          }
-        }
       }
-    </div>
+    }
   `,
+  host: {
+    class: 'flex-1 w-full max-w-4xl mx-auto py-8 px-4',
+  },
   styles: `
     @keyframes spin {
       to {

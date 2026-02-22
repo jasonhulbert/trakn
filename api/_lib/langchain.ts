@@ -11,7 +11,7 @@ export interface LangChainConfig {
 }
 
 const DEFAULT_CONFIG: Required<LangChainConfig> = {
-  model: process.env.ANTHROPIC_DEFAULT_MODEL || 'claude-sonnet-4-5',
+  model: process.env.ANTHROPIC_DEFAULT_MODEL || 'claude-haiku-4-5-20251001',
   temperature: 0.3,
   maxTokens: 4096,
   maxRetries: 2,

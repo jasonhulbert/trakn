@@ -9,7 +9,7 @@ import { AuthService } from '../../../core/services/auth.service';
   standalone: true,
   imports: [FormsModule, RouterLink],
   template: `
-    <div class="flex flex-col w-full max-w-md space-y-8 m-auto">
+    <div class="flex flex-col space-y-6 w-full">
       <div>
         <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to Trakn</h2>
       </div>
@@ -95,6 +95,9 @@ import { AuthService } from '../../../core/services/auth.service';
       </form>
     </div>
   `,
+  host: {
+    class: 'block w-full max-w-md m-auto',
+  },
   styles: [],
 })
 export class LoginComponent {
