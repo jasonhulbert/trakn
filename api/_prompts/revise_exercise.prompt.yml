@@ -81,7 +81,8 @@ content: |
         "reps": number,
         "rest_duration_seconds": number,
         "suggested_weight": number (optional),
-        "weight_unit": "lbs" or "kg" (optional)
+        "weight_unit": "lbs" or "kg" (optional),
+        "notes": "string (optional) - per-set cues such as tempo, load rationale, or set-specific form focus"
       }
     ],
     "notes": "string (optional)"

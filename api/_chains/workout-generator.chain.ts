@@ -1,5 +1,5 @@
-import { RunnableSequence } from '@langchain/core/runnables';
 import { ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate } from '@langchain/core/prompts';
+import { invokeWithRetry } from '../_lib/output-parser-retry.js';
 import { getChatModel } from '../_lib/langchain.js';
 import { loadSystemPrompt, loadUserPrompt } from '../_lib/prompt-loader.js';
 import {
@@ -139,14 +139,11 @@ export async function generateWorkout(rawInput: unknown): Promise<WorkoutGenerat
     name: `${input.workout_type}_workout`,
   });
 
-  // Create the chain: prompt -> model with structured output
-  const chain = RunnableSequence.from([promptTemplate, structuredModel]);
-
   // Transform input to prompt format
   const promptInput = toPromptInput(input);
 
-  // Invoke the chain
-  const workout = await chain.invoke(promptInput);
+  // Invoke with retry on schema validation failure
+  const workout = await invokeWithRetry(promptTemplate, structuredModel, promptInput);
 
   return {
     workout: workout as WorkoutOutput,
