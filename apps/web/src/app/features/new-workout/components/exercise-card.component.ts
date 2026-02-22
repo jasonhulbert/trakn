@@ -107,6 +107,25 @@ import { RevisionInputComponent } from './revision-input.component';
                   <td class="px-4 py-2 text-sm text-gray-900">{{ formatRestDuration(set.rest_duration_seconds) }}</td>
                 }
               </tr>
+              @if (isEditing()) {
+                <tr>
+                  <td></td>
+                  <td colspan="3" class="px-4 py-2">
+                    <input
+                      type="text"
+                      [ngModel]="editSets[$index]?.notes"
+                      (ngModelChange)="updateSetField($index, 'notes', $event)"
+                      placeholder="Set note (optional)"
+                      class="w-full px-2 py-1 border border-gray-300 rounded text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </td>
+                </tr>
+              } @else if (set.notes) {
+                <tr>
+                  <td></td>
+                  <td colspan="3" class="px-4 py-2 text-xs text-gray-500 italic">{{ set.notes }}</td>
+                </tr>
+              }
             }
           </tbody>
         </table>
@@ -160,9 +179,10 @@ export class ExerciseCardComponent {
     }
   }
 
-  updateSetField(index: number, field: keyof ExerciseSet, value: number): void {
+  updateSetField(index: number, field: keyof ExerciseSet, value: string | number): void {
     if (this.editSets[index]) {
-      this.editSets[index] = { ...this.editSets[index], [field]: value };
+      const processed = typeof value === 'string' ? value.trim() || undefined : value;
+      this.editSets[index] = { ...this.editSets[index], [field]: processed };
     }
   }
 

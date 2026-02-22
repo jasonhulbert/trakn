@@ -6,6 +6,7 @@ export const ExerciseSetSchema = z.object({
   rest_duration_seconds: z.number().int().nonnegative().describe('Rest duration in seconds after this set'),
   suggested_weight: z.number().nonnegative().optional().describe('Suggested weight for this set'),
   weight_unit: WeightUnitSchema.optional().describe('Unit for the suggested weight'),
+  notes: z.string().optional().describe('Per-set cues: tempo, weight selection rationale, or form focus'),
 });
 
 export const ExerciseSchema = z.object({
