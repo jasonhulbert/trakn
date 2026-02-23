@@ -19,35 +19,17 @@ export interface PromptConfig {
 
 /**
  * Load and parse a YAML prompt file.
- * Converts $variable syntax to {variable} for LangChain compatibility.
+ * Returns raw content with $variable syntax intact for use with interpolatePrompt().
  */
 export function loadPrompt(relativePath: string): PromptConfig {
   const fullPath = join(PROMPTS_DIR, relativePath);
 
   try {
     const fileContent = readFileSync(fullPath, 'utf-8');
-    const parsed = yaml.load(fileContent) as PromptConfig;
-
-    // Convert $variable to {variable} for LangChain
-    parsed.content = convertVariableSyntax(parsed.content);
-
-    return parsed;
+    return yaml.load(fileContent) as PromptConfig;
   } catch (error) {
     throw new Error(`Failed to load prompt from ${relativePath}: ${error}`);
   }
-}
-
-/**
- * Convert $variable_name to {variable_name} for LangChain interpolation.
- * First escapes all literal { and } as {{ and }} so LangChain's f-string
- * parser doesn't choke on JSON examples in the prompt content.
- */
-function convertVariableSyntax(content: string): string {
-  // 1. Escape all existing braces so they're treated as literals by LangChain
-  let escaped = content.replace(/\{/g, '{{').replace(/\}/g, '}}');
-  // 2. Convert $variable to {variable} (single braces = LangChain interpolation)
-  escaped = escaped.replace(/\$([a-zA-Z_][a-zA-Z0-9_]*)/g, '{$1}');
-  return escaped;
 }
 
 /**
@@ -63,6 +45,17 @@ export function loadSystemPrompt(identifier: string): string {
  */
 export function loadUserPrompt(identifier: string): PromptConfig {
   return loadPrompt(`${identifier}.prompt.yml`);
+}
+
+/**
+ * Substitute $variable_name occurrences in prompt content with values from vars.
+ * Unmatched variables are left as-is. Call validatePromptVariables() first
+ * to catch missing variables early.
+ */
+export function interpolatePrompt(content: string, vars: Record<string, string | number>): string {
+  return content.replace(/\$([a-zA-Z_][a-zA-Z0-9_]*)/g, (match, name: string) => {
+    return name in vars ? String(vars[name]) : match;
+  });
 }
 
 /**

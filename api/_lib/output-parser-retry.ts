@@ -1,132 +1,96 @@
-import { ChatPromptTemplate } from '@langchain/core/prompts';
-import type { BaseLanguageModelInput } from '@langchain/core/language_models/base';
+import { z } from 'zod';
+import { getAnthropicClient, createStructuredRequest, type StructuredRequestParams } from './anthropic.js';
 import { AIGenerationError } from './errors.js';
 
-interface ZodIssue {
-  code: string;
-  keys?: string[];
-  path: (string | number)[];
-  message: string;
-}
-
-interface OutputParserException extends Error {
-  lc_error_code: string;
-  llmOutput?: string;
-  sendToLLM?: boolean;
-}
-
 /**
- * Type guard for LangChain OutputParserException.
- * Checks multiple indicators for robustness across LangChain versions.
+ * Format Zod validation errors into a concise correction list for the retry prompt.
  */
-export function isOutputParserException(error: unknown): error is OutputParserException {
-  if (!error || typeof error !== 'object') return false;
-  const e = error as Record<string, unknown>;
-  return (
-    e['lc_error_code'] === 'OUTPUT_PARSING_FAILURE' ||
-    (typeof e['name'] === 'string' && e['name'].includes('OutputParser') && 'llmOutput' in e)
-  );
-}
-
-/**
- * Format Zod validation errors from an OutputParserException into a concise,
- * human-readable correction list. Deduplicates errors with the same code and keys.
- */
-export function formatValidationErrors(error: OutputParserException): string {
-  const rawMessage = error.message;
-
-  // The Zod issue array is embedded in error.message after "Error: "
-  const jsonMatch = rawMessage.match(/Error: (\[[\s\S]*\])/);
-  if (!jsonMatch) {
-    return rawMessage;
-  }
-
-  let issues: ZodIssue[];
-  try {
-    issues = JSON.parse(jsonMatch[1]) as ZodIssue[];
-  } catch {
-    return rawMessage;
-  }
-
-  // Deduplicate by code + stringified keys
+function formatZodErrors(error: z.ZodError): string {
   const seen = new Set<string>();
-  const unique = issues.filter((issue) => {
-    const key = `${issue.code}:${JSON.stringify(issue.keys ?? [])}`;
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
+  const lines: string[] = [];
 
-  const lines = unique.map((issue) => {
+  for (const issue of error.issues) {
+    const key = `${issue.code}:${issue.path.join('.')}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+
     const path = issue.path.join('.');
-    if (issue.code === 'unrecognized_keys' && issue.keys?.length) {
-      const fieldList = issue.keys.map((k) => `"${k}"`).join(', ');
-      return `- ${path || '(root)'}: Unrecognized field(s) ${fieldList} — remove these fields, they do not exist in the schema`;
+    if (issue.code === 'unrecognized_keys' && 'keys' in issue && Array.isArray(issue.keys)) {
+      const fieldList = (issue.keys as string[]).map((k) => `"${k}"`).join(', ');
+      lines.push(`- ${path || '(root)'}: Unrecognized field(s) ${fieldList} — remove these fields`);
+    } else {
+      lines.push(`- ${path || '(root)'}: ${issue.message} (code: ${issue.code})`);
     }
-    return `- ${path || '(root)'}: ${issue.message} (code: ${issue.code})`;
-  });
+  }
 
   return lines.join('\n');
 }
 
 /**
- * Invoke a structured output model with a prompt, retrying once on OutputParserException
- * with explicit validation feedback appended to the human message.
+ * Invoke a structured Claude request with retry on Zod validation failure.
  *
- * On retry, the original human message content is preserved and a correction block is
- * appended. This avoids Anthropic's alternating-message constraint while giving the model
- * precise instructions on what to fix.
+ * Calls Claude with forced tool use and validates the tool response against the
+ * provided Zod schema. On ZodError, retries once with correction feedback appended
+ * to a fresh user message (new request, not conversation continuation).
  *
  * On exhaustion, throws AIGenerationError.
  */
 export async function invokeWithRetry<T>(
-  promptTemplate: ChatPromptTemplate,
-  structuredModel: { invoke: (input: BaseLanguageModelInput) => Promise<T> },
-  promptInput: Record<string, string | number>,
+  systemPrompt: string,
+  userContent: string,
+  schema: z.ZodType<T>,
+  params: Pick<StructuredRequestParams<z.ZodType<T>>, 'toolName' | 'tools' | 'tool_choice' | 'config'>,
   maxRetries = 1
 ): Promise<T> {
-  const formattedMessages = await promptTemplate.formatMessages(promptInput);
+  const client = getAnthropicClient();
+
+  async function attempt(user: string): Promise<T> {
+    const requestParams = createStructuredRequest({
+      system: systemPrompt,
+      userContent: user,
+      schema,
+      ...params,
+    });
+
+    const response = await client.messages.create(requestParams);
+
+    const toolBlock = response.content.find((b) => b.type === 'tool_use');
+    if (!toolBlock || toolBlock.type !== 'tool_use') {
+      throw new AIGenerationError('No tool use block in Claude response');
+    }
+
+    return schema.parse(toolBlock.input);
+  }
 
   // First attempt
   try {
-    return await structuredModel.invoke(formattedMessages);
+    return await attempt(userContent);
   } catch (firstError) {
-    if (!isOutputParserException(firstError) || maxRetries < 1) {
+    if (!(firstError instanceof z.ZodError) || maxRetries < 1) {
       throw firstError;
     }
 
-    const errorSummary = formatValidationErrors(firstError);
+    const errorSummary = formatZodErrors(firstError);
     console.warn(
       '[output-parser-retry] Schema validation failed on first attempt — retrying with correction feedback.\n' +
         'Validation errors:\n' +
         errorSummary
     );
 
-    // Build correction messages: preserve system + corrected human message
-    const [systemMessage, ...rest] = formattedMessages;
-    const originalHuman = rest[rest.length - 1];
-    const originalContent =
-      typeof originalHuman.content === 'string' ? originalHuman.content : JSON.stringify(originalHuman.content);
+    const correctedUser =
+      userContent +
+      '\n\n---\nCORRECTION REQUIRED: Your previous response failed schema validation. ' +
+      'Fix the following issues and respond again with a valid output:\n\n' +
+      errorSummary;
 
-    const { HumanMessage } = await import('@langchain/core/messages');
-    const correctionMessage = new HumanMessage(
-      originalContent +
-        '\n\n---\nCORRECTION REQUIRED: Your previous response failed schema validation. ' +
-        'Fix the following issues and respond again with a valid output:\n\n' +
-        errorSummary
-    );
-
-    const correctionMessages = systemMessage ? [systemMessage, correctionMessage] : [correctionMessage];
-
-    // Retry attempt
+    // Retry with fresh request
     try {
-      return await structuredModel.invoke(correctionMessages);
+      return await attempt(correctedUser);
     } catch (retryError) {
-      if (isOutputParserException(retryError)) {
-        const retryErrorSummary = formatValidationErrors(retryError);
+      if (retryError instanceof z.ZodError) {
         throw new AIGenerationError(
           'Failed to generate a valid response after retry. The model did not comply with the output schema.',
-          { validationErrors: retryErrorSummary }
+          { validationErrors: formatZodErrors(retryError) }
         );
       }
       throw retryError;
