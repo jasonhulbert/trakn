@@ -10,7 +10,7 @@ The `UserProfileSchema` was refactored to remove `user_` prefixes and nest the p
 
 - `UserProfileSchema` fields renamed: `user_age` → `age`, `user_weight` → `weight`, `user_weight_unit` → `weight_unit`, `user_fitness_level` → `fitness_level`, `user_physical_limitations` → `physical_limitations`
 - `BaseWorkoutInputSchema` changed from flat `UserProfileSchema.extend({ workout_duration })` to `z.object({ user: UserProfileSchema, workout_duration })`
-- `toPromptInput()` in `workout-generator.chain.ts` updated to read from `input.user.age` etc. (prompt variable keys remain `user_age` for YAML interpolation)
+- `toPromptInput()` in `api/_ai/workout-generator.ts` updated to read from `input.user.age` etc. (prompt variable keys remain `user_age` for YAML interpolation)
 - All test mock inputs updated to nested structure
 
 **Impact:** This eliminates the need for a separate `UserProfileDbSchema` or `toPromptProfile()` mapper originally planned in Phase 1. The `UserProfileSchema` field names now match clean database column names directly, and the `toPromptInput()` mapping in the chain already handles the translation to prompt variable names.
@@ -463,7 +463,7 @@ export class ProfileComponent {
 
 - `POST /api/workouts/revise` endpoint - accepts current workout + original input + revision text, returns revised `WorkoutGeneratorResult`
 - `POST /api/workouts/revise-exercise` endpoint - accepts current exercise + workout context + original input + revision text, returns revised exercise
-- New LangChain chains in `api/_chains/` for revision operations
+- New AI orchestration functions in `api/_ai/` for revision operations
 - New YAML prompt templates in `api/_prompts/` for revision instructions
 - Vitest tests for the new chains
 
@@ -473,11 +473,11 @@ export class ProfileComponent {
 
 **Estimated Complexity:** L
 
-- **Justification:** Two new endpoints, two new LangChain chains, new YAML prompts that must carefully instruct the AI to modify existing workout data while preserving structure. The exercise revision is particularly nuanced because it must maintain schema compliance for a single exercise within the larger workout context.
+- **Justification:** Two new endpoints, two new AI orchestration functions, new YAML prompts that must carefully instruct the AI to modify existing workout data while preserving structure. The exercise revision is particularly nuanced because it must maintain schema compliance for a single exercise within the larger workout context.
 
 **Risks & Mitigations:**
 
-- **Risk:** AI may not reliably preserve the workout structure when revising → **Mitigation:** Use `withStructuredOutput()` to enforce schema compliance. Include explicit instructions in prompts to preserve fields not mentioned in the revision.
+- **Risk:** AI may not reliably preserve the workout structure when revising → **Mitigation:** Use forced tool use to enforce schema compliance. Include explicit instructions in prompts to preserve fields not mentioned in the revision.
 - **Risk:** Exercise revision may produce an exercise that doesn't fit the overall workout (e.g., wrong muscle group) → **Mitigation:** Include the full workout context in the prompt so the AI understands the broader workout plan.
 - **Risk:** Revision prompts may be difficult to get right on the first try → **Mitigation:** Start with simple prompts, test with varied revision instructions, iterate on prompt wording.
 
@@ -492,8 +492,8 @@ export class ProfileComponent {
 
 **Technical Notes:**
 
-- Follow existing endpoint pattern: CORS preflight → method check → auth → chain → error handling
-- Revision chain structure: System prompt (same fitness_trainer) + revision-specific user prompt that includes the current state and revision instruction
+- Follow existing endpoint pattern: CORS preflight → method check → auth → AI function → error handling
+- AI function structure: load system + user prompts from YAML → `validatePromptVariables()` → `interpolatePrompt()` → `invokeWithRetry()` with the appropriate output schema
 - For workout revision, the output schema should match the original workout type's output schema
 - For exercise revision, use `ExerciseSchema` as the structured output schema
 - The revision prompts should instruct the AI to: (1) understand the current state, (2) apply the revision, (3) preserve everything not mentioned in the revision
@@ -505,11 +505,11 @@ export class ProfileComponent {
 | ------ | ----------------------------------------- | ------------------------------------- |
 | Create | `api/workouts/revise.ts`                  | Workout revision endpoint handler     |
 | Create | `api/workouts/revise-exercise.ts`         | Exercise revision endpoint handler    |
-| Create | `api/_chains/workout-reviser.chain.ts`    | LangChain chain for workout revision  |
-| Create | `api/_chains/exercise-reviser.chain.ts`   | LangChain chain for exercise revision |
+| Create | `api/_ai/workout-reviser.ts`              | AI function for workout revision      |
+| Create | `api/_ai/exercise-reviser.ts`             | AI function for exercise revision     |
 | Create | `api/_prompts/revise_workout.prompt.yml`  | Workout revision prompt template      |
 | Create | `api/_prompts/revise_exercise.prompt.yml` | Exercise revision prompt template     |
-| Modify | `api/_chains/index.ts`                    | Export new chain functions            |
+| Modify | `api/_ai/index.ts`                        | Export new AI functions               |
 
 ---
 
@@ -686,7 +686,7 @@ Phase 1 (DB + Schemas)
 
 1. **Workout data storage**: Use `jsonb` column for the full workout output rather than normalized tables. This matches the AI generation pattern where the entire workout is produced as a unit.
 
-2. **Profile field naming**: `UserProfileSchema` uses clean names (`age`, `weight`) that match DB columns directly. The `toPromptInput()` mapping in the LangChain chain translates to prompt variable names (`user_age`, `user_weight`) at the API boundary only.
+2. **Profile field naming**: `UserProfileSchema` uses clean names (`age`, `weight`) that match DB columns directly. The `toPromptInput()` mapping in the AI function translates to prompt variable names (`user_age`, `user_weight`) at the API boundary only.
 
 3. **Nested user profile in WorkoutInput**: `BaseWorkoutInputSchema` nests the profile as a `user` property rather than flat-merging. This cleanly separates user data from workout parameters and makes the API payload self-documenting.
 

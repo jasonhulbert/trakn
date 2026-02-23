@@ -23,8 +23,8 @@ trakn/
 ├── api/                   # Vercel serverless functions (AI workout generation)
 │   ├── workouts/
 │   │   └── generate.ts    # Endpoint: workout generation
-│   ├── _chains/           # LangChain chains (underscore prefix = not an endpoint)
-│   ├── _lib/              # Shared utilities (auth, errors, Supabase, LangChain config)
+│   ├── _ai/               # AI orchestration functions (underscore prefix = not an endpoint)
+│   ├── _lib/              # Shared utilities (auth, errors, Supabase, Anthropic client)
 │   └── _prompts/          # YAML prompt templates
 ├── apps/
 │   └── web/               # Angular 21+ PWA application
@@ -37,7 +37,7 @@ trakn/
 
 - **Frontend:** Angular 21+ (zoneless change detection, signals), Tailwind CSS v4
 - **Backend:** Supabase (PostgreSQL, Auth), Vercel Functions (AI workout generation)
-- **AI:** LangChain + Anthropic Claude (structured output via Zod schemas)
+- **AI:** Anthropic SDK + Claude (structured output via tool use + Zod schemas)
 - **Validation:** Zod (shared input/output schemas across frontend and backend)
 - **Offline Storage:** IndexedDB via Dexie
 - **Build Tool:** Angular CLI with esbuild
@@ -58,7 +58,7 @@ trakn/
 
 **Shared Types and Schemas:** All TypeScript types and Zod validation schemas shared between frontend and backend live in `packages/shared/src/`. Import via `@trakn/shared`.
 
-**Vercel Functions (not Supabase Edge Functions):** AI workout generation runs on Vercel Functions using LangChain chains with structured output. All function code lives in `api/`, with helper directories prefixed with `_` (e.g., `_lib/`, `_chains/`, `_prompts/`) to prevent Vercel from treating them as endpoints.
+**Vercel Functions (not Supabase Edge Functions):** AI workout generation runs on Vercel Functions using the Anthropic SDK directly with structured output via tool use. All function code lives in `api/`, with helper directories prefixed with `_` (e.g., `_lib/`, `_ai/`, `_prompts/`) to prevent Vercel from treating them as endpoints.
 
 **Service Worker:** PWA capabilities are enabled via `@angular/service-worker` with configuration in `ngsw-config.json`. Only active in production builds.
 
@@ -66,12 +66,12 @@ trakn/
 
 ### Architecture
 
-AI-powered workout generation uses Vercel serverless functions with LangChain and Anthropic Claude. All code lives in the `api/` directory, using Vercel's `_` prefix convention for helper directories:
+AI-powered workout generation uses Vercel serverless functions with the Anthropic SDK and Claude. All code lives in the `api/` directory, using Vercel's `_` prefix convention for helper directories:
 
 - **`api/workouts/`**: Endpoint files discovered by Vercel as serverless functions. Each handles CORS, auth, validation, and error handling.
-- **`api/_chains/`**: LangChain chains that orchestrate prompt loading, model invocation, and structured output parsing.
-- **`api/_lib/`**: Shared utilities (Supabase client, ChatAnthropic config, JWT auth, error classes, YAML prompt loader).
-- **`api/_prompts/`**: YAML prompt templates with `$variable` syntax for LangChain interpolation.
+- **`api/_ai/`**: AI orchestration functions that load prompts, interpolate variables, call Claude, and return validated structured output.
+- **`api/_lib/`**: Shared utilities (Supabase client, Anthropic SDK client, JWT auth, error classes, YAML prompt loader).
+- **`api/_prompts/`**: YAML prompt templates with `$variable` syntax for direct interpolation.
 
 ### Request Flow
 
@@ -79,10 +79,10 @@ AI-powered workout generation uses Vercel serverless functions with LangChain an
 Angular App → POST /api/workouts/generate (with JWT)
   → api/workouts/generate.ts (endpoint handler)
     → authenticateRequest() (JWT auth via api/_lib/auth.ts)
-    → generateWorkout() (LangChain chain via api/_chains/)
+    → generateWorkout() (AI function via api/_ai/)
       → Load YAML prompts from api/_prompts/
-      → Build ChatPromptTemplate
-      → Invoke ChatAnthropic with withStructuredOutput(zodSchema)
+      → validatePromptVariables() + interpolatePrompt()
+      → invokeWithRetry() → Anthropic SDK messages.create() with tool use
       → Return Zod-validated WorkoutOutput
 ```
 
@@ -99,7 +99,7 @@ _prompts/
 └── conditioning_workout.prompt.yml   # Conditioning-specific user prompt
 ```
 
-Each YAML file contains `name`, `description`, `version`, `variables`, and `content` fields. Variables use `$variable` syntax which the prompt loader converts to `{variable}` for LangChain.
+Each YAML file contains `name`, `description`, `version`, `variables`, and `content` fields. Variables use `$variable` syntax, which `interpolatePrompt()` substitutes with actual values at call time. The `variables` array is validated before interpolation to catch missing variables early.
 
 ### Shared Schemas (Zod)
 
@@ -267,6 +267,7 @@ The app uses functional guards for access control:
 | `SUPABASE_ANON_KEY`         | Supabase anonymous key                       | From `supabase status`   |
 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key (Vercel Functions) | From `supabase status`   |
 | `ANTHROPIC_API_KEY`         | Anthropic API key (Vercel Functions)         | —                        |
+| `ANTHROPIC_DEFAULT_MODEL`   | Claude model ID to use for generation        | `claude-sonnet-4-6`      |
 | `MAINTENANCE_MODE`          | Enable maintenance/coming-soon page          | `false`                  |
 | `NODE_ENV`                  | Environment mode                             | `development`            |
 
@@ -432,7 +433,7 @@ Keep bundle size minimal by avoiding large third-party libraries.
 ### Adding a New API Endpoint
 
 1. Create endpoint file in `api/<resource>/<action>.ts` following existing patterns
-2. Add shared helpers in `api/_lib/` or `api/_chains/` as needed (underscore prefix prevents Vercel from treating them as endpoints)
+2. Add AI orchestration functions in `api/_ai/` or shared helpers in `api/_lib/` as needed (underscore prefix prevents Vercel from treating them as endpoints)
 3. Add input/output Zod schemas in `packages/shared/src/models/`
 4. Export new schemas from `packages/shared/src/index.ts`
 5. Add YAML prompt templates in `api/_prompts/` if AI-powered
@@ -486,7 +487,7 @@ pnpm -r update
 
 ## Documentation References
 
-- Project Brief: `docs/PROJECT_BRIEF.md` (product vision and scope)
-- Setup Guide: `docs/SETUP_GUIDE.md` (detailed setup instructions)
-- Vercel API Plan: `docs/VERCEL_API_IMPLEMENTATION_PLAN.md` (AI workout generation architecture)
+- Project Brief: `docs/project_brief.md` (product vision and scope)
+- Setup Guide: `docs/setup_guide.md` (detailed setup instructions)
+- New Workout Implementation: `docs/implementations/new-workout.md` (feature implementation plan)
 - README: High-level project structure

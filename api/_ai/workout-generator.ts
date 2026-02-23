@@ -1,7 +1,12 @@
-import { ChatPromptTemplate, SystemMessagePromptTemplate, HumanMessagePromptTemplate } from '@langchain/core/prompts';
+import { z } from 'zod';
 import { invokeWithRetry } from '../_lib/output-parser-retry.js';
-import { getChatModel } from '../_lib/langchain.js';
-import { loadSystemPrompt, loadUserPrompt } from '../_lib/prompt-loader.js';
+import {
+  loadSystemPrompt,
+  loadUserPrompt,
+  interpolatePrompt,
+  validatePromptVariables,
+  type PromptConfig,
+} from '../_lib/prompt-loader.js';
 import {
   WorkoutInputSchema,
   HypertrophyOutputSchema,
@@ -16,7 +21,7 @@ import {
 
 // Cache loaded prompts to avoid repeated file reads
 const systemPromptCache = new Map<string, string>();
-const workoutPromptCache = new Map<string, string>();
+const workoutPromptCache = new Map<string, PromptConfig>();
 
 /**
  * Get the system prompt content (cached).
@@ -29,27 +34,13 @@ function getSystemPrompt(name: string): string {
 }
 
 /**
- * Get the workout prompt template for a specific type (cached).
+ * Get the workout prompt config for a specific type (cached).
  */
-function getWorkoutPromptTemplate(workoutType: WorkoutType): string {
+function getWorkoutPromptConfig(workoutType: WorkoutType): PromptConfig {
   if (!workoutPromptCache.has(workoutType)) {
-    const promptConfig = loadUserPrompt(`${workoutType}_workout`);
-    workoutPromptCache.set(workoutType, promptConfig.content);
+    workoutPromptCache.set(workoutType, loadUserPrompt(`${workoutType}_workout`));
   }
   return workoutPromptCache.get(workoutType)!;
-}
-
-/**
- * Build a ChatPromptTemplate from loaded YAML prompts.
- */
-function buildPromptTemplate(workoutType: WorkoutType): ChatPromptTemplate {
-  const systemContent = getSystemPrompt('fitness_trainer');
-  const userTemplate = getWorkoutPromptTemplate(workoutType);
-
-  return ChatPromptTemplate.fromMessages([
-    SystemMessagePromptTemplate.fromTemplate(systemContent),
-    HumanMessagePromptTemplate.fromTemplate(userTemplate),
-  ]);
 }
 
 /**
@@ -100,53 +91,42 @@ function toPromptInput(input: WorkoutInput): Record<string, string | number> {
 
 /**
  * Get the appropriate output schema for a workout type.
+ * Cast to ZodType<WorkoutOutput> since the specific subtype is selected correctly at runtime.
  */
-function getOutputSchema(workoutType: WorkoutType) {
+function getOutputSchema(workoutType: WorkoutType): z.ZodType<WorkoutOutput> {
   switch (workoutType) {
     case WorkoutTypeSchema.enum.hypertrophy:
-      return HypertrophyOutputSchema;
+      return HypertrophyOutputSchema as unknown as z.ZodType<WorkoutOutput>;
     case WorkoutTypeSchema.enum.strength:
-      return StrengthOutputSchema;
+      return StrengthOutputSchema as unknown as z.ZodType<WorkoutOutput>;
     case WorkoutTypeSchema.enum.conditioning:
-      return ConditioningOutputSchema;
+      return ConditioningOutputSchema as unknown as z.ZodType<WorkoutOutput>;
     default:
       throw new Error(`Unknown workout type: ${workoutType}`);
   }
 }
 
 /**
- * Generate a workout using LangChain with structured output.
- *
- * This function:
- * 1. Validates the input against the Zod schema
- * 2. Loads and builds prompt templates from YAML files
- * 3. Creates a model with structured output enforcement
- * 4. Invokes the chain and returns validated output
+ * Generate a workout using the Anthropic SDK with structured output.
  */
 export async function generateWorkout(rawInput: unknown): Promise<WorkoutGeneratorResult> {
-  // Validate input
   const input = WorkoutInputSchema.parse(rawInput);
 
-  // Build prompt template from YAML files
-  const promptTemplate = buildPromptTemplate(input.workout_type);
-
-  // Get output schema for workout type
-  const outputSchema = getOutputSchema(input.workout_type);
-
-  // Create model with structured output
-  const model = getChatModel();
-  const structuredModel = model.withStructuredOutput(outputSchema, {
-    name: `${input.workout_type}_workout`,
-  });
-
-  // Transform input to prompt format
+  const systemPrompt = getSystemPrompt('fitness_trainer');
+  const userPromptConfig = getWorkoutPromptConfig(input.workout_type);
   const promptInput = toPromptInput(input);
 
-  // Invoke with retry on schema validation failure
-  const workout = await invokeWithRetry(promptTemplate, structuredModel, promptInput);
+  validatePromptVariables(userPromptConfig, promptInput);
+
+  const userContent = interpolatePrompt(userPromptConfig.content, promptInput);
+
+  const outputSchema = getOutputSchema(input.workout_type);
+  const toolName = `${input.workout_type}_workout`;
+
+  const workout = await invokeWithRetry(systemPrompt, userContent, outputSchema, { toolName });
 
   return {
-    workout: workout as WorkoutOutput,
+    workout,
     generatedAt: new Date().toISOString(),
   };
 }

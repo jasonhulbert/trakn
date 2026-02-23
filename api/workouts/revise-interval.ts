@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { authenticateRequest } from '../_lib/auth.js';
 import { handleError } from '../_lib/errors.js';
-import { reviseInterval } from '../_chains/index.js';
+import { reviseInterval } from '../_ai/index.js';
 import type { Interval } from 'trkn-shared';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
