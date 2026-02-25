@@ -1,7 +1,8 @@
-import { Component, input, output } from '@angular/core';
+import { Component, effect, inject, input, output, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import type { WorkoutOutput } from '@trkn-shared';
 import { WorkoutEditorComponent } from '../../../shared/components/workout-editor/workout-editor.component';
+import { UiToastService } from 'src/app/shared/components';
 
 @Component({
   selector: 'app-workout-results',
@@ -90,6 +91,9 @@ import { WorkoutEditorComponent } from '../../../shared/components/workout-edito
   `,
 })
 export class WorkoutResultsComponent {
+  private readonly toast = inject(UiToastService);
+  private readonly lastSavedToastWorkoutId = signal<string | null>(null);
+
   workout = input.required<WorkoutOutput>();
   isRevising = input<boolean>(false);
   revisingExerciseIndex = input<number | null>(null);
@@ -106,6 +110,25 @@ export class WorkoutResultsComponent {
   exerciseRevisionRequested = output<{ index: number; text: string }>();
   intervalRevisionRequested = output<{ index: number; text: string }>();
   workoutChanged = output<WorkoutOutput>();
+
+  constructor() {
+    effect(() => {
+      const isSaved = this.isSaved();
+      const workoutId = this.savedWorkoutId();
+
+      if (!isSaved || !workoutId) {
+        this.lastSavedToastWorkoutId.set(null);
+        return;
+      }
+
+      if (this.lastSavedToastWorkoutId() === workoutId) {
+        return;
+      }
+
+      this.toast.success('Workout saved successfully!', 'Saved');
+      this.lastSavedToastWorkoutId.set(workoutId);
+    });
+  }
 
   onBackToEdit(): void {
     this.backToEdit.emit();
