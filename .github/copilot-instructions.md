@@ -1,1 +1,1 @@
-See [CLAUDE.md](../CLAUDE.md) for instructions and documentation.
+See [AGENTS.md](../AGENTS.md)
