@@ -1,12 +1,35 @@
 import { Component, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import type { Exercise, ExerciseSet } from '@trkn-shared';
+import {
+  UiSeparatorDirective,
+  UiTableBodyDirective,
+  UiTableCellDirective,
+  UiTableContainerDirective,
+  UiTableDirective,
+  UiTableHeadDirective,
+  UiTableHeaderDirective,
+  UiTableRowDirective,
+  UiTextareaDirective,
+} from 'src/app/shared/components';
 import { RevisionInputComponent } from './revision-input.component';
 
 @Component({
   selector: 'app-exercise-card',
   standalone: true,
-  imports: [FormsModule, RevisionInputComponent],
+  imports: [
+    FormsModule,
+    RevisionInputComponent,
+    UiTextareaDirective,
+    UiSeparatorDirective,
+    UiTableContainerDirective,
+    UiTableDirective,
+    UiTableHeaderDirective,
+    UiTableBodyDirective,
+    UiTableRowDirective,
+    UiTableHeadDirective,
+    UiTableCellDirective,
+  ],
   template: `
     <div class="bg-white border border-gray-300 rounded-lg p-4">
       <!-- Navbar -->
@@ -34,11 +57,12 @@ import { RevisionInputComponent } from './revision-input.component';
       @if (isEditing()) {
         <div class="mb-3">
           <textarea
+            uiTextarea
             [ngModel]="editNotes"
             (ngModelChange)="editNotes = $event"
             placeholder="Exercise notes (optional)"
             rows="2"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            class="text-sm"
           ></textarea>
         </div>
       } @else if (exercise().notes) {
@@ -48,22 +72,22 @@ import { RevisionInputComponent } from './revision-input.component';
       }
 
       <!-- Sets Table -->
-      <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+      <div uiTableContainer>
+        <table uiTable class="divide-y divide-gray-200">
+          <thead uiTableHeader>
             <tr>
-              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Set</th>
-              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reps</th>
-              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Weight</th>
-              <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rest</th>
+              <th uiTableHead>Set</th>
+              <th uiTableHead>Reps</th>
+              <th uiTableHead>Weight</th>
+              <th uiTableHead>Rest</th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
+          <tbody uiTableBody class="divide-y divide-gray-200">
             @for (set of exercise().sets; track $index) {
-              <tr>
-                <td class="px-4 py-2 text-sm text-gray-900">{{ $index + 1 }}</td>
+              <tr uiTableRow>
+                <td uiTableCell>{{ $index + 1 }}</td>
                 @if (isEditing()) {
-                  <td class="px-4 py-2">
+                  <td uiTableCell>
                     <input
                       type="number"
                       [ngModel]="editSets[$index]?.reps"
@@ -72,7 +96,7 @@ import { RevisionInputComponent } from './revision-input.component';
                       class="w-16 px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </td>
-                  <td class="px-4 py-2">
+                  <td uiTableCell>
                     <div class="flex items-center gap-1">
                       <input
                         type="number"
@@ -83,7 +107,7 @@ import { RevisionInputComponent } from './revision-input.component';
                       <span class="text-xs text-gray-500">{{ set.weight_unit || 'lbs' }}</span>
                     </div>
                   </td>
-                  <td class="px-4 py-2">
+                  <td uiTableCell>
                     <div class="flex items-center gap-1">
                       <input
                         type="number"
@@ -96,19 +120,19 @@ import { RevisionInputComponent } from './revision-input.component';
                     </div>
                   </td>
                 } @else {
-                  <td class="px-4 py-2 text-sm text-gray-900">{{ set.reps }}</td>
-                  <td class="px-4 py-2 text-sm text-gray-900">
+                  <td uiTableCell>{{ set.reps }}</td>
+                  <td uiTableCell>
                     @if (set.suggested_weight !== undefined) {
                       {{ set.suggested_weight }} {{ set.weight_unit || 'lbs' }}
                     } @else {
                       <span class="text-gray-400">&mdash;</span>
                     }
                   </td>
-                  <td class="px-4 py-2 text-sm text-gray-900">{{ formatRestDuration(set.rest_duration_seconds) }}</td>
+                  <td uiTableCell>{{ formatRestDuration(set.rest_duration_seconds) }}</td>
                 }
               </tr>
               @if (isEditing()) {
-                <tr>
+                <tr uiTableRow>
                   <td></td>
                   <td colspan="3" class="px-4 py-2">
                     <input
@@ -121,7 +145,7 @@ import { RevisionInputComponent } from './revision-input.component';
                   </td>
                 </tr>
               } @else if (set.notes) {
-                <tr>
+                <tr uiTableRow>
                   <td></td>
                   <td colspan="3" class="px-4 py-2 text-xs text-gray-500 italic">{{ set.notes }}</td>
                 </tr>
@@ -132,7 +156,8 @@ import { RevisionInputComponent } from './revision-input.component';
       </div>
 
       <!-- Revision Input -->
-      <div class="mt-3 pt-3 border-t border-gray-100">
+      <div class="mt-3">
+        <div uiSeparator class="mb-3"></div>
         <app-revision-input
           label="Revise Exercise"
           placeholder="e.g. 'Make it harder' or 'Replace with a dumbbell alternative'"

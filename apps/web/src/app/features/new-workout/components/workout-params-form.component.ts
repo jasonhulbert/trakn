@@ -2,45 +2,49 @@ import { Component, input, output, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import type { WorkoutInput } from '@trkn-shared';
+import {
+  UiDescriptionDirective,
+  UiErrorDirective,
+  UiFormFieldDirective,
+  UiInputDirective,
+  UiLabelDirective,
+  UiSelectDirective,
+} from 'src/app/shared/components';
 
 type WorkoutType = 'hypertrophy' | 'strength' | 'conditioning';
 
 @Component({
   selector: 'app-workout-params-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    UiFormFieldDirective,
+    UiLabelDirective,
+    UiDescriptionDirective,
+    UiErrorDirective,
+    UiInputDirective,
+    UiSelectDirective,
+  ],
   template: `
     <div class="max-w-2xl mx-auto">
       <h2 class="text-2xl font-bold mb-6">Workout Parameters</h2>
 
       <form [formGroup]="paramsForm" (ngSubmit)="onSubmit()" class="space-y-6">
         <!-- Workout Duration -->
-        <div>
-          <label for="duration" class="block text-sm font-medium text-gray-700 mb-1">
-            Workout Duration (minutes)
-          </label>
-          <input
-            id="duration"
-            type="number"
-            formControlName="workout_duration"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            min="10"
-            max="180"
-          />
+        <div uiFormField>
+          <label uiLabel for="duration">Workout Duration (minutes)</label>
+          <input uiInput id="duration" type="number" formControlName="workout_duration" min="10" max="180" />
           @if (paramsForm.get('workout_duration')?.invalid && paramsForm.get('workout_duration')?.touched) {
-            <p class="mt-1 text-sm text-red-600">Please enter a duration between 10 and 180 minutes</p>
+            <p uiError>Please enter a duration between 10 and 180 minutes</p>
           }
         </div>
 
         <!-- Hypertrophy-specific fields -->
         @if (workoutType() === 'hypertrophy') {
-          <div>
-            <label for="muscle-group" class="block text-sm font-medium text-gray-700 mb-1"> Target Muscle Group </label>
-            <select
-              id="muscle-group"
-              formControlName="target_muscle_group"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
+          <div uiFormField>
+            <label uiLabel for="muscle-group">Target Muscle Group</label>
+            <select uiSelect id="muscle-group" formControlName="target_muscle_group">
               <option value="">Select a muscle group</option>
               <option value="chest">Chest</option>
               <option value="back">Back</option>
@@ -120,21 +124,12 @@ type WorkoutType = 'hypertrophy' | 'strength' | 'conditioning';
             </select>
           </div>
 
-          <div>
-            <label for="load" class="block text-sm font-medium text-gray-700 mb-1">
-              Target Load Percentage (% of estimated max)
-            </label>
-            <input
-              id="load"
-              type="number"
-              formControlName="load_percentage"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              min="1"
-              max="100"
-            />
-            <p class="mt-1 text-sm text-gray-500">Example: 75 for 75% of your max</p>
+          <div uiFormField>
+            <label uiLabel for="load">Target Load Percentage (% of estimated max)</label>
+            <input uiInput id="load" type="number" formControlName="load_percentage" min="1" max="100" />
+            <p uiDescription>Example: 75 for 75% of your max</p>
             @if (paramsForm.get('load_percentage')?.invalid && paramsForm.get('load_percentage')?.touched) {
-              <p class="mt-1 text-sm text-red-600">Please enter a percentage between 1 and 100</p>
+              <p uiError>Please enter a percentage between 1 and 100</p>
             }
           </div>
 

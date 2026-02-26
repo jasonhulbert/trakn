@@ -1,12 +1,25 @@
 import { Component, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import type { Interval, IntensityLevel } from '@trkn-shared';
+import {
+  UiInputDirective,
+  UiSelectDirective,
+  UiSeparatorDirective,
+  UiTextareaDirective,
+} from 'src/app/shared/components';
 import { RevisionInputComponent } from './revision-input.component';
 
 @Component({
   selector: 'app-interval-card',
   standalone: true,
-  imports: [FormsModule, RevisionInputComponent],
+  imports: [
+    FormsModule,
+    RevisionInputComponent,
+    UiSelectDirective,
+    UiInputDirective,
+    UiTextareaDirective,
+    UiSeparatorDirective,
+  ],
   template: `
     <div class="bg-white border border-gray-300 rounded-lg p-4">
       <div class="flex items-center justify-between mb-3">
@@ -41,11 +54,7 @@ import { RevisionInputComponent } from './revision-input.component';
         <div class="grid grid-cols-2 gap-4 mb-3">
           <label class="block">
             <span class="text-xs text-gray-500 uppercase tracking-wider mb-1 block">Modality</span>
-            <select
-              [ngModel]="editModality"
-              (ngModelChange)="editModality = $event"
-              class="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
+            <select uiSelect [ngModel]="editModality" (ngModelChange)="editModality = $event" class="px-2 py-1 text-sm">
               @for (mod of modalities; track mod) {
                 <option [value]="mod">{{ formatModality(mod) }}</option>
               }
@@ -54,9 +63,10 @@ import { RevisionInputComponent } from './revision-input.component';
           <label class="block">
             <span class="text-xs text-gray-500 uppercase tracking-wider mb-1 block">Intensity</span>
             <select
+              uiSelect
               [ngModel]="editIntensity"
               (ngModelChange)="editIntensity = $event"
-              class="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="px-2 py-1 text-sm"
             >
               @for (level of intensityLevels; track level) {
                 <option [value]="level">{{ formatIntensity(level) }}</option>
@@ -66,32 +76,35 @@ import { RevisionInputComponent } from './revision-input.component';
           <label class="block">
             <span class="text-xs text-gray-500 uppercase tracking-wider mb-1 block">Work (seconds)</span>
             <input
+              uiInput
               type="number"
               [ngModel]="editWorkDuration"
               (ngModelChange)="editWorkDuration = $event"
               min="1"
-              class="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="px-2 py-1 text-sm"
             />
           </label>
           <label class="block">
             <span class="text-xs text-gray-500 uppercase tracking-wider mb-1 block">Rest (seconds)</span>
             <input
+              uiInput
               type="number"
               [ngModel]="editRestDuration"
               (ngModelChange)="editRestDuration = $event"
               min="0"
-              class="w-full px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="px-2 py-1 text-sm"
             />
           </label>
         </div>
         <label class="block">
           <span class="text-xs text-gray-500 uppercase tracking-wider mb-1 block">Notes</span>
           <textarea
+            uiTextarea
             [ngModel]="editNotes"
             (ngModelChange)="editNotes = $event"
             placeholder="Interval notes (optional)"
             rows="2"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            class="text-sm"
           ></textarea>
         </label>
       } @else {
@@ -124,7 +137,8 @@ import { RevisionInputComponent } from './revision-input.component';
       }
 
       <!-- Revision Input -->
-      <div class="mt-3 pt-3 border-t border-gray-100">
+      <div class="mt-3">
+        <div uiSeparator class="mb-3"></div>
         <app-revision-input
           label="Revise Interval with AI"
           placeholder="e.g. 'Make it harder' or 'Switch to rowing' or 'Add more rest'"
