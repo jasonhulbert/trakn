@@ -4,17 +4,12 @@ import { DatePipe } from '@angular/common';
 
 import { UserProfileService } from '../../core/services/user-profile.service';
 import { WorkoutService } from '../../core/services/workout.service';
-import {
-  UiButtonDirective,
-  UiCardComponent,
-  UiCardHeaderDirective,
-  UiCardBodyDirective,
-} from 'src/app/shared/components';
+import { UiButtonDirective, UiCardComponent, UiCardHeaderDirective } from 'src/app/shared/components';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, DatePipe, UiButtonDirective, UiCardComponent, UiCardHeaderDirective, UiCardBodyDirective],
+  imports: [RouterLink, DatePipe, UiButtonDirective, UiCardComponent, UiCardHeaderDirective],
   template: `
     <div class="text-center mb-8">
       <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Welcome to Trakn</h2>
