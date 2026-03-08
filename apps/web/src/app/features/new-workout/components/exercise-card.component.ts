@@ -2,6 +2,8 @@ import { Component, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import type { Exercise, ExerciseSet } from '@trkn-shared';
 import {
+  UiButtonDirective,
+  UiInputDirective,
   UiSeparatorDirective,
   UiTableBodyDirective,
   UiTableCellDirective,
@@ -20,6 +22,8 @@ import { RevisionInputComponent } from './revision-input.component';
   imports: [
     FormsModule,
     RevisionInputComponent,
+    UiButtonDirective,
+    UiInputDirective,
     UiTextareaDirective,
     UiSeparatorDirective,
     UiTableContainerDirective,
@@ -35,20 +39,11 @@ import { RevisionInputComponent } from './revision-input.component';
       <!-- Navbar -->
       <div class="flex items-center justify-between mb-3">
         @if (isEditing()) {
-          <input
-            type="text"
-            [ngModel]="editName"
-            (ngModelChange)="editName = $event"
-            class="text-lg font-semibold border border-gray-300 rounded-md px-2 py-1 flex-1 mr-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+          <input uiInput type="text" [ngModel]="editName" (ngModelChange)="editName = $event" class="flex-1 mr-2" />
         } @else {
           <h3 class="text-lg font-semibold">{{ exercise().exercise_name }}</h3>
         }
-        <button
-          type="button"
-          (click)="toggleEdit()"
-          class="text-sm text-gray-500 hover:text-gray-700 px-2 py-1 rounded hover:bg-gray-100"
-        >
+        <button type="button" uiButton (click)="toggleEdit()">
           {{ isEditing() ? 'Done' : 'Edit' }}
         </button>
       </div>
@@ -89,20 +84,22 @@ import { RevisionInputComponent } from './revision-input.component';
                 @if (isEditing()) {
                   <td uiTableCell>
                     <input
+                      uiInput
                       type="number"
                       [ngModel]="editSets[$index]?.reps"
                       (ngModelChange)="updateSetField($index, 'reps', $event)"
                       min="1"
-                      class="w-16 px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      class="w-16"
                     />
                   </td>
                   <td uiTableCell>
                     <div class="flex items-center gap-1">
                       <input
+                        uiInput
                         type="number"
                         [ngModel]="editSets[$index]?.suggested_weight"
                         (ngModelChange)="updateSetField($index, 'suggested_weight', $event)"
-                        class="w-16 px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        class="w-16"
                       />
                       <span class="text-xs text-gray-500">{{ set.weight_unit || 'lbs' }}</span>
                     </div>
@@ -110,11 +107,12 @@ import { RevisionInputComponent } from './revision-input.component';
                   <td uiTableCell>
                     <div class="flex items-center gap-1">
                       <input
+                        uiInput
                         type="number"
                         [ngModel]="editSets[$index]?.rest_duration_seconds"
                         (ngModelChange)="updateSetField($index, 'rest_duration_seconds', $event)"
                         min="0"
-                        class="w-16 px-2 py-1 border border-gray-300 rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        class="w-16"
                       />
                       <span class="text-xs text-gray-500">sec</span>
                     </div>
@@ -136,11 +134,12 @@ import { RevisionInputComponent } from './revision-input.component';
                   <td></td>
                   <td colspan="3" class="px-4 py-2">
                     <input
+                      uiInput
                       type="text"
                       [ngModel]="editSets[$index]?.notes"
                       (ngModelChange)="updateSetField($index, 'notes', $event)"
                       placeholder="Set note (optional)"
-                      class="w-full px-2 py-1 border border-gray-300 rounded text-xs focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      class="w-full"
                     />
                   </td>
                 </tr>

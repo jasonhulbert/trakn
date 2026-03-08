@@ -11,11 +11,19 @@ import type {
 import { ExerciseCardComponent } from '../../../features/new-workout/components/exercise-card.component';
 import { IntervalCardComponent } from '../../../features/new-workout/components/interval-card.component';
 import { RevisionInputComponent } from '../../../features/new-workout/components/revision-input.component';
+import { UiButtonDirective, UiInputDirective } from 'src/app/shared/components';
 
 @Component({
   selector: 'app-workout-editor',
   standalone: true,
-  imports: [FormsModule, ExerciseCardComponent, IntervalCardComponent, RevisionInputComponent],
+  imports: [
+    FormsModule,
+    ExerciseCardComponent,
+    IntervalCardComponent,
+    RevisionInputComponent,
+    UiButtonDirective,
+    UiInputDirective,
+  ],
   template: `
     <div class="max-w-4xl mx-auto">
       <!-- Header -->
@@ -55,11 +63,7 @@ import { RevisionInputComponent } from '../../../features/new-workout/components
           <div class="flex items-center justify-between mb-3">
             <h3 class="text-xl font-semibold">Warmup</h3>
             @if (editable()) {
-              <button
-                type="button"
-                (click)="toggleWarmupEdit()"
-                class="text-sm text-gray-500 hover:text-gray-700 px-2 py-1 rounded hover:bg-gray-100"
-              >
+              <button type="button" uiButton (click)="toggleWarmupEdit()">
                 {{ isEditingWarmup() ? 'Done' : 'Edit' }}
               </button>
             }
@@ -69,23 +73,16 @@ import { RevisionInputComponent } from '../../../features/new-workout/components
               @for (item of editWarmup; track $index) {
                 <div class="flex items-center gap-2 mb-2">
                   <input
+                    uiInput
                     type="text"
                     [ngModel]="editWarmup[$index]"
                     (ngModelChange)="updateWarmupItem($index, $event)"
-                    class="flex-1 px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    class="flex-1"
                   />
-                  <button
-                    type="button"
-                    (click)="removeWarmupItem($index)"
-                    class="text-red-500 hover:text-red-700 text-sm px-2"
-                  >
-                    Remove
-                  </button>
+                  <button type="button" uiButton (click)="removeWarmupItem($index)">Remove</button>
                 </div>
               }
-              <button type="button" (click)="addWarmupItem()" class="text-sm text-blue-600 hover:text-blue-800 mt-1">
-                + Add item
-              </button>
+              <button type="button" uiButton (click)="addWarmupItem()" class="mt-1">+ Add item</button>
             } @else {
               <ul class="list-disc list-inside space-y-1">
                 @for (item of workout().warmup; track $index) {
@@ -182,11 +179,7 @@ import { RevisionInputComponent } from '../../../features/new-workout/components
           <div class="flex items-center justify-between mb-3">
             <h3 class="text-xl font-semibold">Cooldown</h3>
             @if (editable()) {
-              <button
-                type="button"
-                (click)="toggleCooldownEdit()"
-                class="text-sm text-gray-500 hover:text-gray-700 px-2 py-1 rounded hover:bg-gray-100"
-              >
+              <button type="button" uiButton (click)="toggleCooldownEdit()">
                 {{ isEditingCooldown() ? 'Done' : 'Edit' }}
               </button>
             }
@@ -196,23 +189,16 @@ import { RevisionInputComponent } from '../../../features/new-workout/components
               @for (item of editCooldown; track $index) {
                 <div class="flex items-center gap-2 mb-2">
                   <input
+                    uiInput
                     type="text"
                     [ngModel]="editCooldown[$index]"
                     (ngModelChange)="updateCooldownItem($index, $event)"
-                    class="flex-1 px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    class="flex-1"
                   />
-                  <button
-                    type="button"
-                    (click)="removeCooldownItem($index)"
-                    class="text-red-500 hover:text-red-700 text-sm px-2"
-                  >
-                    Remove
-                  </button>
+                  <button type="button" uiButton (click)="removeCooldownItem($index)">Remove</button>
                 </div>
               }
-              <button type="button" (click)="addCooldownItem()" class="text-sm text-blue-600 hover:text-blue-800 mt-1">
-                + Add item
-              </button>
+              <button type="button" uiButton (click)="addCooldownItem()" class="mt-1">+ Add item</button>
             } @else {
               <ul class="list-disc list-inside space-y-1">
                 @for (item of workout().cooldown; track $index) {

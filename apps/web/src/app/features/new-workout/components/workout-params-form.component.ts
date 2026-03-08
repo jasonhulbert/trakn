@@ -3,12 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import type { WorkoutInput } from '@trkn-shared';
 import {
+  UiButtonDirective,
   UiDescriptionDirective,
   UiErrorDirective,
   UiFormFieldDirective,
   UiInputDirective,
   UiLabelDirective,
   UiSelectDirective,
+  UiTextareaDirective,
 } from 'src/app/shared/components';
 
 type WorkoutType = 'hypertrophy' | 'strength' | 'conditioning';
@@ -19,12 +21,14 @@ type WorkoutType = 'hypertrophy' | 'strength' | 'conditioning';
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    UiButtonDirective,
     UiFormFieldDirective,
     UiLabelDirective,
     UiDescriptionDirective,
     UiErrorDirective,
     UiInputDirective,
     UiSelectDirective,
+    UiTextareaDirective,
   ],
   template: `
     <div class="max-w-2xl mx-auto">
@@ -68,15 +72,9 @@ type WorkoutType = 'hypertrophy' | 'strength' | 'conditioning';
             <p class="mt-1 text-sm text-gray-500">Focus on slow, controlled movements for muscle tension</p>
           </div>
 
-          <div>
-            <label for="progression" class="block text-sm font-medium text-gray-700 mb-1">
-              Weight Progression Pattern
-            </label>
-            <select
-              id="progression"
-              formControlName="weight_progression_pattern"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
+          <div uiFormField>
+            <label uiLabel for="progression">Weight Progression Pattern</label>
+            <select uiSelect id="progression" formControlName="weight_progression_pattern">
               <option value="">Select a pattern</option>
               <option value="pyramid">Pyramid (increase weight each set)</option>
               <option value="reverse_pyramid">Reverse Pyramid (decrease weight each set)</option>
@@ -85,13 +83,9 @@ type WorkoutType = 'hypertrophy' | 'strength' | 'conditioning';
             </select>
           </div>
 
-          <div>
-            <label for="equipment" class="block text-sm font-medium text-gray-700 mb-1"> Equipment Access </label>
-            <select
-              id="equipment"
-              formControlName="equipment_access"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
+          <div uiFormField>
+            <label uiLabel for="equipment">Equipment Access</label>
+            <select uiSelect id="equipment" formControlName="equipment_access">
               <option value="">Select equipment access</option>
               <option value="full_gym">Full Gym</option>
               <option value="limited_equipment">Limited Equipment</option>
@@ -102,13 +96,9 @@ type WorkoutType = 'hypertrophy' | 'strength' | 'conditioning';
 
         <!-- Strength-specific fields -->
         @if (workoutType() === 'strength') {
-          <div>
-            <label for="muscle-group" class="block text-sm font-medium text-gray-700 mb-1"> Target Muscle Group </label>
-            <select
-              id="muscle-group"
-              formControlName="target_muscle_group"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
+          <div uiFormField>
+            <label uiLabel for="muscle-group">Target Muscle Group</label>
+            <select uiSelect id="muscle-group" formControlName="target_muscle_group">
               <option value="">Select a muscle group</option>
               <option value="chest">Chest</option>
               <option value="back">Back</option>
@@ -133,15 +123,9 @@ type WorkoutType = 'hypertrophy' | 'strength' | 'conditioning';
             }
           </div>
 
-          <div>
-            <label for="progression" class="block text-sm font-medium text-gray-700 mb-1">
-              Weight Progression Pattern
-            </label>
-            <select
-              id="progression"
-              formControlName="weight_progression_pattern"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
+          <div uiFormField>
+            <label uiLabel for="progression">Weight Progression Pattern</label>
+            <select uiSelect id="progression" formControlName="weight_progression_pattern">
               <option value="">Select a pattern</option>
               <option value="pyramid">Pyramid (increase weight each set)</option>
               <option value="reverse_pyramid">Reverse Pyramid (decrease weight each set)</option>
@@ -150,13 +134,9 @@ type WorkoutType = 'hypertrophy' | 'strength' | 'conditioning';
             </select>
           </div>
 
-          <div>
-            <label for="equipment" class="block text-sm font-medium text-gray-700 mb-1"> Equipment Access </label>
-            <select
-              id="equipment"
-              formControlName="equipment_access"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
+          <div uiFormField>
+            <label uiLabel for="equipment">Equipment Access</label>
+            <select uiSelect id="equipment" formControlName="equipment_access">
               <option value="">Select equipment access</option>
               <option value="full_gym">Full Gym</option>
               <option value="limited_equipment">Limited Equipment</option>
@@ -167,15 +147,9 @@ type WorkoutType = 'hypertrophy' | 'strength' | 'conditioning';
 
         <!-- Conditioning-specific fields -->
         @if (workoutType() === 'conditioning') {
-          <div>
-            <label for="interval-structure" class="block text-sm font-medium text-gray-700 mb-1">
-              Interval Structure
-            </label>
-            <select
-              id="interval-structure"
-              formControlName="interval_structure"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
+          <div uiFormField>
+            <label uiLabel for="interval-structure">Interval Structure</label>
+            <select uiSelect id="interval-structure" formControlName="interval_structure">
               <option value="">Select an interval structure</option>
               <option value="hiit">HIIT (High-Intensity Interval Training)</option>
               <option value="steady_state">Steady State</option>
@@ -185,13 +159,9 @@ type WorkoutType = 'hypertrophy' | 'strength' | 'conditioning';
             </select>
           </div>
 
-          <div>
-            <label for="modality" class="block text-sm font-medium text-gray-700 mb-1"> Cardio Modality </label>
-            <select
-              id="modality"
-              formControlName="cardio_modality"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
+          <div uiFormField>
+            <label uiLabel for="modality">Cardio Modality</label>
+            <select uiSelect id="modality" formControlName="cardio_modality">
               <option value="">Select a cardio modality</option>
               <option value="running">Running</option>
               <option value="cycling">Cycling</option>
@@ -205,27 +175,21 @@ type WorkoutType = 'hypertrophy' | 'strength' | 'conditioning';
             </select>
           </div>
 
-          <div>
-            <label for="distance-time" class="block text-sm font-medium text-gray-700 mb-1">
-              Distance/Time Goal (optional)
-            </label>
+          <div uiFormField>
+            <label uiLabel for="distance-time">Distance/Time Goal (optional)</label>
             <input
+              uiInput
               id="distance-time"
               type="text"
               formControlName="distance_time_goal"
               placeholder="e.g., 5k, 30 minutes"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <p class="mt-1 text-sm text-gray-500">Optional: Specify a distance or time goal</p>
+            <p uiDescription>Optional: Specify a distance or time goal</p>
           </div>
 
-          <div>
-            <label for="equipment" class="block text-sm font-medium text-gray-700 mb-1"> Equipment Access </label>
-            <select
-              id="equipment"
-              formControlName="equipment_access"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
+          <div uiFormField>
+            <label uiLabel for="equipment">Equipment Access</label>
+            <select uiSelect id="equipment" formControlName="equipment_access">
               <option value="">Select equipment access</option>
               <option value="cardio_machines">Cardio Machines</option>
               <option value="outdoor_space">Outdoor Space</option>
@@ -236,16 +200,14 @@ type WorkoutType = 'hypertrophy' | 'strength' | 'conditioning';
         }
 
         <!-- Equipment Notes (common to all types) -->
-        <div>
-          <label for="equipment-notes" class="block text-sm font-medium text-gray-700 mb-1">
-            Equipment Notes (optional)
-          </label>
+        <div uiFormField>
+          <label uiLabel for="equipment-notes">Equipment Notes (optional)</label>
           <textarea
+            uiTextarea
             id="equipment-notes"
             formControlName="equipment_notes"
             rows="3"
             placeholder="Any specific equipment you have or don't have access to"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           ></textarea>
         </div>
 
@@ -258,18 +220,8 @@ type WorkoutType = 'hypertrophy' | 'strength' | 'conditioning';
 
         <!-- Form Actions -->
         <div class="flex justify-between pt-4">
-          <button
-            type="button"
-            (click)="onBack()"
-            class="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-          >
-            Back
-          </button>
-          <button
-            type="submit"
-            [disabled]="paramsForm.invalid || isSubmitting()"
-            class="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-          >
+          <button type="button" uiButton (click)="onBack()">Back</button>
+          <button type="submit" uiButton [disabled]="paramsForm.invalid || isSubmitting()">
             {{ isSubmitting() ? 'Generating...' : 'Generate Workout' }}
           </button>
         </div>

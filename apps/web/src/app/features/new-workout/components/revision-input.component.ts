@@ -6,6 +6,7 @@ import {
   UiAccordionDirective,
   UiAccordionItemDirective,
   UiAccordionTriggerDirective,
+  UiButtonDirective,
   UiTextareaDirective,
 } from 'src/app/shared/components';
 
@@ -19,6 +20,7 @@ import {
     UiAccordionItemDirective,
     UiAccordionTriggerDirective,
     UiAccordionContentDirective,
+    UiButtonDirective,
     UiTextareaDirective,
   ],
   template: `
@@ -53,28 +55,14 @@ import {
               <div class="flex items-center justify-between">
                 <span class="text-xs text-gray-400">{{ revisionText.length }}/500</span>
                 <div class="flex gap-2">
+                  <button type="button" uiButton (click)="onCancel()" [disabled]="isLoading()">Cancel</button>
                   <button
                     type="button"
-                    (click)="onCancel()"
-                    [disabled]="isLoading()"
-                    class="rounded-md border border-gray-300 px-3 py-1 text-sm text-gray-600 hover:bg-gray-50 disabled:opacity-50"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="button"
+                    uiButton
                     (click)="onSubmit()"
                     [disabled]="isLoading() || revisionText.trim().length === 0"
-                    class="flex items-center gap-1 rounded-md bg-blue-600 px-3 py-1 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
                   >
-                    @if (isLoading()) {
-                      <span
-                        class="inline-block h-3 w-3 rounded-full border-2 border-white border-t-transparent animate-spin"
-                      ></span>
-                      Revising...
-                    } @else {
-                      Revise
-                    }
+                    {{ isLoading() ? 'Revising...' : 'Revise' }}
                   </button>
                 </div>
               </div>
@@ -84,16 +72,7 @@ import {
       </div>
     </div>
   `,
-  styles: `
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-    .animate-spin {
-      animation: spin 1s linear infinite;
-    }
-  `,
+  styles: [],
 })
 export class RevisionInputComponent {
   @HostBinding('class') class = 'flex items-center';

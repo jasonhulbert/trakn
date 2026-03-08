@@ -31,3 +31,8 @@ export { UiTableCellDirective } from './table/ui-table-cell.directive';
 export { UiToastComponent } from './toast/ui-toast.component';
 export { UiToastService } from './toast/ui-toast.service';
 export type { UiToastShowOptions, UiToastVariant } from './toast/ui-toast.types';
+export { UiCardComponent } from './card/ui-card.component';
+export { UiCardHeaderDirective } from './card/ui-card-header.directive';
+export { UiCardBodyDirective } from './card/ui-card-body.directive';
+export { UiCardFooterDirective } from './card/ui-card-footer.directive';
+export type { UiCardVariant, UiCardPadding } from './card/ui-card.types';

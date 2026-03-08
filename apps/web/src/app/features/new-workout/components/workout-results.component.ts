@@ -2,12 +2,12 @@ import { Component, effect, inject, input, output, signal } from '@angular/core'
 import { RouterLink } from '@angular/router';
 import type { WorkoutOutput } from '@trkn-shared';
 import { WorkoutEditorComponent } from '../../../shared/components/workout-editor/workout-editor.component';
-import { UiToastService } from 'src/app/shared/components';
+import { UiButtonDirective, UiToastService } from 'src/app/shared/components';
 
 @Component({
   selector: 'app-workout-results',
   standalone: true,
-  imports: [RouterLink, WorkoutEditorComponent],
+  imports: [RouterLink, WorkoutEditorComponent, UiButtonDirective],
   template: `
     <div class="max-w-4xl mx-auto">
       <!-- Saved Success Banner -->
@@ -44,51 +44,18 @@ import { UiToastService } from 'src/app/shared/components';
       <!-- Actions -->
       <div class="flex justify-between pt-6 border-t border-gray-200">
         <div class="flex gap-3">
-          <button
-            type="button"
-            (click)="onBackToEdit()"
-            class="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-          >
-            Modify Parameters
-          </button>
-          <button
-            type="button"
-            (click)="onStartOver()"
-            class="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-          >
-            Start Over
-          </button>
+          <button type="button" uiButton (click)="onBackToEdit()">Modify Parameters</button>
+          <button type="button" uiButton (click)="onStartOver()">Start Over</button>
         </div>
         @if (!isSaved()) {
-          <button
-            type="button"
-            (click)="onSave()"
-            [disabled]="isSaving()"
-            class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 flex items-center gap-2"
-          >
-            @if (isSaving()) {
-              <span
-                class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"
-              ></span>
-              Saving...
-            } @else {
-              Save Workout
-            }
+          <button type="button" uiButton (click)="onSave()" [disabled]="isSaving()">
+            {{ isSaving() ? 'Saving...' : 'Save Workout' }}
           </button>
         }
       </div>
     </div>
   `,
-  styles: `
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-    .animate-spin {
-      animation: spin 1s linear infinite;
-    }
-  `,
+  styles: [],
 })
 export class WorkoutResultsComponent {
   private readonly toast = inject(UiToastService);

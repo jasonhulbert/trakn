@@ -4,11 +4,12 @@ import { WorkoutService } from '../../core/services/workout.service';
 import { AuthService } from '../../core/services/auth.service';
 import { WorkoutEditorComponent } from '../../shared/components/workout-editor/workout-editor.component';
 import type { WorkoutOutput } from '@trkn-shared';
+import { UiButtonDirective } from 'src/app/shared/components';
 
 @Component({
   selector: 'app-workout-detail',
   standalone: true,
-  imports: [RouterLink, WorkoutEditorComponent],
+  imports: [RouterLink, WorkoutEditorComponent, UiButtonDirective],
   template: `
     @if (workoutService.isLoadingWorkouts()) {
       <div class="flex justify-center py-12">
@@ -24,30 +25,11 @@ import type { WorkoutOutput } from '@trkn-shared';
         <a routerLink="/workouts" class="text-sm text-gray-500 hover:text-gray-700">&larr; Back to Workouts</a>
         <div class="flex items-center gap-3">
           @if (!isEditing()) {
-            <button
-              type="button"
-              (click)="isEditing.set(true)"
-              class="px-4 py-2 text-sm font-medium text-indigo-600 border border-indigo-300 rounded-md hover:bg-indigo-50"
-            >
-              Edit Workout
-            </button>
+            <button type="button" uiButton (click)="isEditing.set(true)">Edit Workout</button>
           } @else {
-            <button
-              type="button"
-              (click)="cancelEditing()"
-              class="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
-            >
-              Cancel
-            </button>
+            <button type="button" uiButton (click)="cancelEditing()">Cancel</button>
           }
-          <button
-            type="button"
-            (click)="onDelete()"
-            [disabled]="workoutService.isDeleting()"
-            class="px-4 py-2 text-sm font-medium text-red-600 border border-red-300 rounded-md hover:bg-red-50 disabled:opacity-50"
-          >
-            Delete
-          </button>
+          <button type="button" uiButton (click)="onDelete()" [disabled]="workoutService.isDeleting()">Delete</button>
         </div>
       </div>
 
@@ -67,20 +49,8 @@ import type { WorkoutOutput } from '@trkn-shared';
 
         @if (isEditing()) {
           <div class="flex justify-end pt-6 border-t border-gray-200">
-            <button
-              type="button"
-              (click)="onSave()"
-              [disabled]="workoutService.isSaving()"
-              class="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50 flex items-center gap-2"
-            >
-              @if (workoutService.isSaving()) {
-                <span
-                  class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"
-                ></span>
-                Saving...
-              } @else {
-                Save Changes
-              }
+            <button type="button" uiButton (click)="onSave()" [disabled]="workoutService.isSaving()">
+              {{ workoutService.isSaving() ? 'Saving...' : 'Save Changes' }}
             </button>
           </div>
         }
@@ -90,16 +60,7 @@ import type { WorkoutOutput } from '@trkn-shared';
   host: {
     class: 'flex-1 w-full max-w-4xl mx-auto py-8 px-4',
   },
-  styles: `
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-    .animate-spin {
-      animation: spin 1s linear infinite;
-    }
-  `,
+  styles: [],
 })
 export class WorkoutDetailComponent {
   readonly workoutService = inject(WorkoutService);
