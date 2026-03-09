@@ -87,6 +87,32 @@ import {
               </div>
             </div>
 
+            <!-- Height + Unit -->
+            <div class="grid grid-cols-2 gap-4">
+              <div uiFormField>
+                <label uiLabel for="height"> Height <span class="text-gray-500 font-normal">(optional)</span> </label>
+                <input
+                  uiInput
+                  id="height"
+                  formControlName="height"
+                  type="number"
+                  step="0.1"
+                  placeholder="e.g. 70"
+                  [class.border-red-300]="profileForm.get('height')?.touched && profileForm.get('height')?.invalid"
+                />
+                @if (getFieldError('height')) {
+                  <p uiError>{{ getFieldError('height') }}</p>
+                }
+              </div>
+              <div uiFormField>
+                <label uiLabel for="height_unit">Unit</label>
+                <select uiSelect id="height_unit" formControlName="height_unit">
+                  <option value="in">in</option>
+                  <option value="cm">cm</option>
+                </select>
+              </div>
+            </div>
+
             <!-- Fitness Level -->
             <div uiFormField>
               <label uiLabel for="fitness_level">Fitness Level *</label>
@@ -149,6 +175,12 @@ export class ProfileComponent {
       validators: [Validators.required],
       nonNullable: true,
     }),
+    height: this.fb.control<number | null>(null, {
+      validators: [Validators.min(1)],
+    }),
+    height_unit: this.fb.control<'in' | 'cm'>('in', {
+      nonNullable: true,
+    }),
     fitness_level: this.fb.control<number>(3, {
       validators: [Validators.required, Validators.min(1), Validators.max(5)],
       nonNullable: true,
@@ -168,6 +200,8 @@ export class ProfileComponent {
           age: profile.age,
           weight: profile.weight,
           weight_unit: profile.weight_unit,
+          height: profile.height ?? null,
+          height_unit: profile.height_unit ?? 'in',
           fitness_level: profile.fitness_level,
           physical_limitations: profile.physical_limitations ?? '',
         });
@@ -189,6 +223,8 @@ export class ProfileComponent {
         age: formValue.age,
         weight: formValue.weight,
         weight_unit: formValue.weight_unit,
+        height: formValue.height ?? undefined,
+        height_unit: formValue.height != null ? formValue.height_unit : undefined,
         fitness_level: Number(formValue.fitness_level),
         physical_limitations: formValue.physical_limitations || undefined,
       };

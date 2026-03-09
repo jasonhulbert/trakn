@@ -5,6 +5,8 @@ variables:
   - user_age
   - user_weight
   - user_weight_unit
+  - user_height
+  - user_height_unit
   - user_fitness_level
   - user_physical_limitations
   - workout_duration
@@ -19,6 +21,7 @@ content: |
   **User Profile:**
   - Age: $user_age years old
   - Weight: $user_weight $user_weight_unit
+  - Height: $user_height $user_height_unit
   - Fitness Level: $user_fitness_level out of 5
   - Physical Limitations: $user_physical_limitations
   - Target Muscle Group: $target_muscle_group
@@ -122,7 +125,7 @@ content: |
   - Target $target_muscle_group from multiple angles
   - Keep instructions clear and focused on execution
   - **Weight Progression Pattern**: MUST follow the specified progression pattern ($weight_progression_pattern) when prescribing weights across sets. Ensure weight and rep progressions match the pattern definition (pyramid, reverse_pyramid, straight_sets, or wave_loading).
-  - **Weight Suggestions**: Include suggested_weight and weight_unit ONLY when equipment_access is "full_gym" or "limited_equipment". Use the user's weight_unit ($user_weight_unit) for consistency. Base suggestions on user's bodyweight ($user_weight $user_weight_unit) and fitness_level ($user_fitness_level/5). For hypertrophy, weights should allow for controlled reps in the 6-15 range with proper form.
+  - **Weight Suggestions**: Include suggested_weight and weight_unit ONLY when equipment_access is "full_gym" or "limited_equipment". Use the user's weight_unit ($user_weight_unit) for consistency. Base suggestions on user's bodyweight ($user_weight $user_weight_unit), height ($user_height $user_height_unit if provided), and fitness_level ($user_fitness_level/5). Height informs limb length, which affects range of motion, leverage, and appropriate load — e.g., taller lifters with longer limbs typically lift at lower absolute loads relative to bodyweight on certain movements. For hypertrophy, weights should allow for controlled reps in the 6-15 range with proper form.
 
   **Parameter Conflict Detection:**
   Analyze the provided parameters for potential conflicts or suboptimal combinations. If any exist, populate the "conflicting_parameters" field with a brief explanation. If no conflicts exist, set "conflicting_parameters" to null. Examples of conflicts:

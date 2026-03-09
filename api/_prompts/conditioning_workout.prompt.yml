@@ -5,6 +5,8 @@ variables:
   - user_age
   - user_weight
   - user_weight_unit
+  - user_height
+  - user_height_unit
   - user_fitness_level
   - user_physical_limitations
   - workout_duration
@@ -19,6 +21,7 @@ content: |
   **User Profile:**
   - Age: $user_age years old
   - Weight: $user_weight $user_weight_unit
+  - Height: $user_height $user_height_unit
   - Fitness Level: $user_fitness_level out of 5
   - Physical Limitations: $user_physical_limitations
   - Equipment Access: $equipment_access
@@ -109,6 +112,7 @@ content: |
   - Scale intensity to the user's fitness_level ($user_fitness_level out of 5)
   - Account for physical_limitations ($user_physical_limitations) in modality selection and intensity
   - If distance_time_goal is provided, reference it in general_notes with progression advice
+  - Use bodyweight ($user_weight $user_weight_unit) and height ($user_height $user_height_unit if provided) when estimating calories burned and when prescribing pace targets — both significantly affect energy expenditure and stride efficiency
   - Provide clear pacing cues in interval notes (e.g., "moderate pace", "hard effort", "easy recovery")
   - Keep instructions straightforward and focused on what to do
 

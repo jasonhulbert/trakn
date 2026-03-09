@@ -137,6 +137,8 @@ export class UserProfileService {
       age: row.age,
       weight: row.weight,
       weight_unit: row.weight_unit,
+      height: row.height,
+      height_unit: row.height_unit,
       fitness_level: row.fitness_level,
       physical_limitations: row.physical_limitations,
     };

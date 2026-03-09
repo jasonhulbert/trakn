@@ -7,6 +7,8 @@ export interface UserProfileRow {
   age: number;
   weight: number;
   weight_unit: 'lbs' | 'kg';
+  height?: number; // Optional
+  height_unit?: 'in' | 'cm'; // Optional
   fitness_level: number; // 1-5
   physical_limitations?: string; // Optional
   updated_at: string; // ISO timestamp

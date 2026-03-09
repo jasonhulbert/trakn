@@ -52,6 +52,8 @@ function toPromptInput(input: WorkoutInput): Record<string, string | number> {
     user_age: input.user.age,
     user_weight: input.user.weight,
     user_weight_unit: input.user.weight_unit,
+    user_height: input.user.height != null ? input.user.height : 'Not provided',
+    user_height_unit: input.user.height != null ? (input.user.height_unit ?? 'in') : '',
     user_fitness_level: input.user.fitness_level,
     user_physical_limitations: input.user.physical_limitations || 'None reported',
     workout_duration: input.workout_duration,

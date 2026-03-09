@@ -5,6 +5,8 @@ variables:
   - user_age
   - user_weight
   - user_weight_unit
+  - user_height
+  - user_height_unit
   - user_fitness_level
   - user_physical_limitations
   - workout_duration
@@ -19,6 +21,7 @@ content: |
   **User Profile:**
   - Age: $user_age years old
   - Weight: $user_weight $user_weight_unit
+  - Height: $user_height $user_height_unit
   - Fitness Level: $user_fitness_level out of 5
   - Physical Limitations: $user_physical_limitations
   - Target Muscle Group: $target_muscle_group
@@ -115,7 +118,7 @@ content: |
   - Focus primarily on $target_muscle_group with complementary movements as needed
   - Keep instructions straightforward and action-oriented
   - **Weight Progression Pattern**: MUST follow the specified progression pattern ($weight_progression_pattern) when prescribing weights across sets. Ensure weight and rep progressions match the pattern definition (pyramid, reverse_pyramid, straight_sets, or wave_loading).
-  - **Weight Suggestions**: Include suggested_weight and weight_unit ONLY when equipment_access is "full_gym" or "limited_equipment". Omit these fields for "bodyweight_only" unless specific weighted exercises are prescribed. Use the user's weight_unit ($user_weight_unit) for consistency. Base suggestions on user's bodyweight ($user_weight $user_weight_unit), fitness_level ($user_fitness_level/5), and load_percentage if provided.
+  - **Weight Suggestions**: Include suggested_weight and weight_unit ONLY when equipment_access is "full_gym" or "limited_equipment". Omit these fields for "bodyweight_only" unless specific weighted exercises are prescribed. Use the user's weight_unit ($user_weight_unit) for consistency. Base suggestions on user's bodyweight ($user_weight $user_weight_unit), height ($user_height $user_height_unit if provided), fitness_level ($user_fitness_level/5), and load_percentage if provided. Height informs limb length and biomechanics — taller lifters with longer limbs typically experience greater mechanical disadvantage on movements like squats and deadlifts, which should be factored into absolute load estimates.
 
   **Parameter Conflict Detection:**
   Analyze the provided parameters for potential conflicts or suboptimal combinations. If any exist, populate the "conflicting_parameters" field with a brief explanation. If no conflicts exist, set "conflicting_parameters" to null. Examples of conflicts:
