@@ -16,9 +16,7 @@ export class UiCardComponent {
   variant = input<UiCardVariant>('default');
   padding = input<UiCardPadding>('md');
 
-  protected readonly hostClass = computed(() =>
-    cx('block', this.variantClass(), this.paddingClass())
-  );
+  protected readonly hostClass = computed(() => cx('block', this.variantClass(), this.paddingClass()));
 
   private readonly variantClass = computed((): string => {
     switch (this.variant()) {

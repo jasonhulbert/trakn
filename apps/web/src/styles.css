@@ -1,1 +1,72 @@
 @import 'tailwindcss';
+
+@theme {
+  /* ── Font ── */
+  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+  /* ── Primary / Sunshine Orange ── */
+  --color-primary-50: #fff8eb;
+  --color-primary-100: #ffefc6;
+  --color-primary-200: #ffdb88;
+  --color-primary-300: #ffc44a;
+  --color-primary-400: #ffad1f;
+  --color-primary-500: #ff9500;
+  --color-primary-600: #e07400;
+  --color-primary-700: #b85500;
+  --color-primary-800: #944010;
+  --color-primary-900: #7a3510;
+  --color-primary-950: #461a04;
+
+  /* ── Conditioning / Bright Cyan ── */
+  --color-conditioning-50: #ecfeff;
+  --color-conditioning-100: #cffafe;
+  --color-conditioning-200: #a5f3fc;
+  --color-conditioning-300: #67e8f9;
+  --color-conditioning-400: #22d3ee;
+  --color-conditioning-500: #06b6d4;
+  --color-conditioning-600: #0891b2;
+  --color-conditioning-700: #0e7490;
+  --color-conditioning-800: #155e75;
+  --color-conditioning-900: #164e63;
+  --color-conditioning-950: #083344;
+
+  /* ── Hypertrophy / Vivid Violet ── */
+  --color-hypertrophy-50: #f5f3ff;
+  --color-hypertrophy-100: #ede9fe;
+  --color-hypertrophy-200: #ddd6fe;
+  --color-hypertrophy-300: #c4b5fd;
+  --color-hypertrophy-400: #a78bfa;
+  --color-hypertrophy-500: #8b5cf6;
+  --color-hypertrophy-600: #7c3aed;
+  --color-hypertrophy-700: #6d28d9;
+  --color-hypertrophy-800: #5b21b6;
+  --color-hypertrophy-900: #4c1d95;
+  --color-hypertrophy-950: #2e1065;
+
+  /* ── Strength / Bold Rose ── */
+  --color-strength-50: #fff1f2;
+  --color-strength-100: #ffe4e6;
+  --color-strength-200: #fecdd3;
+  --color-strength-300: #fda4af;
+  --color-strength-400: #fb7185;
+  --color-strength-500: #f43f5e;
+  --color-strength-600: #e11d48;
+  --color-strength-700: #be123c;
+  --color-strength-800: #9f1239;
+  --color-strength-900: #881337;
+  --color-strength-950: #4c0519;
+
+  /* ── Surface / Warm Neutrals ── */
+  --color-surface-50: #fafaf9;
+  --color-surface-100: #f5f5f4;
+  --color-surface-200: #e7e5e4;
+  --color-surface-300: #d6d3d1;
+  --color-surface-400: #a8a29e;
+  --color-surface-500: #78716c;
+  --color-surface-600: #57534e;
+  --color-surface-700: #44403c;
+  --color-surface-800: #292524;
+  --color-surface-900: #1c1917;
+  --color-surface-950: #0c0a09;
+}
