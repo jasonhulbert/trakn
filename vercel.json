@@ -6,7 +6,6 @@
   "framework": null,
   "functions": {
     "api/**/*.ts": {
-      "memory": 1024,
       "maxDuration": 30,
       "includeFiles": "api/_prompts/**/*.yml"
     }

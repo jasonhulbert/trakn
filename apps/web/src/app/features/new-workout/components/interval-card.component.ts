@@ -2,6 +2,7 @@ import { Component, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import type { Interval, IntensityLevel } from '@trkn-shared';
 import {
+  UiButtonDirective,
   UiInputDirective,
   UiSelectDirective,
   UiSeparatorDirective,
@@ -15,6 +16,7 @@ import { RevisionInputComponent } from './revision-input.component';
   imports: [
     FormsModule,
     RevisionInputComponent,
+    UiButtonDirective,
     UiSelectDirective,
     UiInputDirective,
     UiTextareaDirective,
@@ -40,11 +42,7 @@ import { RevisionInputComponent } from './revision-input.component';
               {{ formatIntensity(interval().intensity) }}
             </span>
           }
-          <button
-            type="button"
-            (click)="toggleEdit()"
-            class="text-sm text-gray-500 hover:text-gray-700 px-2 py-1 rounded hover:bg-gray-100"
-          >
+          <button type="button" uiButton (click)="toggleEdit()">
             {{ isEditing() ? 'Done' : 'Edit' }}
           </button>
         </div>

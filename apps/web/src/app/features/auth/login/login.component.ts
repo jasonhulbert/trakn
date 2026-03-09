@@ -3,56 +3,52 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import {
+  UiButtonDirective,
+  UiFormFieldDirective,
+  UiInputDirective,
+  UiLabelDirective,
+  UiToastService,
+} from 'src/app/shared/components';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, UiFormFieldDirective, UiLabelDirective, UiInputDirective, UiButtonDirective],
   template: `
     <div class="flex flex-col space-y-6 w-full">
       <div>
         <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to Trakn</h2>
       </div>
       <form class="mt-8 space-y-6" (ngSubmit)="onSubmit()">
-        @if (error()) {
-          <div class="rounded-md bg-red-50 p-4">
-            <p class="text-sm text-red-800">{{ error() }}</p>
-          </div>
-        }
+        <div uiFormField>
+          <label uiLabel for="email">Email address</label>
+          <input
+            uiInput
+            id="email"
+            name="email"
+            type="email"
+            [(ngModel)]="email"
+            required
+            placeholder="Email address"
+          />
+        </div>
 
-        <div class="rounded-md shadow-sm -space-y-px">
-          <div>
-            <label for="email" class="sr-only">Email address</label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              [(ngModel)]="email"
-              required
-              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10"
-              placeholder="Email address"
-            />
-          </div>
-          <div>
-            <label for="password" class="sr-only">Password</label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              [(ngModel)]="password"
-              required
-              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10"
-              placeholder="Password"
-            />
-          </div>
+        <div uiFormField>
+          <label uiLabel for="password">Password</label>
+          <input
+            uiInput
+            id="password"
+            name="password"
+            type="password"
+            [(ngModel)]="password"
+            required
+            placeholder="Password"
+          />
         </div>
 
         <div>
-          <button
-            type="submit"
-            [disabled]="isLoading()"
-            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-          >
+          <button type="submit" uiButton class="w-full" [disabled]="isLoading()">
             {{ isLoading() ? 'Signing in...' : 'Sign in' }}
           </button>
         </div>
@@ -76,20 +72,8 @@ import { AuthService } from '../../../core/services/auth.service';
           </div>
 
           <div class="mt-6 grid grid-cols-2 gap-3">
-            <button
-              type="button"
-              (click)="signInWithGoogle()"
-              class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-            >
-              Google
-            </button>
-            <button
-              type="button"
-              (click)="signInWithApple()"
-              class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
-            >
-              Apple
-            </button>
+            <button type="button" uiButton (click)="signInWithGoogle()">Google</button>
+            <button type="button" uiButton (click)="signInWithApple()">Apple</button>
           </div>
         </div>
       </form>
@@ -104,21 +88,20 @@ export class LoginComponent {
   email = '';
   password = '';
   isLoading = signal(false);
-  error = signal<string | null>(null);
 
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly toast = inject(UiToastService);
 
   async onSubmit() {
     this.isLoading.set(true);
-    this.error.set(null);
 
     try {
       await this.authService.signIn(this.email, this.password);
       await this.router.navigate(['/']);
     } catch (err: unknown) {
       const anyErr = err as Error;
-      this.error.set(anyErr.message || 'Failed to sign in');
+      this.toast.error(anyErr.message || 'Failed to sign in');
     } finally {
       this.isLoading.set(false);
     }
@@ -129,7 +112,7 @@ export class LoginComponent {
       await this.authService.signInWithGoogle();
     } catch (err: unknown) {
       const anyErr = err as Error;
-      this.error.set(anyErr.message || 'Failed to sign in with Google');
+      this.toast.error(anyErr.message || 'Failed to sign in with Google');
     }
   }
 
@@ -138,7 +121,7 @@ export class LoginComponent {
       await this.authService.signInWithApple();
     } catch (err: unknown) {
       const anyErr = err as Error;
-      this.error.set(anyErr.message || 'Failed to sign in with Apple');
+      this.toast.error(anyErr.message || 'Failed to sign in with Apple');
     }
   }
 }
