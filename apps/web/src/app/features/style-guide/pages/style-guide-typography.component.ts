@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-guidelines-typography',
+  selector: 'app-style-guide-typography',
   standalone: true,
   template: `
     <h1 class="text-3xl font-extrabold text-surface-900 tracking-tight mb-2">Typography</h1>
@@ -83,7 +83,7 @@ import { Component } from '@angular/core';
     class: 'block',
   },
 })
-export class GuidelinesTypographyComponent {
+export class StyleGuideTypographyComponent {
   readonly weights = [
     { value: 400, name: 'Regular' },
     { value: 500, name: 'Medium' },

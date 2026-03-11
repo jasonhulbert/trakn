@@ -14,7 +14,7 @@ interface ColorScale {
 }
 
 @Component({
-  selector: 'app-guidelines-colors',
+  selector: 'app-style-guide-colors',
   standalone: true,
   template: `
     <h1 class="text-3xl font-extrabold text-surface-900 tracking-tight mb-2">Colors</h1>
@@ -61,7 +61,7 @@ interface ColorScale {
     class: 'block',
   },
 })
-export class GuidelinesColorsComponent {
+export class StyleGuideColorsComponent {
   readonly colorScales: ColorScale[] = [
     {
       name: 'Primary — Sunshine Orange',

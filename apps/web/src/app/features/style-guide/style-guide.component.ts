@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'app-guidelines',
+  selector: 'app-style-guide',
   standalone: true,
   imports: [RouterOutlet, RouterLink, RouterLinkActive],
   template: `
@@ -13,7 +13,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
           <!-- Logo / Title -->
           <div class="px-6 py-6 border-b border-surface-200">
             <span class="text-2xl font-extrabold tracking-tight text-surface-900">trakn</span>
-            <span class="ml-1.5 text-xs font-medium text-surface-400 uppercase tracking-widest">guidelines</span>
+            <span class="ml-1.5 text-xs font-medium text-surface-400 uppercase tracking-widest">style guide</span>
           </div>
 
           <!-- Navigation -->
@@ -36,7 +36,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
       <div class="md:hidden fixed top-0 left-0 right-0 z-10 bg-white border-b border-surface-200">
         <div class="px-4 py-3 flex items-center gap-3">
           <span class="text-lg font-extrabold tracking-tight text-surface-900">trakn</span>
-          <span class="text-xs font-medium text-surface-400 uppercase tracking-widest">guidelines</span>
+          <span class="text-xs font-medium text-surface-400 uppercase tracking-widest">style guide</span>
         </div>
         <nav class="px-3 pb-3 flex gap-1 overflow-x-auto">
           @for (link of navLinks; track link.path) {
@@ -61,7 +61,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
     </div>
   `,
 })
-export class GuidelinesComponent {
+export class StyleGuideComponent {
   readonly navLinks = [
     { path: 'overview', label: 'Overview' },
     { path: 'colors', label: 'Colors' },

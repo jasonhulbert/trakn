@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-guidelines-overview',
+  selector: 'app-style-guide-overview',
   standalone: true,
   template: `
     <!-- Hero -->
@@ -75,7 +75,7 @@ import { Component } from '@angular/core';
     class: 'block',
   },
 })
-export class GuidelinesOverviewComponent {
+export class StyleGuideOverviewComponent {
   readonly principles = [
     {
       icon: '\u26A1',

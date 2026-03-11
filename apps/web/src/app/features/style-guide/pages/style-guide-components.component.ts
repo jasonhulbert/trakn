@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'app-guidelines-components',
+  selector: 'app-style-guide-components',
   standalone: true,
   template: `
     <h1 class="text-3xl font-extrabold text-surface-900 tracking-tight mb-2">Components</h1>
@@ -283,7 +283,7 @@ import { Component } from '@angular/core';
     class: 'block',
   },
 })
-export class GuidelinesComponentsComponent {
+export class StyleGuideComponentsComponent {
   readonly sampleExercises = [
     { name: 'Barbell Bench Press', detail: 'Flat bench, controlled tempo', sets: '4 x 8-10' },
     { name: 'Incline Dumbbell Press', detail: '30\u00B0 incline, full ROM', sets: '3 x 10-12' },
