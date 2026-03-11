@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   standalone: true,
   template: `
     <!-- Hero -->
-    <div class="rounded-2xl bg-gradient-to-br from-primary-400 via-primary-500 to-primary-600 p-10 md:p-14 mb-12">
+    <div class="rounded-2xl bg-linear-to-br from-primary-400 via-primary-500 to-primary-600 p-10 md:p-14 mb-12">
       <h1 class="text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-4">Trakn Design Guidelines</h1>
       <p class="text-lg md:text-xl text-primary-100 max-w-2xl leading-relaxed">
         A bold, vibrant, and approachable visual language for a fitness app that gets out of your way.
@@ -34,15 +34,15 @@ import { Component } from '@angular/core';
         colors are bold and energetic while remaining visually cohesive.
       </p>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="rounded-xl bg-conditioning-500 p-6 text-white">
+        <div class="rounded-xl bg-cyan-500 p-6 text-white">
           <p class="text-sm font-semibold uppercase tracking-wider opacity-80 mb-1">Conditioning</p>
           <p class="text-2xl font-extrabold">Cardio & Endurance</p>
         </div>
-        <div class="rounded-xl bg-hypertrophy-500 p-6 text-white">
+        <div class="rounded-xl bg-violet-500 p-6 text-white">
           <p class="text-sm font-semibold uppercase tracking-wider opacity-80 mb-1">Hypertrophy</p>
           <p class="text-2xl font-extrabold">Muscle Growth</p>
         </div>
-        <div class="rounded-xl bg-strength-500 p-6 text-white">
+        <div class="rounded-xl bg-rose-500 p-6 text-white">
           <p class="text-sm font-semibold uppercase tracking-wider opacity-80 mb-1">Strength</p>
           <p class="text-2xl font-extrabold">Max Power</p>
         </div>

@@ -44,7 +44,7 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
               [routerLink]="link.path"
               routerLinkActive="bg-primary-50 text-primary-700 font-semibold"
               [routerLinkActiveOptions]="{ exact: false }"
-              class="flex-shrink-0 px-3 py-1.5 text-sm font-medium text-surface-600 rounded-lg hover:bg-surface-100 transition-colors"
+              class="shrink-0 px-3 py-1.5 text-sm font-medium text-surface-600 rounded-lg hover:bg-surface-100 transition-colors"
             >
               {{ link.label }}
             </a>

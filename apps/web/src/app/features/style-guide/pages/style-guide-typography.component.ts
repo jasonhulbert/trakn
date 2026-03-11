@@ -74,7 +74,7 @@ import { Component } from '@angular/core';
           <span class="text-surface-300">&middot;</span>
           <span class="text-surface-400">30 minutes</span>
           <span class="text-surface-300">&middot;</span>
-          <span class="font-semibold text-conditioning-600">Intermediate</span>
+          <span class="font-semibold text-cyan-600">Intermediate</span>
         </div>
       </div>
     </section>

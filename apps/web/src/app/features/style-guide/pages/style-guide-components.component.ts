@@ -43,17 +43,17 @@ import { Component } from '@angular/core';
           <p class="text-xs font-semibold text-surface-400 uppercase tracking-wider mb-4">Workout Type Variants</p>
           <div class="flex flex-wrap items-center gap-3">
             <button
-              class="inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold rounded-lg bg-conditioning-500 text-white hover:bg-conditioning-600 transition-colors"
+              class="inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold rounded-lg bg-cyan-500 text-white hover:bg-cyan-600 transition-colors"
             >
               Conditioning
             </button>
             <button
-              class="inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold rounded-lg bg-hypertrophy-500 text-white hover:bg-hypertrophy-600 transition-colors"
+              class="inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold rounded-lg bg-violet-500 text-white hover:bg-violet-600 transition-colors"
             >
               Hypertrophy
             </button>
             <button
-              class="inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold rounded-lg bg-strength-500 text-white hover:bg-strength-600 transition-colors"
+              class="inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold rounded-lg bg-rose-500 text-white hover:bg-rose-600 transition-colors"
             >
               Strength
             </button>
@@ -95,19 +95,13 @@ import { Component } from '@angular/core';
           <div>
             <p class="text-xs font-semibold text-surface-400 uppercase tracking-wider mb-3">Filled</p>
             <div class="flex flex-wrap items-center gap-2">
-              <span
-                class="inline-flex items-center px-3 py-1 text-xs font-bold rounded-full bg-conditioning-500 text-white"
-              >
+              <span class="inline-flex items-center px-3 py-1 text-xs font-bold rounded-full bg-cyan-500 text-white">
                 Conditioning
               </span>
-              <span
-                class="inline-flex items-center px-3 py-1 text-xs font-bold rounded-full bg-hypertrophy-500 text-white"
-              >
+              <span class="inline-flex items-center px-3 py-1 text-xs font-bold rounded-full bg-violet-500 text-white">
                 Hypertrophy
               </span>
-              <span
-                class="inline-flex items-center px-3 py-1 text-xs font-bold rounded-full bg-strength-500 text-white"
-              >
+              <span class="inline-flex items-center px-3 py-1 text-xs font-bold rounded-full bg-rose-500 text-white">
                 Strength
               </span>
             </div>
@@ -117,19 +111,15 @@ import { Component } from '@angular/core';
           <div>
             <p class="text-xs font-semibold text-surface-400 uppercase tracking-wider mb-3">Soft</p>
             <div class="flex flex-wrap items-center gap-2">
-              <span
-                class="inline-flex items-center px-3 py-1 text-xs font-bold rounded-full bg-conditioning-100 text-conditioning-700"
-              >
+              <span class="inline-flex items-center px-3 py-1 text-xs font-bold rounded-full bg-cyan-100 text-cyan-700">
                 Conditioning
               </span>
               <span
-                class="inline-flex items-center px-3 py-1 text-xs font-bold rounded-full bg-hypertrophy-100 text-hypertrophy-700"
+                class="inline-flex items-center px-3 py-1 text-xs font-bold rounded-full bg-violet-100 text-violet-700"
               >
                 Hypertrophy
               </span>
-              <span
-                class="inline-flex items-center px-3 py-1 text-xs font-bold rounded-full bg-strength-100 text-strength-700"
-              >
+              <span class="inline-flex items-center px-3 py-1 text-xs font-bold rounded-full bg-rose-100 text-rose-700">
                 Strength
               </span>
             </div>
@@ -140,17 +130,17 @@ import { Component } from '@angular/core';
             <p class="text-xs font-semibold text-surface-400 uppercase tracking-wider mb-3">Outline</p>
             <div class="flex flex-wrap items-center gap-2">
               <span
-                class="inline-flex items-center px-3 py-1 text-xs font-bold rounded-full border-2 border-conditioning-400 text-conditioning-600"
+                class="inline-flex items-center px-3 py-1 text-xs font-bold rounded-full border-2 border-cyan-400 text-cyan-600"
               >
                 Conditioning
               </span>
               <span
-                class="inline-flex items-center px-3 py-1 text-xs font-bold rounded-full border-2 border-hypertrophy-400 text-hypertrophy-600"
+                class="inline-flex items-center px-3 py-1 text-xs font-bold rounded-full border-2 border-violet-400 text-violet-600"
               >
                 Hypertrophy
               </span>
               <span
-                class="inline-flex items-center px-3 py-1 text-xs font-bold rounded-full border-2 border-strength-400 text-strength-600"
+                class="inline-flex items-center px-3 py-1 text-xs font-bold rounded-full border-2 border-rose-400 text-rose-600"
               >
                 Strength
               </span>
@@ -168,10 +158,10 @@ import { Component } from '@angular/core';
       <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
         <!-- Conditioning Card -->
         <div class="rounded-xl bg-white border border-surface-200 overflow-hidden">
-          <div class="h-2 bg-conditioning-500"></div>
+          <div class="h-2 bg-cyan-500"></div>
           <div class="p-5">
             <span
-              class="inline-flex items-center px-2.5 py-0.5 text-xs font-bold rounded-full bg-conditioning-100 text-conditioning-700 mb-3"
+              class="inline-flex items-center px-2.5 py-0.5 text-xs font-bold rounded-full bg-cyan-100 text-cyan-700 mb-3"
             >
               Conditioning
             </span>
@@ -189,10 +179,10 @@ import { Component } from '@angular/core';
 
         <!-- Hypertrophy Card -->
         <div class="rounded-xl bg-white border border-surface-200 overflow-hidden">
-          <div class="h-2 bg-hypertrophy-500"></div>
+          <div class="h-2 bg-violet-500"></div>
           <div class="p-5">
             <span
-              class="inline-flex items-center px-2.5 py-0.5 text-xs font-bold rounded-full bg-hypertrophy-100 text-hypertrophy-700 mb-3"
+              class="inline-flex items-center px-2.5 py-0.5 text-xs font-bold rounded-full bg-violet-100 text-violet-700 mb-3"
             >
               Hypertrophy
             </span>
@@ -210,10 +200,10 @@ import { Component } from '@angular/core';
 
         <!-- Strength Card -->
         <div class="rounded-xl bg-white border border-surface-200 overflow-hidden">
-          <div class="h-2 bg-strength-500"></div>
+          <div class="h-2 bg-rose-500"></div>
           <div class="p-5">
             <span
-              class="inline-flex items-center px-2.5 py-0.5 text-xs font-bold rounded-full bg-strength-100 text-strength-700 mb-3"
+              class="inline-flex items-center px-2.5 py-0.5 text-xs font-bold rounded-full bg-rose-100 text-rose-700 mb-3"
             >
               Strength
             </span>
@@ -238,7 +228,7 @@ import { Component } from '@angular/core';
 
       <div class="rounded-2xl bg-white border border-surface-200 overflow-hidden">
         <!-- Header gradient -->
-        <div class="bg-gradient-to-r from-hypertrophy-500 to-hypertrophy-600 px-6 py-5">
+        <div class="bg-linear-to-r from-violet-500 to-violet-600 px-6 py-5">
           <div class="flex items-center justify-between">
             <div>
               <span
@@ -261,7 +251,7 @@ import { Component } from '@angular/core';
                 <p class="text-xs text-surface-400">{{ exercise.detail }}</p>
               </div>
               <div class="text-right">
-                <p class="text-sm font-bold text-hypertrophy-600">{{ exercise.sets }}</p>
+                <p class="text-sm font-bold text-violet-600">{{ exercise.sets }}</p>
               </div>
             </div>
           }
@@ -271,7 +261,7 @@ import { Component } from '@angular/core';
         <div class="bg-surface-50 px-6 py-4 flex items-center justify-between">
           <span class="text-xs text-surface-400">AI-generated workout</span>
           <button
-            class="inline-flex items-center justify-center px-5 py-2 text-sm font-semibold rounded-lg bg-hypertrophy-500 text-white hover:bg-hypertrophy-600 transition-colors"
+            class="inline-flex items-center justify-center px-5 py-2 text-sm font-semibold rounded-lg bg-violet-500 text-white hover:bg-violet-600 transition-colors"
           >
             Start Workout
           </button>
