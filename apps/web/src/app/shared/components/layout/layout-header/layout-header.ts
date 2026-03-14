@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   imports: [],
   template: ` <ng-content></ng-content> `,
   host: {
-    class: 'block sticky inset-0 bottom-auto w-full shrink',
+    class: 'z-10 block sticky inset-0 bottom-auto w-full shrink',
   },
 })
 export class LayoutHeader {}

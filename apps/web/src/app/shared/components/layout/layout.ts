@@ -20,7 +20,7 @@ export enum LayoutPadding {
 })
 export class Layout {
   @HostBinding('class')
-  protected readonly class = 'block min-w-screen min-h-screen bg-gray-50';
+  protected readonly class = 'block min-w-screen min-h-screen bg-surface-50';
 
   contained = input(false);
 

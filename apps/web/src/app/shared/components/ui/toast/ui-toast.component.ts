@@ -11,9 +11,9 @@ import type { UiToastContext } from './ui-toast.types';
     <div [class]="containerClass">
       <div class="min-w-0">
         @if (context.title) {
-          <p class="text-sm font-semibold text-gray-900">{{ context.title }}</p>
+          <p class="text-sm font-semibold text-surface-900">{{ context.title }}</p>
         }
-        <p class="text-sm text-gray-700">{{ context.message }}</p>
+        <p class="text-sm text-surface-700">{{ context.message }}</p>
       </div>
     </div>
   `,
@@ -28,13 +28,13 @@ export class UiToastComponent {
   protected readonly containerClass = cx(
     'rounded-lg border px-4 py-3 shadow-lg backdrop-blur-sm',
     'bg-white/95',
-    this.context.variant === 'success' && 'border-green-200',
-    this.context.variant === 'success' && 'ring-1 ring-green-100',
-    this.context.variant === 'error' && 'border-red-200',
-    this.context.variant === 'error' && 'ring-1 ring-red-100',
-    this.context.variant === 'warning' && 'border-amber-200',
-    this.context.variant === 'warning' && 'ring-1 ring-amber-100',
-    this.context.variant === 'info' && 'border-blue-200',
-    this.context.variant === 'info' && 'ring-1 ring-blue-100'
+    this.context.variant === 'success' && 'border-success-200',
+    this.context.variant === 'success' && 'ring-1 ring-success-100',
+    this.context.variant === 'error' && 'border-danger-200',
+    this.context.variant === 'error' && 'ring-1 ring-danger-100',
+    this.context.variant === 'warning' && 'border-warning-200',
+    this.context.variant === 'warning' && 'ring-1 ring-warning-100',
+    this.context.variant === 'info' && 'border-info-200',
+    this.context.variant === 'info' && 'ring-1 ring-info-100'
   );
 }

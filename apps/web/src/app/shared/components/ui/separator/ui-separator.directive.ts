@@ -12,5 +12,5 @@ import { cx } from '../_internal';
   },
 })
 export class UiSeparatorDirective {
-  protected readonly hostClass = cx('block shrink-0 border-0 bg-gray-200', 'h-px w-full');
+  protected readonly hostClass = cx('block shrink-0 border-0 bg-surface-200', 'h-px w-full');
 }

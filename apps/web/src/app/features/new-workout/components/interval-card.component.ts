@@ -1,14 +1,25 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, computed, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import type { Interval, IntensityLevel } from '@trkn-shared';
 import {
+  UiBadgeComponent,
   UiButtonDirective,
+  UiCardBodyDirective,
+  UiCardComponent,
+  UiCardFooterDirective,
+  UiCardHeaderDirective,
   UiInputDirective,
   UiSelectDirective,
-  UiSeparatorDirective,
   UiTextareaDirective,
 } from 'src/app/shared/components';
 import { RevisionInputComponent } from './revision-input.component';
+
+const INTENSITY_COLOR = {
+  low: 'success',
+  moderate: 'warning',
+  high: 'danger',
+  max: 'danger',
+} as const;
 
 @Component({
   selector: 'app-interval-card',
@@ -16,135 +27,137 @@ import { RevisionInputComponent } from './revision-input.component';
   imports: [
     FormsModule,
     RevisionInputComponent,
+    UiBadgeComponent,
     UiButtonDirective,
+    UiCardComponent,
+    UiCardHeaderDirective,
+    UiCardBodyDirective,
+    UiCardFooterDirective,
     UiSelectDirective,
     UiInputDirective,
     UiTextareaDirective,
-    UiSeparatorDirective,
   ],
   template: `
-    <div class="bg-white border border-gray-300 rounded-lg p-4">
-      <div class="flex items-center justify-between mb-3">
+    <ui-card padding="none">
+      <!-- Header -->
+      <div uiCardHeader color="cyan">
         <h3 class="text-lg font-semibold">Interval {{ interval().interval_number }}</h3>
         <div class="flex items-center gap-2">
           @if (!isEditing()) {
-            <span
-              class="px-3 py-1 rounded-full text-sm font-medium"
-              [class.bg-green-100]="interval().intensity === 'low'"
-              [class.text-green-800]="interval().intensity === 'low'"
-              [class.bg-yellow-100]="interval().intensity === 'moderate'"
-              [class.text-yellow-800]="interval().intensity === 'moderate'"
-              [class.bg-orange-100]="interval().intensity === 'high'"
-              [class.text-orange-800]="interval().intensity === 'high'"
-              [class.bg-red-100]="interval().intensity === 'max'"
-              [class.text-red-800]="interval().intensity === 'max'"
-            >
-              {{ formatIntensity(interval().intensity) }}
-            </span>
+            <ui-badge [color]="intensityColor()" variant="soft">{{ formatIntensity(interval().intensity) }}</ui-badge>
           }
-          <button type="button" uiButton (click)="toggleEdit()">
+          <button type="button" uiButton variant="ghost" color="surface" size="sm" (click)="toggleEdit()">
             {{ isEditing() ? 'Done' : 'Edit' }}
           </button>
         </div>
       </div>
 
-      @if (isEditing()) {
-        <div class="grid grid-cols-2 gap-4 mb-3">
-          <label class="block">
-            <span class="text-xs text-gray-500 uppercase tracking-wider mb-1 block">Modality</span>
-            <select uiSelect [ngModel]="editModality" (ngModelChange)="editModality = $event" class="px-2 py-1 text-sm">
-              @for (mod of modalities; track mod) {
-                <option [value]="mod">{{ formatModality(mod) }}</option>
-              }
-            </select>
-          </label>
-          <label class="block">
-            <span class="text-xs text-gray-500 uppercase tracking-wider mb-1 block">Intensity</span>
-            <select
-              uiSelect
-              [ngModel]="editIntensity"
-              (ngModelChange)="editIntensity = $event"
-              class="px-2 py-1 text-sm"
-            >
-              @for (level of intensityLevels; track level) {
-                <option [value]="level">{{ formatIntensity(level) }}</option>
-              }
-            </select>
-          </label>
-          <label class="block">
-            <span class="text-xs text-gray-500 uppercase tracking-wider mb-1 block">Work (seconds)</span>
-            <input
-              uiInput
-              type="number"
-              [ngModel]="editWorkDuration"
-              (ngModelChange)="editWorkDuration = $event"
-              min="1"
-              class="px-2 py-1 text-sm"
-            />
-          </label>
-          <label class="block">
-            <span class="text-xs text-gray-500 uppercase tracking-wider mb-1 block">Rest (seconds)</span>
-            <input
-              uiInput
-              type="number"
-              [ngModel]="editRestDuration"
-              (ngModelChange)="editRestDuration = $event"
-              min="0"
-              class="px-2 py-1 text-sm"
-            />
-          </label>
-        </div>
-        <label class="block">
-          <span class="text-xs text-gray-500 uppercase tracking-wider mb-1 block">Notes</span>
-          <textarea
-            uiTextarea
-            [ngModel]="editNotes"
-            (ngModelChange)="editNotes = $event"
-            placeholder="Interval notes (optional)"
-            rows="2"
-            class="text-sm"
-          ></textarea>
-        </label>
-      } @else {
-        <div class="grid grid-cols-2 gap-4 mb-3">
-          <div>
-            <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Modality</p>
-            <p class="text-sm font-medium text-gray-900">{{ formatModality(interval().modality) }}</p>
+      <!-- Body -->
+      <div uiCardBody>
+        @if (isEditing()) {
+          <div class="grid grid-cols-2 gap-4 mb-3">
+            <label class="block">
+              <span class="text-xs text-surface-500 uppercase tracking-wider mb-1 block">Modality</span>
+              <select
+                uiSelect
+                [ngModel]="editModality"
+                (ngModelChange)="editModality = $event"
+                class="px-2 py-1 text-sm"
+              >
+                @for (mod of modalities; track mod) {
+                  <option [value]="mod">{{ formatModality(mod) }}</option>
+                }
+              </select>
+            </label>
+            <label class="block">
+              <span class="text-xs text-surface-500 uppercase tracking-wider mb-1 block">Intensity</span>
+              <select
+                uiSelect
+                [ngModel]="editIntensity"
+                (ngModelChange)="editIntensity = $event"
+                class="px-2 py-1 text-sm"
+              >
+                @for (level of intensityLevels; track level) {
+                  <option [value]="level">{{ formatIntensity(level) }}</option>
+                }
+              </select>
+            </label>
+            <label class="block">
+              <span class="text-xs text-surface-500 uppercase tracking-wider mb-1 block">Work (seconds)</span>
+              <input
+                uiInput
+                type="number"
+                [ngModel]="editWorkDuration"
+                (ngModelChange)="editWorkDuration = $event"
+                min="1"
+                class="px-2 py-1 text-sm"
+              />
+            </label>
+            <label class="block">
+              <span class="text-xs text-surface-500 uppercase tracking-wider mb-1 block">Rest (seconds)</span>
+              <input
+                uiInput
+                type="number"
+                [ngModel]="editRestDuration"
+                (ngModelChange)="editRestDuration = $event"
+                min="0"
+                class="px-2 py-1 text-sm"
+              />
+            </label>
           </div>
-          <div>
-            <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Work</p>
-            <p class="text-sm font-medium text-gray-900">{{ formatDuration(interval().work_duration_seconds) }}</p>
+          <label class="block">
+            <span class="text-xs text-surface-500 uppercase tracking-wider mb-1 block">Notes</span>
+            <textarea
+              uiTextarea
+              [ngModel]="editNotes"
+              (ngModelChange)="editNotes = $event"
+              placeholder="Interval notes (optional)"
+              rows="2"
+              class="text-sm"
+            ></textarea>
+          </label>
+        } @else {
+          <div class="grid grid-cols-2 gap-4 mb-3">
+            <div>
+              <p class="text-xs text-surface-500 uppercase tracking-wider mb-1">Modality</p>
+              <p class="text-sm font-medium text-surface-900">{{ formatModality(interval().modality) }}</p>
+            </div>
+            <div>
+              <p class="text-xs text-surface-500 uppercase tracking-wider mb-1">Work</p>
+              <p class="text-sm font-medium text-surface-900">{{ formatDuration(interval().work_duration_seconds) }}</p>
+            </div>
+            <div>
+              <p class="text-xs text-surface-500 uppercase tracking-wider mb-1">Rest</p>
+              <p class="text-sm font-medium text-surface-900">{{ formatDuration(interval().rest_duration_seconds) }}</p>
+            </div>
+            <div>
+              <p class="text-xs text-surface-500 uppercase tracking-wider mb-1">Total Time</p>
+              <p class="text-sm font-medium text-surface-900">
+                {{ formatDuration(interval().work_duration_seconds + interval().rest_duration_seconds) }}
+              </p>
+            </div>
           </div>
-          <div>
-            <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Rest</p>
-            <p class="text-sm font-medium text-gray-900">{{ formatDuration(interval().rest_duration_seconds) }}</p>
-          </div>
-          <div>
-            <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Total Time</p>
-            <p class="text-sm font-medium text-gray-900">
-              {{ formatDuration(interval().work_duration_seconds + interval().rest_duration_seconds) }}
-            </p>
-          </div>
-        </div>
 
-        @if (interval().notes) {
-          <div class="p-3 bg-blue-50 border border-blue-200 rounded-md">
-            <p class="text-sm text-gray-700">{{ interval().notes }}</p>
-          </div>
+          @if (interval().notes) {
+            <div class="p-3 bg-surface-50 border border-surface-200 rounded-md">
+              <p class="text-sm text-surface-700">{{ interval().notes }}</p>
+            </div>
+          }
         }
-      }
-
-      <!-- Revision Input -->
-      <div class="mt-3">
-        <div uiSeparator class="mb-3"></div>
-        <app-revision-input
-          label="Revise Interval with AI"
-          placeholder="e.g. 'Make it harder' or 'Switch to rowing' or 'Add more rest'"
-          [isLoading]="isRevising()"
-          (submitted)="onRevisionSubmitted($event)"
-        />
       </div>
-    </div>
+
+      <!-- Footer: Revision Input -->
+      <div uiCardFooter muted>
+        <div class="w-full">
+          <app-revision-input
+            label="Revise Interval with AI"
+            placeholder="e.g. 'Make it harder' or 'Switch to rowing' or 'Add more rest'"
+            [isLoading]="isRevising()"
+            (submitted)="onRevisionSubmitted($event)"
+          />
+        </div>
+      </div>
+    </ui-card>
   `,
   styles: ``,
 })
@@ -152,6 +165,8 @@ export class IntervalCardComponent {
   interval = input.required<Interval>();
   intervalIndex = input.required<number>();
   isRevising = input<boolean>(false);
+
+  protected readonly intensityColor = computed(() => INTENSITY_COLOR[this.interval().intensity]);
 
   intervalChanged = output<Interval>();
   revisionRequested = output<{ index: number; text: string }>();

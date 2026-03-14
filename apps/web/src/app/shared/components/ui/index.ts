@@ -1,5 +1,6 @@
 export { UI_OVERLAY_PROVIDERS } from './providers';
 export { UiButtonDirective } from './button/ui-button.directive';
+export type { UiButtonVariant, UiButtonColor, UiButtonSize } from './button/ui-button.types';
 export { UiInputDirective } from './input/ui-input.directive';
 export { UiTextareaDirective } from './textarea/ui-textarea.directive';
 export { UiSelectDirective } from './select/ui-select.directive';
@@ -7,6 +8,9 @@ export { UiSeparatorDirective } from './separator/ui-separator.directive';
 export { UiCheckboxComponent } from './checkbox/ui-checkbox.component';
 export { UiSwitchComponent } from './switch/ui-switch.component';
 export { UiProgressComponent } from './progress/ui-progress.component';
+export type { UiProgressColor } from './progress/ui-progress.types';
+export { UiBadgeComponent } from './badge/ui-badge.component';
+export type { UiBadgeVariant, UiBadgeColor } from './badge/ui-badge.types';
 export { UiFormFieldDirective } from './form-field/ui-form-field.directive';
 export { UiLabelDirective } from './form-field/ui-label.directive';
 export { UiDescriptionDirective } from './form-field/ui-description.directive';
@@ -32,7 +36,14 @@ export { UiToastComponent } from './toast/ui-toast.component';
 export { UiToastService } from './toast/ui-toast.service';
 export type { UiToastShowOptions, UiToastVariant } from './toast/ui-toast.types';
 export { UiCardComponent } from './card/ui-card.component';
+export { UiCardAccentDirective } from './card/ui-card-accent.directive';
 export { UiCardHeaderDirective } from './card/ui-card-header.directive';
 export { UiCardBodyDirective } from './card/ui-card-body.directive';
 export { UiCardFooterDirective } from './card/ui-card-footer.directive';
-export type { UiCardVariant, UiCardPadding } from './card/ui-card.types';
+export type {
+  UiCardVariant,
+  UiCardPadding,
+  UiCardHeaderColor,
+  UiCardBodyPadding,
+  UiCardAccentColor,
+} from './card/ui-card.types';

@@ -1,1 +1,143 @@
 @import 'tailwindcss';
+@import 'iconoir/css/iconoir.css';
+
+@theme {
+  /* ── Font ── */
+  --font-sans:
+    'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
+
+  /* ── Primary / Sunshine Orange ── */
+  --color-primary-50: #fff8eb;
+  --color-primary-100: #ffefc6;
+  --color-primary-200: #ffdb88;
+  --color-primary-300: #ffc44a;
+  --color-primary-400: #ffad1f;
+  --color-primary-500: #ff9500;
+  --color-primary-600: #e07400;
+  --color-primary-700: #b85500;
+  --color-primary-800: #944010;
+  --color-primary-900: #7a3510;
+  --color-primary-950: #461a04;
+
+  /* ── Cyan / Bright Cyan ── */
+  --color-cyan-50: #ecfeff;
+  --color-cyan-100: #cffafe;
+  --color-cyan-200: #a5f3fc;
+  --color-cyan-300: #67e8f9;
+  --color-cyan-400: #22d3ee;
+  --color-cyan-500: #06b6d4;
+  --color-cyan-600: #0891b2;
+  --color-cyan-700: #0e7490;
+  --color-cyan-800: #155e75;
+  --color-cyan-900: #164e63;
+  --color-cyan-950: #083344;
+
+  /* ── Violet / Vivid Violet ── */
+  --color-violet-50: #f5f3ff;
+  --color-violet-100: #ede9fe;
+  --color-violet-200: #ddd6fe;
+  --color-violet-300: #c4b5fd;
+  --color-violet-400: #a78bfa;
+  --color-violet-500: #8b5cf6;
+  --color-violet-600: #7c3aed;
+  --color-violet-700: #6d28d9;
+  --color-violet-800: #5b21b6;
+  --color-violet-900: #4c1d95;
+  --color-violet-950: #2e1065;
+
+  /* ── Rose / Cool Pink-Rose ── */
+  --color-rose-50: #fff0f5;
+  --color-rose-100: #ffe1ec;
+  --color-rose-200: #ffc2d8;
+  --color-rose-300: #ff8cb8;
+  --color-rose-400: #f8569a;
+  --color-rose-500: #f0347a;
+  --color-rose-600: #d4186a;
+  --color-rose-700: #b00f55;
+  --color-rose-800: #910f44;
+  --color-rose-900: #7a1039;
+  --color-rose-950: #47051f;
+
+  /* ── Danger / Warm Red ── */
+  --color-danger-50: #fff4f2;
+  --color-danger-100: #ffe5e0;
+  --color-danger-200: #ffc5bc;
+  --color-danger-300: #ff9585;
+  --color-danger-400: #ff5e4b;
+  --color-danger-500: #e63a24;
+  --color-danger-600: #c22b18;
+  --color-danger-700: #9e2012;
+  --color-danger-800: #831c10;
+  --color-danger-900: #6e1a10;
+  --color-danger-950: #3c0906;
+
+  /* ── Success / Green ── */
+  --color-success-50: #f0fdf4;
+  --color-success-100: #dcfce7;
+  --color-success-200: #bbf7d0;
+  --color-success-300: #86efac;
+  --color-success-400: #4ade80;
+  --color-success-500: #22c55e;
+  --color-success-600: #16a34a;
+  --color-success-700: #15803d;
+  --color-success-800: #166534;
+  --color-success-900: #14532d;
+  --color-success-950: #052e16;
+
+  /* ── Warning / Amber ── */
+  --color-warning-50: #fffbeb;
+  --color-warning-100: #fef3c7;
+  --color-warning-200: #fde68a;
+  --color-warning-300: #fcd34d;
+  --color-warning-400: #fbbf24;
+  --color-warning-500: #f59e0b;
+  --color-warning-600: #d97706;
+  --color-warning-700: #b45309;
+  --color-warning-800: #92400e;
+  --color-warning-900: #78350f;
+  --color-warning-950: #451a03;
+
+  /* ── Info / Blue ── */
+  --color-info-50: #eff6ff;
+  --color-info-100: #dbeafe;
+  --color-info-200: #bfdbfe;
+  --color-info-300: #93c5fd;
+  --color-info-400: #60a5fa;
+  --color-info-500: #3b82f6;
+  --color-info-600: #2563eb;
+  --color-info-700: #1d4ed8;
+  --color-info-800: #1e40af;
+  --color-info-900: #1e3a8a;
+  --color-info-950: #172554;
+
+  /* ── Surface / Warm Neutrals ── */
+  --color-surface-50: #fafaf9;
+  --color-surface-100: #f5f5f4;
+  --color-surface-200: #e7e5e4;
+  --color-surface-300: #d6d3d1;
+  --color-surface-400: #a8a29e;
+  --color-surface-500: #78716c;
+  --color-surface-600: #57534e;
+  --color-surface-700: #44403c;
+  --color-surface-800: #292524;
+  --color-surface-900: #1c1917;
+  --color-surface-950: #0c0a09;
+
+  --radius-xs: calc(var(--spacing) * 1);
+  --radius-sm: calc(var(--spacing) * 1.5);
+  --radius-md: calc(var(--spacing) * 2.25);
+  --radius-lg: calc(var(--spacing) * 3);
+  --radius-xl: calc(var(--spacing) * 5);
+  --radius-2xl: calc(var(--spacing) * 7.5);
+  --radius-3xl: calc(var(--spacing) * 11.25);
+  --radius-4xl: calc(var(--spacing) * 17);
+}
+
+/* ── supports-base-select custom variant ── */
+/* Shorthand for @supports (appearance: base-select). Used by UiSelectDirective. */
+@custom-variant supports-base-select {
+  @supports (appearance: base-select) {
+    @slot;
+  }
+}

@@ -18,7 +18,7 @@ import { NgpAccordion } from 'ng-primitives/accordion';
     },
   ],
   host: {
-    class: 'block divide-y divide-gray-200 overflow-hidden rounded-lg border border-gray-200 bg-white',
+    class: 'block divide-y divide-surface-200 overflow-hidden rounded-lg border border-surface-200 bg-white',
     '[attr.data-ui]': "'accordion'",
   },
 })

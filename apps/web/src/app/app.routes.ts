@@ -10,6 +10,7 @@ export const routeTmpl = {
   Auth: () => `auth`,
   AuthLogin: () => `auth/login`,
   AuthRegister: () => `auth/register`,
+  StyleGuide: () => `style-guide`,
   Maintenance: () => `maintenance`,
   Profile: () => `profile`,
   Workouts: () => `workouts`,
@@ -61,6 +62,10 @@ export const routes: Routes = [
         path: routeTmpl.Auth(),
         canActivate: [maintenanceModeGuard],
         loadChildren: () => import('./features/auth/auth.routes').then((m) => m.authRoutes),
+      },
+      {
+        path: routeTmpl.StyleGuide(),
+        loadChildren: () => import('./features/style-guide/style-guide.routes').then((m) => m.styleGuideRoutes),
       },
     ],
   },
