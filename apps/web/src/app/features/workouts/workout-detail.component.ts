@@ -13,16 +13,16 @@ import { UiButtonDirective } from 'src/app/shared/components';
   template: `
     @if (workoutService.isLoadingWorkouts()) {
       <div class="flex justify-center py-12">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
       </div>
     } @else if (!workout()) {
       <div class="text-center py-12">
-        <p class="text-gray-500 mb-4">Workout not found.</p>
-        <a routerLink="/workouts" class="text-indigo-600 hover:text-indigo-800">Back to Workouts</a>
+        <p class="text-surface-500 mb-4">Workout not found.</p>
+        <a routerLink="/workouts" class="text-primary-600 hover:text-primary-800">Back to Workouts</a>
       </div>
     } @else {
       <div class="flex items-center justify-between mb-6">
-        <a routerLink="/workouts" class="text-sm text-gray-500 hover:text-gray-700">&larr; Back to Workouts</a>
+        <a routerLink="/workouts" class="text-sm text-surface-500 hover:text-surface-700">&larr; Back to Workouts</a>
         <div class="flex items-center gap-3">
           @if (!isEditing()) {
             <button type="button" uiButton (click)="isEditing.set(true)">Edit Workout</button>
@@ -33,28 +33,26 @@ import { UiButtonDirective } from 'src/app/shared/components';
         </div>
       </div>
 
-      <div class="bg-white rounded-lg shadow-md p-6">
-        <app-workout-editor
-          [workout]="workout()!"
-          [editable]="isEditing()"
-          [isRevising]="workoutService.isRevising()"
-          [revisingExerciseIndex]="workoutService.revisingExerciseIndex()"
-          [revisingIntervalIndex]="workoutService.revisingIntervalIndex()"
-          [error]="error()"
-          (workoutRevisionRequested)="onWorkoutRevisionRequested($event)"
-          (exerciseRevisionRequested)="onExerciseRevisionRequested($event)"
-          (intervalRevisionRequested)="onIntervalRevisionRequested($event)"
-          (workoutChanged)="onWorkoutChanged($event)"
-        />
+      <app-workout-editor
+        [workout]="workout()!"
+        [editable]="isEditing()"
+        [isRevising]="workoutService.isRevising()"
+        [revisingExerciseIndex]="workoutService.revisingExerciseIndex()"
+        [revisingIntervalIndex]="workoutService.revisingIntervalIndex()"
+        [error]="error()"
+        (workoutRevisionRequested)="onWorkoutRevisionRequested($event)"
+        (exerciseRevisionRequested)="onExerciseRevisionRequested($event)"
+        (intervalRevisionRequested)="onIntervalRevisionRequested($event)"
+        (workoutChanged)="onWorkoutChanged($event)"
+      />
 
-        @if (isEditing()) {
-          <div class="flex justify-end pt-6 border-t border-gray-200">
-            <button type="button" uiButton (click)="onSave()" [disabled]="workoutService.isSaving()">
-              {{ workoutService.isSaving() ? 'Saving...' : 'Save Changes' }}
-            </button>
-          </div>
-        }
-      </div>
+      @if (isEditing()) {
+        <div class="flex justify-end pt-6 border-t border-surface-200">
+          <button type="button" uiButton (click)="onSave()" [disabled]="workoutService.isSaving()">
+            {{ workoutService.isSaving() ? 'Saving...' : 'Save Changes' }}
+          </button>
+        </div>
+      }
     }
   `,
   host: {

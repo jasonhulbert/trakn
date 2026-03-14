@@ -1,9 +1,11 @@
 @import 'tailwindcss';
+@import 'iconoir/css/iconoir.css';
 
 @theme {
   /* ── Font ── */
-  --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
-    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-sans:
+    'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
 
   /* ── Primary / Sunshine Orange ── */
   --color-primary-50: #fff8eb;
@@ -121,4 +123,21 @@
   --color-surface-800: #292524;
   --color-surface-900: #1c1917;
   --color-surface-950: #0c0a09;
+
+  --radius-xs: calc(var(--spacing) * 1);
+  --radius-sm: calc(var(--spacing) * 1.5);
+  --radius-md: calc(var(--spacing) * 2.25);
+  --radius-lg: calc(var(--spacing) * 3);
+  --radius-xl: calc(var(--spacing) * 5);
+  --radius-2xl: calc(var(--spacing) * 7.5);
+  --radius-3xl: calc(var(--spacing) * 11.25);
+  --radius-4xl: calc(var(--spacing) * 17);
+}
+
+/* ── supports-base-select custom variant ── */
+/* Shorthand for @supports (appearance: base-select). Used by UiSelectDirective. */
+@custom-variant supports-base-select {
+  @supports (appearance: base-select) {
+    @slot;
+  }
 }

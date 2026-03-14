@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   imports: [],
   template: ` <ng-content></ng-content> `,
   host: {
-    class: 'flex flex-col flex-1 w-full overflow-y-auto overflow-x-hidden',
+    class: 'z-0 relative flex flex-col flex-1 w-full overflow-y-auto overflow-x-hidden',
   },
 })
 export class LayoutMain {}

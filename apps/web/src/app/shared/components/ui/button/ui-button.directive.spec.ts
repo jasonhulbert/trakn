@@ -8,27 +8,59 @@ import { UiButtonDirective } from './ui-button.directive';
   imports: [UiButtonDirective],
   template: `<button uiButton type="button">Save</button>`,
 })
-class ButtonHostComponent {}
+class DefaultButtonHostComponent {}
+
+@Component({
+  standalone: true,
+  imports: [UiButtonDirective],
+  template: `<button uiButton variant="outline" color="danger" size="sm" type="button">Delete</button>`,
+})
+class VariantButtonHostComponent {}
 
 describe('UiButtonDirective', () => {
-  let fixture: ComponentFixture<ButtonHostComponent>;
+  describe('default (solid primary md)', () => {
+    let fixture: ComponentFixture<DefaultButtonHostComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [ButtonHostComponent],
-    }).compileComponents();
+    beforeEach(async () => {
+      await TestBed.configureTestingModule({ imports: [DefaultButtonHostComponent] }).compileComponents();
+      fixture = TestBed.createComponent(DefaultButtonHostComponent);
+      fixture.detectChanges();
+      await fixture.whenStable();
+    });
 
-    fixture = TestBed.createComponent(ButtonHostComponent);
-    fixture.detectChanges();
-    await fixture.whenStable();
+    it('should apply baseline layout classes', () => {
+      const button: HTMLButtonElement = fixture.nativeElement.querySelector('button');
+      expect(button).toBeTruthy();
+      expect(button.classList.contains('inline-flex')).toBeTrue();
+      expect(button.getAttribute('data-ui')).toBe('button');
+      expect(button.getAttribute('data-variant')).toBe('solid');
+      expect(button.getAttribute('data-color')).toBe('primary');
+      expect(button.getAttribute('data-size')).toBe('md');
+    });
+
+    it('should apply primary solid color class', () => {
+      const button: HTMLButtonElement = fixture.nativeElement.querySelector('button');
+      expect(button.classList.contains('bg-primary-500')).toBeTrue();
+    });
   });
 
-  it('should apply baseline button classes', () => {
-    const button: HTMLButtonElement = fixture.nativeElement.querySelector('button');
+  describe('variant inputs', () => {
+    let fixture: ComponentFixture<VariantButtonHostComponent>;
 
-    expect(button).toBeTruthy();
-    expect(button.classList.contains('inline-flex')).toBeTrue();
-    expect(button.classList.contains('bg-blue-600')).toBeTrue();
-    expect(button.getAttribute('data-ui')).toBe('button');
+    beforeEach(async () => {
+      await TestBed.configureTestingModule({ imports: [VariantButtonHostComponent] }).compileComponents();
+      fixture = TestBed.createComponent(VariantButtonHostComponent);
+      fixture.detectChanges();
+      await fixture.whenStable();
+    });
+
+    it('should apply outline danger sm classes', () => {
+      const button: HTMLButtonElement = fixture.nativeElement.querySelector('button');
+      expect(button.getAttribute('data-variant')).toBe('outline');
+      expect(button.getAttribute('data-color')).toBe('danger');
+      expect(button.getAttribute('data-size')).toBe('sm');
+      expect(button.classList.contains('border-2')).toBeTrue();
+      expect(button.classList.contains('text-danger-600')).toBeTrue();
+    });
   });
 });

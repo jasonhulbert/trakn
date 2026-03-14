@@ -57,7 +57,7 @@ export class UiCheckboxComponent {
       UI_STYLES.radiusMd,
       UI_STYLES.focusVisibleRing,
       UI_STYLES.disabled,
-      (this.checkedState() || this.indeterminateState()) && 'border-blue-600 bg-blue-600'
+      (this.checkedState() || this.indeterminateState()) && 'border-primary-500 bg-primary-500'
     );
 
   protected readonly indicatorClass = () =>

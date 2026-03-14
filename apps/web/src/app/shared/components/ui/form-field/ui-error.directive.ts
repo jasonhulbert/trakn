@@ -6,7 +6,7 @@ import { NgpError } from 'ng-primitives/form-field';
   standalone: true,
   hostDirectives: [NgpError],
   host: {
-    class: 'text-sm text-red-600',
+    class: 'text-sm text-danger-600',
     '[attr.data-ui]': "'error'",
   },
 })

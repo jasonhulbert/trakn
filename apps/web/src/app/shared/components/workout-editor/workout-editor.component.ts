@@ -104,6 +104,7 @@ import { UiButtonDirective, UiInputDirective } from 'src/app/shared/components';
                 <app-exercise-card
                   [exercise]="exercise"
                   [exerciseIndex]="$index"
+                  workoutType="hypertrophy"
                   [isRevising]="isRevising() && revisingExerciseIndex() === $index"
                   (exerciseChanged)="onExerciseChanged($index, $event)"
                   (revisionRequested)="onExerciseRevisionRequested($event)"
@@ -128,6 +129,7 @@ import { UiButtonDirective, UiInputDirective } from 'src/app/shared/components';
                 <app-exercise-card
                   [exercise]="exercise"
                   [exerciseIndex]="$index"
+                  workoutType="strength"
                   [isRevising]="isRevising() && revisingExerciseIndex() === $index"
                   (exerciseChanged)="onExerciseChanged($index, $event)"
                   (revisionRequested)="onExerciseRevisionRequested($event)"

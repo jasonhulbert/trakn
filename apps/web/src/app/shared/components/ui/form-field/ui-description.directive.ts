@@ -6,7 +6,7 @@ import { NgpDescription } from 'ng-primitives/form-field';
   standalone: true,
   hostDirectives: [NgpDescription],
   host: {
-    class: 'text-sm text-gray-500',
+    class: 'text-sm text-surface-500',
     '[attr.data-ui]': "'description'",
   },
 })

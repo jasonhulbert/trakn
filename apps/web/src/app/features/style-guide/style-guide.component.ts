@@ -66,6 +66,10 @@ export class StyleGuideComponent {
     { path: 'overview', label: 'Overview' },
     { path: 'colors', label: 'Colors' },
     { path: 'typography', label: 'Typography' },
+    { path: 'spacing', label: 'Spacing' },
+    { path: 'iconography', label: 'Iconography' },
     { path: 'components', label: 'Components' },
+    { path: 'forms', label: 'Forms' },
+    { path: 'animation', label: 'Animation' },
   ];
 }

@@ -2,10 +2,10 @@ import { Component, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { WorkoutService } from '../../core/services/workout.service';
-import { WorkoutTypeSelectorComponent, WorkoutType } from './components/workout-type-selector.component';
+import { WorkoutTypeSelectorComponent } from './components/workout-type-selector.component';
 import { WorkoutParamsFormComponent } from './components/workout-params-form.component';
 import { WorkoutResultsComponent } from './components/workout-results.component';
-import type { WorkoutInput, WorkoutOutput } from '@trkn-shared';
+import type { WorkoutInput, WorkoutOutput, WorkoutType } from '@trkn-shared';
 
 @Component({
   selector: 'app-new-workout',

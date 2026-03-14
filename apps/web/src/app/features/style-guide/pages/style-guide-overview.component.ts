@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
+import { IconComponent } from '../../../shared/components/icon/icon.component';
 
 @Component({
   selector: 'app-style-guide-overview',
   standalone: true,
+  imports: [IconComponent],
   template: `
     <!-- Hero -->
     <div class="rounded-2xl bg-linear-to-br from-primary-400 via-primary-500 to-primary-600 p-10 md:p-14 mb-12">
@@ -18,7 +20,7 @@ import { Component } from '@angular/core';
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         @for (principle of principles; track principle.title) {
           <div class="rounded-xl border border-surface-200 bg-white p-6">
-            <div class="text-3xl mb-3">{{ principle.icon }}</div>
+            <div class="text-3xl mb-3"><app-icon [name]="principle.icon" class="w-8 h-8 text-primary-500" /></div>
             <h3 class="text-lg font-bold text-surface-900 mb-2">{{ principle.title }}</h3>
             <p class="text-sm text-surface-500 leading-relaxed">{{ principle.description }}</p>
           </div>
@@ -78,18 +80,18 @@ import { Component } from '@angular/core';
 export class StyleGuideOverviewComponent {
   readonly principles = [
     {
-      icon: '\u26A1',
+      icon: 'flash',
       title: 'Bold & Vibrant',
       description:
         'Strong colors, confident typography, and energetic visual treatments that reflect the energy of a great workout.',
     },
     {
-      icon: '\uD83E\uDD1D',
+      icon: 'peace-hand',
       title: 'Approachable',
       description: 'Warm tones, friendly shapes, and clear hierarchy that welcome beginners and reduce intimidation.',
     },
     {
-      icon: '\u2728',
+      icon: 'sparks',
       title: 'Minimal Friction',
       description: 'Clean layouts, generous spacing, and purposeful simplicity. Every element earns its place.',
     },

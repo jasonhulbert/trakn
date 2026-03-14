@@ -29,6 +29,24 @@ export const styleGuideRoutes: Routes = [
         loadComponent: () =>
           import('./pages/style-guide-components.component').then((m) => m.StyleGuideComponentsComponent),
       },
+      {
+        path: 'spacing',
+        loadComponent: () => import('./pages/style-guide-spacing.component').then((m) => m.StyleGuideSpacingComponent),
+      },
+      {
+        path: 'iconography',
+        loadComponent: () =>
+          import('./pages/style-guide-iconography.component').then((m) => m.StyleGuideIconographyComponent),
+      },
+      {
+        path: 'forms',
+        loadComponent: () => import('./pages/style-guide-forms.component').then((m) => m.StyleGuideFormsComponent),
+      },
+      {
+        path: 'animation',
+        loadComponent: () =>
+          import('./pages/style-guide-animation.component').then((m) => m.StyleGuideAnimationComponent),
+      },
     ],
   },
 ];
