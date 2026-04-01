@@ -6,7 +6,7 @@ import { NgpLabel } from 'ng-primitives/form-field';
   standalone: true,
   hostDirectives: [NgpLabel],
   host: {
-    class: 'block text-sm font-medium text-surface-700',
+    class: 'block text-sm font-medium text-fore-300',
     '[attr.data-ui]': "'label'",
   },
 })

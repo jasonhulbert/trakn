@@ -18,46 +18,46 @@ import type { WorkoutInput, WorkoutOutput, WorkoutType } from '@trkn-shared';
         <div class="flex items-center">
           <div
             class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium"
-            [class.bg-blue-600]="step() === 'type-selection'"
-            [class.text-white]="step() === 'type-selection'"
-            [class.bg-gray-300]="step() !== 'type-selection'"
-            [class.text-gray-600]="step() !== 'type-selection'"
+            [class.bg-accent-500]="step() === 'type-selection'"
+            [class.text-base-950]="step() === 'type-selection'"
+            [class.bg-base-600]="step() !== 'type-selection'"
+            [class.text-fore-500]="step() !== 'type-selection'"
           >
             1
           </div>
-          <span class="ml-2 text-sm font-medium" [class.text-blue-600]="step() === 'type-selection'"> Type </span>
+          <span class="ml-2 text-sm font-medium" [class.text-accent-500]="step() === 'type-selection'"> Type </span>
         </div>
 
-        <div class="w-12 h-0.5 bg-gray-300"></div>
+        <div class="w-12 h-0.5 bg-base-600"></div>
 
         <div class="flex items-center">
           <div
             class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium"
-            [class.bg-blue-600]="step() === 'params'"
-            [class.text-white]="step() === 'params'"
-            [class.bg-gray-300]="step() !== 'params'"
-            [class.text-gray-600]="step() !== 'params'"
+            [class.bg-accent-500]="step() === 'params'"
+            [class.text-base-950]="step() === 'params'"
+            [class.bg-base-600]="step() !== 'params'"
+            [class.text-fore-500]="step() !== 'params'"
           >
             2
           </div>
-          <span class="ml-2 text-sm font-medium" [class.text-blue-600]="step() === 'params'"> Parameters </span>
+          <span class="ml-2 text-sm font-medium" [class.text-accent-500]="step() === 'params'"> Parameters </span>
         </div>
 
-        <div class="w-12 h-0.5 bg-gray-300"></div>
+        <div class="w-12 h-0.5 bg-base-600"></div>
 
         <div class="flex items-center">
           <div
             class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium"
-            [class.bg-blue-600]="step() === 'generating' || step() === 'results'"
-            [class.text-white]="step() === 'generating' || step() === 'results'"
-            [class.bg-gray-300]="step() !== 'generating' && step() !== 'results'"
-            [class.text-gray-600]="step() !== 'generating' && step() !== 'results'"
+            [class.bg-accent-500]="step() === 'generating' || step() === 'results'"
+            [class.text-base-950]="step() === 'generating' || step() === 'results'"
+            [class.bg-base-600]="step() !== 'generating' && step() !== 'results'"
+            [class.text-fore-500]="step() !== 'generating' && step() !== 'results'"
           >
             3
           </div>
           <span
             class="ml-2 text-sm font-medium"
-            [class.text-blue-600]="step() === 'generating' || step() === 'results'"
+            [class.text-accent-500]="step() === 'generating' || step() === 'results'"
           >
             Workout
           </span>
@@ -82,9 +82,9 @@ import type { WorkoutInput, WorkoutOutput, WorkoutType } from '@trkn-shared';
       }
       @case ('generating') {
         <div class="flex flex-col items-center justify-center py-12">
-          <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mb-4"></div>
-          <h2 class="text-2xl font-semibold text-gray-900 mb-2">Generating Your Workout</h2>
-          <p class="text-gray-600">This may take up to 30 seconds...</p>
+          <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-accent-500 mb-4"></div>
+          <h2 class="text-2xl font-semibold text-fore-300 mb-2">Generating Your Workout</h2>
+          <p class="text-fore-500">This may take up to 30 seconds...</p>
         </div>
       }
       @case ('results') {

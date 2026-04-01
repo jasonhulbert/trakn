@@ -6,14 +6,14 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
   standalone: true,
   imports: [RouterOutlet, RouterLink, RouterLinkActive],
   template: `
-    <div class="flex min-h-screen bg-surface-50">
+    <div class="flex min-h-screen bg-bg">
       <!-- Sidebar -->
-      <aside class="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 border-r border-surface-200 bg-white">
+      <aside class="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0 border-r border-base-700 bg-base-900">
         <div class="flex-1 flex flex-col overflow-y-auto">
           <!-- Logo / Title -->
-          <div class="px-6 py-6 border-b border-surface-200">
-            <span class="text-2xl font-extrabold tracking-tight text-surface-900">trakn</span>
-            <span class="ml-1.5 text-xs font-medium text-surface-400 uppercase tracking-widest">style guide</span>
+          <div class="px-6 py-6 border-b border-base-700">
+            <span class="text-2xl font-extrabold tracking-tight text-fore-300">trakn</span>
+            <span class="ml-1.5 text-xs font-medium text-fore-700 uppercase tracking-widest">style guide</span>
           </div>
 
           <!-- Navigation -->
@@ -21,9 +21,9 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
             @for (link of navLinks; track link.path) {
               <a
                 [routerLink]="link.path"
-                routerLinkActive="bg-primary-50 text-primary-700 font-semibold"
+                routerLinkActive="bg-base-700 text-accent-500 font-semibold"
                 [routerLinkActiveOptions]="{ exact: false }"
-                class="flex items-center px-3 py-2.5 text-sm font-medium text-surface-600 rounded-lg hover:bg-surface-100 hover:text-surface-900 transition-colors"
+                class="flex items-center px-3 py-2.5 text-sm font-medium text-fore-500 rounded-lg hover:bg-base-800 hover:text-fore-300 transition-colors"
               >
                 {{ link.label }}
               </a>
@@ -33,18 +33,18 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
       </aside>
 
       <!-- Mobile header -->
-      <div class="md:hidden fixed top-0 left-0 right-0 z-10 bg-white border-b border-surface-200">
+      <div class="md:hidden fixed top-0 left-0 right-0 z-10 bg-base-900 border-b border-base-700">
         <div class="px-4 py-3 flex items-center gap-3">
-          <span class="text-lg font-extrabold tracking-tight text-surface-900">trakn</span>
-          <span class="text-xs font-medium text-surface-400 uppercase tracking-widest">style guide</span>
+          <span class="text-lg font-extrabold tracking-tight text-fore-300">trakn</span>
+          <span class="text-xs font-medium text-fore-700 uppercase tracking-widest">style guide</span>
         </div>
         <nav class="px-3 pb-3 flex gap-1 overflow-x-auto">
           @for (link of navLinks; track link.path) {
             <a
               [routerLink]="link.path"
-              routerLinkActive="bg-primary-50 text-primary-700 font-semibold"
+              routerLinkActive="bg-base-700 text-accent-500 font-semibold"
               [routerLinkActiveOptions]="{ exact: false }"
-              class="shrink-0 px-3 py-1.5 text-sm font-medium text-surface-600 rounded-lg hover:bg-surface-100 transition-colors"
+              class="shrink-0 px-3 py-1.5 text-sm font-medium text-fore-500 rounded-lg hover:bg-base-800 transition-colors"
             >
               {{ link.label }}
             </a>
@@ -68,6 +68,7 @@ export class StyleGuideComponent {
     { path: 'typography', label: 'Typography' },
     { path: 'spacing', label: 'Spacing' },
     { path: 'iconography', label: 'Iconography' },
+    { path: 'patterns', label: 'Patterns' },
     { path: 'components', label: 'Components' },
     { path: 'forms', label: 'Forms' },
     { path: 'animation', label: 'Animation' },

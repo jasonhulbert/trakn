@@ -6,7 +6,7 @@ import { NgpDialogTitle } from 'ng-primitives/dialog';
   standalone: true,
   hostDirectives: [NgpDialogTitle],
   host: {
-    class: 'text-lg font-semibold text-surface-900',
+    class: 'text-lg font-semibold text-fore-200',
     '[attr.data-ui]': "'dialog-title'",
   },
 })

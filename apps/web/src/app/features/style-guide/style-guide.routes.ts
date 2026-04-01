@@ -39,6 +39,11 @@ export const styleGuideRoutes: Routes = [
           import('./pages/style-guide-iconography.component').then((m) => m.StyleGuideIconographyComponent),
       },
       {
+        path: 'patterns',
+        loadComponent: () =>
+          import('./pages/style-guide-patterns.component').then((m) => m.StyleGuidePatternsComponent),
+      },
+      {
         path: 'forms',
         loadComponent: () => import('./pages/style-guide-forms.component').then((m) => m.StyleGuideFormsComponent),
       },

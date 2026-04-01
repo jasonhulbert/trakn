@@ -20,9 +20,9 @@ import {
 import { RevisionInputComponent } from './revision-input.component';
 
 const WORKOUT_TYPE_COLOR = {
-  hypertrophy: 'violet',
-  strength: 'rose',
-  conditioning: 'cyan',
+  hypertrophy: 'default',
+  strength: 'default',
+  conditioning: 'default',
 } as const;
 
 @Component({
@@ -55,7 +55,7 @@ const WORKOUT_TYPE_COLOR = {
         } @else {
           <h3 class="text-lg font-semibold">{{ exercise().exercise_name }}</h3>
         }
-        <button type="button" uiButton color="surface" variant="ghost" size="sm" (click)="toggleEdit()">
+        <button type="button" uiButton color="default" variant="ghost" size="sm" (click)="toggleEdit()">
           {{ isEditing() ? 'Done' : 'Edit' }}
         </button>
       </div>
@@ -75,8 +75,8 @@ const WORKOUT_TYPE_COLOR = {
             ></textarea>
           </div>
         } @else if (exercise().notes) {
-          <div class="mb-3 p-3 bg-surface-50 border border-surface-200 rounded-md">
-            <p class="text-sm text-surface-700">{{ exercise().notes }}</p>
+          <div class="mb-3 p-3 bg-base-800 border border-base-700 rounded-md">
+            <p class="text-sm text-fore-300">{{ exercise().notes }}</p>
           </div>
         }
 
@@ -115,7 +115,7 @@ const WORKOUT_TYPE_COLOR = {
                           (ngModelChange)="updateSetField($index, 'suggested_weight', $event)"
                           class="w-16"
                         />
-                        <span class="text-xs text-surface-500">{{ set.weight_unit || 'lbs' }}</span>
+                        <span class="text-xs text-fore-600">{{ set.weight_unit || 'lbs' }}</span>
                       </div>
                     </td>
                     <td uiTableCell>
@@ -128,7 +128,7 @@ const WORKOUT_TYPE_COLOR = {
                           min="0"
                           class="w-16"
                         />
-                        <span class="text-xs text-surface-500">sec</span>
+                        <span class="text-xs text-fore-600">sec</span>
                       </div>
                     </td>
                   } @else {
@@ -137,7 +137,7 @@ const WORKOUT_TYPE_COLOR = {
                       @if (set.suggested_weight !== undefined) {
                         {{ set.suggested_weight }} {{ set.weight_unit || 'lbs' }}
                       } @else {
-                        <span class="text-surface-400">&mdash;</span>
+                        <span class="text-fore-700">&mdash;</span>
                       }
                     </td>
                     <td uiTableCell>{{ formatRestDuration(set.rest_duration_seconds) }}</td>
@@ -158,7 +158,7 @@ const WORKOUT_TYPE_COLOR = {
                   </tr>
                 } @else if (set.notes) {
                   <tr uiTableRow>
-                    <td colspan="4" class="px-4 py-2 text-xs text-surface-500 italic">{{ set.notes }}</td>
+                    <td colspan="4" class="px-4 py-2 text-xs text-fore-600 italic">{{ set.notes }}</td>
                   </tr>
                 }
               }

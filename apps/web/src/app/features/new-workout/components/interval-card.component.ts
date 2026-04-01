@@ -15,8 +15,8 @@ import {
 import { RevisionInputComponent } from './revision-input.component';
 
 const INTENSITY_COLOR = {
-  low: 'success',
-  moderate: 'warning',
+  low: 'default',
+  moderate: 'default',
   high: 'danger',
   max: 'danger',
 } as const;
@@ -40,13 +40,13 @@ const INTENSITY_COLOR = {
   template: `
     <ui-card padding="none">
       <!-- Header -->
-      <div uiCardHeader color="cyan">
+      <div uiCardHeader color="default">
         <h3 class="text-lg font-semibold">Interval {{ interval().interval_number }}</h3>
         <div class="flex items-center gap-2">
           @if (!isEditing()) {
             <ui-badge [color]="intensityColor()" variant="soft">{{ formatIntensity(interval().intensity) }}</ui-badge>
           }
-          <button type="button" uiButton variant="ghost" color="surface" size="sm" (click)="toggleEdit()">
+          <button type="button" uiButton variant="ghost" color="default" size="sm" (click)="toggleEdit()">
             {{ isEditing() ? 'Done' : 'Edit' }}
           </button>
         </div>
@@ -57,7 +57,7 @@ const INTENSITY_COLOR = {
         @if (isEditing()) {
           <div class="grid grid-cols-2 gap-4 mb-3">
             <label class="block">
-              <span class="text-xs text-surface-500 uppercase tracking-wider mb-1 block">Modality</span>
+              <span class="text-xs text-fore-600 uppercase tracking-wider mb-1 block">Modality</span>
               <select
                 uiSelect
                 [ngModel]="editModality"
@@ -70,7 +70,7 @@ const INTENSITY_COLOR = {
               </select>
             </label>
             <label class="block">
-              <span class="text-xs text-surface-500 uppercase tracking-wider mb-1 block">Intensity</span>
+              <span class="text-xs text-fore-600 uppercase tracking-wider mb-1 block">Intensity</span>
               <select
                 uiSelect
                 [ngModel]="editIntensity"
@@ -83,7 +83,7 @@ const INTENSITY_COLOR = {
               </select>
             </label>
             <label class="block">
-              <span class="text-xs text-surface-500 uppercase tracking-wider mb-1 block">Work (seconds)</span>
+              <span class="text-xs text-fore-600 uppercase tracking-wider mb-1 block">Work (seconds)</span>
               <input
                 uiInput
                 type="number"
@@ -94,7 +94,7 @@ const INTENSITY_COLOR = {
               />
             </label>
             <label class="block">
-              <span class="text-xs text-surface-500 uppercase tracking-wider mb-1 block">Rest (seconds)</span>
+              <span class="text-xs text-fore-600 uppercase tracking-wider mb-1 block">Rest (seconds)</span>
               <input
                 uiInput
                 type="number"
@@ -106,7 +106,7 @@ const INTENSITY_COLOR = {
             </label>
           </div>
           <label class="block">
-            <span class="text-xs text-surface-500 uppercase tracking-wider mb-1 block">Notes</span>
+            <span class="text-xs text-fore-600 uppercase tracking-wider mb-1 block">Notes</span>
             <textarea
               uiTextarea
               [ngModel]="editNotes"
@@ -119,28 +119,28 @@ const INTENSITY_COLOR = {
         } @else {
           <div class="grid grid-cols-2 gap-4 mb-3">
             <div>
-              <p class="text-xs text-surface-500 uppercase tracking-wider mb-1">Modality</p>
-              <p class="text-sm font-medium text-surface-900">{{ formatModality(interval().modality) }}</p>
+              <p class="text-xs text-fore-600 uppercase tracking-wider mb-1">Modality</p>
+              <p class="text-sm font-medium text-fore-300">{{ formatModality(interval().modality) }}</p>
             </div>
             <div>
-              <p class="text-xs text-surface-500 uppercase tracking-wider mb-1">Work</p>
-              <p class="text-sm font-medium text-surface-900">{{ formatDuration(interval().work_duration_seconds) }}</p>
+              <p class="text-xs text-fore-600 uppercase tracking-wider mb-1">Work</p>
+              <p class="text-sm font-medium text-fore-300">{{ formatDuration(interval().work_duration_seconds) }}</p>
             </div>
             <div>
-              <p class="text-xs text-surface-500 uppercase tracking-wider mb-1">Rest</p>
-              <p class="text-sm font-medium text-surface-900">{{ formatDuration(interval().rest_duration_seconds) }}</p>
+              <p class="text-xs text-fore-600 uppercase tracking-wider mb-1">Rest</p>
+              <p class="text-sm font-medium text-fore-300">{{ formatDuration(interval().rest_duration_seconds) }}</p>
             </div>
             <div>
-              <p class="text-xs text-surface-500 uppercase tracking-wider mb-1">Total Time</p>
-              <p class="text-sm font-medium text-surface-900">
+              <p class="text-xs text-fore-600 uppercase tracking-wider mb-1">Total Time</p>
+              <p class="text-sm font-medium text-fore-300">
                 {{ formatDuration(interval().work_duration_seconds + interval().rest_duration_seconds) }}
               </p>
             </div>
           </div>
 
           @if (interval().notes) {
-            <div class="p-3 bg-surface-50 border border-surface-200 rounded-md">
-              <p class="text-sm text-surface-700">{{ interval().notes }}</p>
+            <div class="p-3 bg-base-800 border border-base-700 rounded-md">
+              <p class="text-sm text-fore-300">{{ interval().notes }}</p>
             </div>
           }
         }

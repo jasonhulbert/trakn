@@ -4,13 +4,8 @@ import { cx, UI_STYLES } from '../_internal';
 import type { UiProgressColor } from './ui-progress.types';
 
 const INDICATOR_COLORS: Record<UiProgressColor, string> = {
-  primary: 'bg-primary-500',
-  success: 'bg-success-500',
+  accent: 'bg-accent-500',
   danger: 'bg-danger-500',
-  warning: 'bg-warning-500',
-  cyan: 'bg-cyan-500',
-  violet: 'bg-violet-500',
-  rose: 'bg-rose-500',
 };
 
 @Component({
@@ -42,7 +37,7 @@ export class UiProgressComponent {
   min = input(0, { transform: numberAttribute });
   max = input(100, { transform: numberAttribute });
   ariaLabel = input('Progress');
-  color = input<UiProgressColor>('primary');
+  color = input<UiProgressColor>('accent');
 
   protected readonly isIndeterminate = computed(() => this.value() === null);
 
@@ -63,11 +58,11 @@ export class UiProgressComponent {
   });
 
   protected readonly rootClass = cx('block w-full', UI_STYLES.focusVisibleRing);
-  protected readonly trackClass = cx('relative h-2 w-full overflow-hidden rounded-full bg-surface-200');
+  protected readonly trackClass = cx('relative h-2 w-full overflow-hidden rounded-full bg-base-700');
   protected readonly indicatorClass = computed(() =>
     cx(
       'absolute inset-y-0 left-0 rounded-full transition-[width,transform]',
-      INDICATOR_COLORS[this.color()] ?? INDICATOR_COLORS.primary,
+      INDICATOR_COLORS[this.color()] ?? INDICATOR_COLORS.accent,
       this.isIndeterminate() && 'animate-pulse'
     )
   );

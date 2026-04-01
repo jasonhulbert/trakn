@@ -38,7 +38,7 @@ import {
   template: `
     @if (userProfileService.isLoading()) {
       <div class="text-center">
-        <p class="text-gray-600">Loading profile...</p>
+        <p class="text-fore-500">Loading profile...</p>
       </div>
     } @else {
       <ui-card [variant]="'elevated'" [padding]="'none'">
@@ -55,7 +55,7 @@ import {
                 id="age"
                 formControlName="age"
                 type="number"
-                [class.border-red-300]="profileForm.get('age')?.touched && profileForm.get('age')?.invalid"
+                [class.border-danger-500]="profileForm.get('age')?.touched && profileForm.get('age')?.invalid"
               />
               @if (getFieldError('age')) {
                 <p uiError>{{ getFieldError('age') }}</p>
@@ -72,7 +72,7 @@ import {
                   formControlName="weight"
                   type="number"
                   step="0.1"
-                  [class.border-red-300]="profileForm.get('weight')?.touched && profileForm.get('weight')?.invalid"
+                  [class.border-danger-500]="profileForm.get('weight')?.touched && profileForm.get('weight')?.invalid"
                 />
                 @if (getFieldError('weight')) {
                   <p uiError>{{ getFieldError('weight') }}</p>
@@ -102,7 +102,7 @@ import {
             <!-- Physical Limitations (Optional) -->
             <div uiFormField>
               <label uiLabel for="physical_limitations">
-                Physical Limitations <span class="text-gray-500 font-normal">(optional)</span>
+                Physical Limitations <span class="text-fore-600 font-normal">(optional)</span>
               </label>
               <textarea
                 uiTextarea

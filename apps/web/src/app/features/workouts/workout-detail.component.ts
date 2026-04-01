@@ -13,16 +13,16 @@ import { UiButtonDirective } from 'src/app/shared/components';
   template: `
     @if (workoutService.isLoadingWorkouts()) {
       <div class="flex justify-center py-12">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500"></div>
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-accent-500"></div>
       </div>
     } @else if (!workout()) {
       <div class="text-center py-12">
-        <p class="text-surface-500 mb-4">Workout not found.</p>
-        <a routerLink="/workouts" class="text-primary-600 hover:text-primary-800">Back to Workouts</a>
+        <p class="text-fore-600 mb-4">Workout not found.</p>
+        <a routerLink="/workouts" class="text-accent-500 hover:text-accent-400">Back to Workouts</a>
       </div>
     } @else {
       <div class="flex items-center justify-between mb-6">
-        <a routerLink="/workouts" class="text-sm text-surface-500 hover:text-surface-700">&larr; Back to Workouts</a>
+        <a routerLink="/workouts" class="text-sm text-fore-600 hover:text-fore-300">&larr; Back to Workouts</a>
         <div class="flex items-center gap-3">
           @if (!isEditing()) {
             <button type="button" uiButton (click)="isEditing.set(true)">Edit Workout</button>
@@ -47,7 +47,7 @@ import { UiButtonDirective } from 'src/app/shared/components';
       />
 
       @if (isEditing()) {
-        <div class="flex justify-end pt-6 border-t border-surface-200">
+        <div class="flex justify-end pt-6 border-t border-base-700">
           <button type="button" uiButton (click)="onSave()" [disabled]="workoutService.isSaving()">
             {{ workoutService.isSaving() ? 'Saving...' : 'Save Changes' }}
           </button>

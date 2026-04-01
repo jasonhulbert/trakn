@@ -53,11 +53,11 @@ export class UiCheckboxComponent {
     cx(
       'inline-flex h-5 w-5 shrink-0 items-center justify-center',
       UI_STYLES.borderBase,
-      'bg-white text-white transition-colors',
+      'bg-base-800 text-white transition-colors',
       UI_STYLES.radiusMd,
       UI_STYLES.focusVisibleRing,
       UI_STYLES.disabled,
-      (this.checkedState() || this.indeterminateState()) && 'border-primary-500 bg-primary-500'
+      (this.checkedState() || this.indeterminateState()) && 'border-accent-500 bg-accent-500'
     );
 
   protected readonly indicatorClass = () =>

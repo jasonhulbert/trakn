@@ -1,5 +1,4 @@
-import { NgClass } from '@angular/common';
-import { Component, HostBinding, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 
 export enum LayoutPadding {
   None = 'none',
@@ -15,13 +14,10 @@ export enum LayoutPadding {
     <ng-content select="app-layout-main"></ng-content>
   `,
   host: {
-    class: 'flex flex-col w-full min-h-screen mx-auto',
+    class: 'flex flex-col w-full min-w-screen min-h-screen mx-auto bg-bg text-fg',
   },
 })
 export class Layout {
-  @HostBinding('class')
-  protected readonly class = 'block min-w-screen min-h-screen bg-surface-50';
-
   contained = input(false);
 
   padding = input<LayoutPadding | `${LayoutPadding}`>(LayoutPadding.Medium);
