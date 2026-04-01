@@ -18,7 +18,7 @@ class DefaultButtonHostComponent {}
 class VariantButtonHostComponent {}
 
 describe('UiButtonDirective', () => {
-  describe('default (solid primary md)', () => {
+  describe('default (solid default md)', () => {
     let fixture: ComponentFixture<DefaultButtonHostComponent>;
 
     beforeEach(async () => {
@@ -34,13 +34,13 @@ describe('UiButtonDirective', () => {
       expect(button.classList.contains('inline-flex')).toBeTrue();
       expect(button.getAttribute('data-ui')).toBe('button');
       expect(button.getAttribute('data-variant')).toBe('solid');
-      expect(button.getAttribute('data-color')).toBe('primary');
+      expect(button.getAttribute('data-color')).toBe('default');
       expect(button.getAttribute('data-size')).toBe('md');
     });
 
-    it('should apply primary solid color class', () => {
+    it('should apply default solid color class', () => {
       const button: HTMLButtonElement = fixture.nativeElement.querySelector('button');
-      expect(button.classList.contains('bg-primary-500')).toBeTrue();
+      expect(button.classList.contains('bg-base-700')).toBeTrue();
     });
   });
 
@@ -60,7 +60,7 @@ describe('UiButtonDirective', () => {
       expect(button.getAttribute('data-color')).toBe('danger');
       expect(button.getAttribute('data-size')).toBe('sm');
       expect(button.classList.contains('border-2')).toBeTrue();
-      expect(button.classList.contains('text-danger-600')).toBeTrue();
+      expect(button.classList.contains('text-danger-400')).toBeTrue();
     });
   });
 });

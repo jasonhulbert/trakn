@@ -16,7 +16,7 @@
     "add:shared": "pnpm --filter trkn-shared add",
     "add:shared:dev": "pnpm --filter trkn-shared add -D",
     "dev:web": "node scripts/set-env.js && pnpm --filter trkn-web start",
-    "dev:vercel": "vercel dev",
+    "dev:vercel": "vercel dev --yes",
     "dev:all": "concurrently \"pnpm dev:web\" \"pnpm dev:vercel\"",
     "build:web": "node scripts/set-env.js && pnpm --filter trkn-web build",
     "build:vercel": "pnpm --filter trkn-api build",

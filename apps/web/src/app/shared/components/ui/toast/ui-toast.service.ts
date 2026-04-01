@@ -19,21 +19,21 @@ export class UiToastService {
       context: {
         title: options.title,
         message: options.message,
-        variant: options.variant ?? 'info',
+        variant: options.variant ?? 'default',
       },
     });
   }
 
   info(message: string, title?: string): UiToastHandle {
-    return this.show({ message, title, variant: 'info' });
+    return this.show({ message, title, variant: 'default' });
   }
 
   success(message: string, title?: string): UiToastHandle {
-    return this.show({ message, title, variant: 'success' });
+    return this.show({ message, title, variant: 'default' });
   }
 
   warning(message: string, title?: string): UiToastHandle {
-    return this.show({ message, title, variant: 'warning' });
+    return this.show({ message, title, variant: 'default' });
   }
 
   error(message: string, title?: string): UiToastHandle {

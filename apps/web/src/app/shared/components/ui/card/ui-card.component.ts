@@ -3,9 +3,9 @@ import { cx } from '../_internal';
 import type { UiCardPadding, UiCardVariant } from './ui-card.types';
 
 const VARIANT_CLASSES: Record<UiCardVariant, string> = {
-  default: 'relative bg-white border border-surface-300 rounded-xl overflow-hidden',
-  outline: 'relative border border-surface-200 rounded-xl overflow-hidden bg-transparent',
-  elevated: 'relative bg-white rounded-xl overflow-hidden shadow-md',
+  default: 'relative bg-base-900 border border-border rounded-xl overflow-hidden',
+  outline: 'relative border border-border rounded-xl overflow-hidden bg-transparent',
+  elevated: 'relative bg-base-800 rounded-xl overflow-hidden shadow-md shadow-black/30',
   ghost: 'relative rounded-xl overflow-hidden',
 };
 

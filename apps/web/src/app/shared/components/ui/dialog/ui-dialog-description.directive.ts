@@ -6,7 +6,7 @@ import { NgpDialogDescription } from 'ng-primitives/dialog';
   standalone: true,
   hostDirectives: [NgpDialogDescription],
   host: {
-    class: 'mt-1 text-sm text-surface-600',
+    class: 'mt-1 text-sm text-fore-500',
     '[attr.data-ui]': "'dialog-description'",
   },
 })

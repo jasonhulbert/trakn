@@ -13,19 +13,19 @@ import { UiButtonDirective, UiCardComponent } from 'src/app/shared/components';
   template: `
     <div class="flex items-center justify-between mb-6">
       <div>
-        <a routerLink="/" class="text-sm text-gray-500 hover:text-gray-700 mb-1 inline-block">&larr; Back to Home</a>
-        <h2 class="text-2xl font-bold text-gray-900">My Workouts</h2>
+        <a routerLink="/" class="text-sm text-fore-600 hover:text-fore-300 mb-1 inline-block">&larr; Back to Home</a>
+        <h2 class="text-2xl font-bold text-fore-300">My Workouts</h2>
       </div>
       <a routerLink="/workouts/new" uiButton>Create New Workout</a>
     </div>
 
     @if (workoutService.isLoadingWorkouts()) {
       <div class="flex justify-center py-12">
-        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600"></div>
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-accent-500"></div>
       </div>
     } @else if (workoutService.workouts().length === 0) {
-      <div class="text-center py-12 bg-white rounded-lg shadow-sm border border-gray-200">
-        <p class="text-gray-500 mb-4">No workouts yet — create your first!</p>
+      <div class="text-center py-12 bg-base-800 rounded-lg border border-base-700">
+        <p class="text-fore-600 mb-4">No workouts yet — create your first!</p>
         <a routerLink="/workouts/new" uiButton>Create New Workout</a>
       </div>
     } @else {
@@ -35,12 +35,12 @@ import { UiButtonDirective, UiCardComponent } from 'src/app/shared/components';
           <ui-card class="flex items-center justify-between">
             <a [routerLink]="['/workouts', workout.id]" class="flex-1 min-w-0">
               <div class="flex items-center gap-3 mb-1">
-                <span class="px-2 py-0.5 text-xs font-medium rounded-full" [class]="getTypeBadgeClass(workout)">
+                <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-base-700 text-fore-300">
                   {{ formatWorkoutType(workout.workout_type) }}
                 </span>
-                <span class="text-sm text-gray-500">{{ workout.created_at | date: 'MMM d, y' }}</span>
+                <span class="text-sm text-fore-600">{{ workout.created_at | date: 'MMM d, y' }}</span>
               </div>
-              <div class="flex items-center gap-4 text-sm text-gray-600">
+              <div class="flex items-center gap-4 text-sm text-fore-500">
                 <span>{{ workout.data.total_duration_minutes }} min</span>
                 <span>{{ getDifficultyLabel(workout.data.difficulty_rating) }}</span>
                 @if (workout.workout_type !== 'conditioning' && $any(workout.data).target_muscle_group) {
@@ -106,19 +106,6 @@ export class WorkoutsComponent {
 
   formatModality(modality: string): string {
     return modality.replace(/_/g, ' ');
-  }
-
-  getTypeBadgeClass(workout: WorkoutRow): string {
-    switch (workout.workout_type) {
-      case 'hypertrophy':
-        return 'bg-purple-100 text-purple-800';
-      case 'strength':
-        return 'bg-red-100 text-red-800';
-      case 'conditioning':
-        return 'bg-green-100 text-green-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
   }
 
   async onDelete(workout: WorkoutRow, event: Event): Promise<void> {

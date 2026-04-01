@@ -14,70 +14,70 @@ interface IconGroup {
   selector: 'app-style-guide-iconography',
   standalone: true,
   template: `
-    <h1 class="text-3xl font-extrabold text-surface-900 tracking-tight mb-2">Iconography</h1>
-    <p class="text-surface-500 mb-10 max-w-2xl">
+    <h1 class="text-3xl font-extrabold text-fore-300 tracking-tight mb-2">Iconography</h1>
+    <p class="text-fore-600 mb-10 max-w-2xl">
       Icons are provided by
-      <a href="https://iconoir.com" target="_blank" class="text-primary-600 hover:underline font-medium">Iconoir</a>, a
+      <a href="https://iconoir.com" target="_blank" class="text-accent-500 hover:underline font-medium">Iconoir</a>, a
       clean open-source icon library with a consistent stroke-based aesthetic.
     </p>
 
     <!-- Usage -->
     <section class="mb-12">
-      <h2 class="text-xl font-bold text-surface-900 mb-2">Usage</h2>
-      <p class="text-sm text-surface-500 mb-6">
+      <h2 class="text-xl font-bold text-fore-300 mb-2">Usage</h2>
+      <p class="text-sm text-fore-600 mb-6">
         Iconoir is loaded via CSS. Apply the
-        <code class="text-xs font-mono bg-surface-100 text-surface-700 px-1.5 py-0.5 rounded"
+        <code class="text-xs font-mono bg-base-700 text-fore-300 px-1.5 py-0.5 rounded"
           >iconoir-{{ '{' }}name{{ '}' }}</code
         >
         class to any inline element.
       </p>
-      <div class="rounded-xl border border-surface-200 bg-white p-6 space-y-4">
+      <div class="rounded-xl border border-base-700 bg-base-800 p-6 space-y-4">
         <!-- HTML example -->
         <div>
-          <p class="text-xs font-semibold text-surface-400 uppercase tracking-wider mb-3">HTML</p>
-          <div class="bg-surface-900 text-surface-100 rounded-lg px-5 py-4 font-mono text-sm leading-relaxed">
-            <span class="text-surface-400">&lt;!-- Basic usage --&gt;</span><br />
-            &lt;<span class="text-cyan-400">i</span> <span class="text-primary-300">class</span>=<span
-              class="text-success-400"
+          <p class="text-xs font-semibold text-fore-700 uppercase tracking-wider mb-3">HTML</p>
+          <div class="bg-base-950 text-fore-200 rounded-lg px-5 py-4 font-mono text-sm leading-relaxed">
+            <span class="text-fore-700">&lt;!-- Basic usage --&gt;</span><br />
+            &lt;<span class="text-accent-400">i</span> <span class="text-accent-300">class</span>=<span
+              class="text-accent-400"
               >"iconoir-running"</span
-            >&gt;&lt;/<span class="text-cyan-400">i</span>&gt;<br /><br />
-            <span class="text-surface-400">&lt;!-- With size and color --&gt;</span><br />
-            &lt;<span class="text-cyan-400">i</span> <span class="text-primary-300">class</span>=<span
-              class="text-success-400"
+            >&gt;&lt;/<span class="text-accent-400">i</span>&gt;<br /><br />
+            <span class="text-fore-700">&lt;!-- With size and color --&gt;</span><br />
+            &lt;<span class="text-accent-400">i</span> <span class="text-accent-300">class</span>=<span
+              class="text-accent-400"
               >"iconoir-heart text-2xl text-rose-500"</span
-            >&gt;&lt;/<span class="text-cyan-400">i</span>&gt;<br /><br />
-            <span class="text-surface-400">&lt;!-- Icon + label --&gt;</span><br />
-            &lt;<span class="text-cyan-400">span</span> <span class="text-primary-300">class</span>=<span
-              class="text-success-400"
+            >&gt;&lt;/<span class="text-accent-400">i</span>&gt;<br /><br />
+            <span class="text-fore-700">&lt;!-- Icon + label --&gt;</span><br />
+            &lt;<span class="text-accent-400">span</span> <span class="text-accent-300">class</span>=<span
+              class="text-accent-400"
               >"flex items-center gap-2"</span
             >&gt;<br />
-            &nbsp;&nbsp;&lt;<span class="text-cyan-400">i</span> <span class="text-primary-300">class</span>=<span
-              class="text-success-400"
+            &nbsp;&nbsp;&lt;<span class="text-accent-400">i</span> <span class="text-accent-300">class</span>=<span
+              class="text-accent-400"
               >"iconoir-timer"</span
-            >&gt;&lt;/<span class="text-cyan-400">i</span>&gt;<br />
-            &nbsp;&nbsp;&lt;<span class="text-cyan-400">span</span>&gt;30 min&lt;/<span class="text-cyan-400">span</span
+            >&gt;&lt;/<span class="text-accent-400">i</span>&gt;<br />
+            &nbsp;&nbsp;&lt;<span class="text-accent-400">span</span>&gt;30 min&lt;/<span class="text-accent-400">span</span
             >&gt;<br />
-            &lt;/<span class="text-cyan-400">span</span>&gt;
+            &lt;/<span class="text-accent-400">span</span>&gt;
           </div>
         </div>
 
         <!-- Live preview -->
         <div>
-          <p class="text-xs font-semibold text-surface-400 uppercase tracking-wider mb-3">Live Preview</p>
+          <p class="text-xs font-semibold text-fore-700 uppercase tracking-wider mb-3">Live Preview</p>
           <div class="flex flex-wrap items-center gap-6">
-            <span class="flex items-center gap-2 text-sm text-surface-700">
+            <span class="flex items-center gap-2 text-sm text-fore-300">
               <span class="iconoir-running text-xl"></span>
               Running
             </span>
-            <span class="flex items-center gap-2 text-sm text-rose-600">
+            <span class="flex items-center gap-2 text-sm text-accent-500">
               <span class="iconoir-heart text-xl"></span>
               Heart rate
             </span>
-            <span class="flex items-center gap-2 text-sm text-surface-700">
+            <span class="flex items-center gap-2 text-sm text-fore-300">
               <span class="iconoir-timer text-xl"></span>
               30 min
             </span>
-            <span class="flex items-center gap-2 text-sm text-primary-600 font-semibold">
+            <span class="flex items-center gap-2 text-sm text-accent-500 font-semibold">
               <span class="iconoir-plus-circle text-xl"></span>
               New workout
             </span>
@@ -88,19 +88,19 @@ interface IconGroup {
 
     <!-- Sizes -->
     <section class="mb-12">
-      <h2 class="text-xl font-bold text-surface-900 mb-2">Sizes</h2>
-      <p class="text-sm text-surface-500 mb-6">
+      <h2 class="text-xl font-bold text-fore-300 mb-2">Sizes</h2>
+      <p class="text-sm text-fore-600 mb-6">
         Icon size is controlled by
-        <code class="text-xs font-mono bg-surface-100 text-surface-700 px-1.5 py-0.5 rounded">font-size</code>. Use
+        <code class="text-xs font-mono bg-base-700 text-fore-300 px-1.5 py-0.5 rounded">font-size</code>. Use
         Tailwind text utilities to scale consistently with surrounding text.
       </p>
-      <div class="rounded-xl border border-surface-200 bg-white overflow-hidden divide-y divide-surface-100">
+      <div class="rounded-xl border border-base-700 bg-base-800 overflow-hidden divide-y divide-base-700">
         @for (size of sizes; track size.class) {
           <div class="flex items-center gap-6 px-6 py-4">
-            <span class="w-24 shrink-0 text-xs font-mono text-primary-600">{{ size.class }}</span>
-            <span class="w-16 shrink-0 text-xs text-surface-500">{{ size.px }}</span>
-            <span class="w-32 shrink-0 text-xs text-surface-400">{{ size.usage }}</span>
-            <span [class]="'iconoir-activity text-surface-700 ' + size.class"></span>
+            <span class="w-24 shrink-0 text-xs font-mono text-accent-500">{{ size.class }}</span>
+            <span class="w-16 shrink-0 text-xs text-fore-600">{{ size.px }}</span>
+            <span class="w-32 shrink-0 text-xs text-fore-700">{{ size.usage }}</span>
+            <span [class]="'iconoir-activity text-fore-300 ' + size.class"></span>
           </div>
         }
       </div>
@@ -108,23 +108,23 @@ interface IconGroup {
 
     <!-- Icon Groups -->
     <section class="mb-12">
-      <h2 class="text-xl font-bold text-surface-900 mb-2">Icon Library</h2>
-      <p class="text-sm text-surface-500 mb-6">
+      <h2 class="text-xl font-bold text-fore-300 mb-2">Icon Library</h2>
+      <p class="text-sm text-fore-600 mb-6">
         A curated selection of icons relevant to Trakn. For the full catalog visit
-        <a href="https://iconoir.com" target="_blank" class="text-primary-600 hover:underline">iconoir.com</a>.
+        <a href="https://iconoir.com" target="_blank" class="text-accent-500 hover:underline">iconoir.com</a>.
       </p>
 
       <div class="space-y-8">
         @for (group of iconGroups; track group.label) {
           <div>
-            <p class="text-xs font-semibold text-surface-400 uppercase tracking-wider mb-4">{{ group.label }}</p>
+            <p class="text-xs font-semibold text-fore-700 uppercase tracking-wider mb-4">{{ group.label }}</p>
             <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
               @for (icon of group.icons; track icon.name) {
                 <div
-                  class="flex flex-col items-center gap-2 rounded-xl border border-surface-200 bg-white p-4 hover:border-primary-300 hover:bg-primary-50 transition-colors"
+                  class="flex flex-col items-center gap-2 rounded-xl border border-base-700 bg-base-800 p-4 hover:border-accent-500/30 hover:bg-base-700 transition-colors"
                 >
-                  <span [class]="icon.class + ' text-2xl text-surface-700'"></span>
-                  <span class="text-xs text-surface-500 text-center leading-tight">{{ icon.name }}</span>
+                  <span [class]="icon.class + ' text-2xl text-fore-300'"></span>
+                  <span class="text-xs text-fore-600 text-center leading-tight">{{ icon.name }}</span>
                 </div>
               }
             </div>
@@ -135,25 +135,25 @@ interface IconGroup {
 
     <!-- Guidelines -->
     <section class="mb-12">
-      <h2 class="text-xl font-bold text-surface-900 mb-2">Guidelines</h2>
+      <h2 class="text-xl font-bold text-fore-300 mb-2">Guidelines</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="rounded-xl border border-success-200 bg-success-50 p-5">
-          <p class="text-xs font-semibold text-success-700 uppercase tracking-wider mb-3">Do</p>
+        <div class="rounded-xl border border-accent-500/20 bg-accent-500/10 p-5">
+          <p class="text-xs font-semibold text-accent-500 uppercase tracking-wider mb-3">Do</p>
           <ul class="space-y-2">
             @for (item of dos; track item) {
-              <li class="flex items-start gap-2 text-sm text-surface-700">
-                <span class="text-success-600 font-bold shrink-0 mt-0.5">&#10003;</span>
+              <li class="flex items-start gap-2 text-sm text-fore-300">
+                <span class="text-accent-500 font-bold shrink-0 mt-0.5">&#10003;</span>
                 {{ item }}
               </li>
             }
           </ul>
         </div>
-        <div class="rounded-xl border border-danger-200 bg-danger-50 p-5">
-          <p class="text-xs font-semibold text-danger-700 uppercase tracking-wider mb-3">Don&apos;t</p>
+        <div class="rounded-xl border border-danger-500/20 bg-danger-500/10 p-5">
+          <p class="text-xs font-semibold text-danger-400 uppercase tracking-wider mb-3">Don&apos;t</p>
           <ul class="space-y-2">
             @for (item of donts; track item) {
-              <li class="flex items-start gap-2 text-sm text-surface-700">
-                <span class="text-danger-600 font-bold shrink-0 mt-0.5">&#10007;</span>
+              <li class="flex items-start gap-2 text-sm text-fore-300">
+                <span class="text-danger-400 font-bold shrink-0 mt-0.5">&#10007;</span>
                 {{ item }}
               </li>
             }

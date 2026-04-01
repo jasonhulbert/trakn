@@ -8,76 +8,78 @@ import {
   UiFormFieldDirective,
   UiInputDirective,
   UiLabelDirective,
+  UiPatternHeroComponent,
   UiToastService,
 } from 'src/app/shared/components';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, RouterLink, UiFormFieldDirective, UiLabelDirective, UiInputDirective, UiButtonDirective],
+  imports: [FormsModule, RouterLink, UiFormFieldDirective, UiLabelDirective, UiInputDirective, UiButtonDirective, UiPatternHeroComponent],
   template: `
-    <div class="flex flex-col space-y-6 w-full">
-      <div>
-        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Sign in to Trakn</h2>
+    <div class="relative mb-8 h-48 -mx-4 overflow-hidden">
+      <ui-pattern-hero class="absolute inset-0" />
+      <div class="relative z-10 flex items-center justify-center h-full">
+        <h2 class="text-3xl font-extrabold text-fore-300">Sign in to Trakn</h2>
       </div>
-      <form class="mt-8 space-y-6" (ngSubmit)="onSubmit()">
-        <div uiFormField>
-          <label uiLabel for="email">Email address</label>
-          <input
-            uiInput
-            id="email"
-            name="email"
-            type="email"
-            [(ngModel)]="email"
-            required
-            placeholder="Email address"
-          />
-        </div>
-
-        <div uiFormField>
-          <label uiLabel for="password">Password</label>
-          <input
-            uiInput
-            id="password"
-            name="password"
-            type="password"
-            [(ngModel)]="password"
-            required
-            placeholder="Password"
-          />
-        </div>
-
-        <div>
-          <button type="submit" uiButton class="w-full" [disabled]="isLoading()">
-            {{ isLoading() ? 'Signing in...' : 'Sign in' }}
-          </button>
-        </div>
-
-        <div class="flex items-center justify-between">
-          <div class="text-sm">
-            <a routerLink="/auth/register" class="font-medium text-indigo-600 hover:text-indigo-500">
-              Don't have an account? Sign up
-            </a>
-          </div>
-        </div>
-
-        <div class="mt-6">
-          <div class="relative">
-            <div class="absolute inset-0 flex items-center">
-              <div class="w-full border-t border-gray-300"></div>
-            </div>
-            <div class="relative flex justify-center text-sm">
-              <span class="px-2 bg-gray-50 text-gray-500">Or continue with</span>
-            </div>
-          </div>
-
-          <div class="mt-6 grid grid-cols-2 gap-3">
-            <button type="button" uiButton (click)="signInWithGoogle()">Google</button>
-            <button type="button" uiButton (click)="signInWithApple()">Apple</button>
-          </div>
-        </div>
-      </form>
     </div>
+    <form class="space-y-6" (ngSubmit)="onSubmit()">
+      <div uiFormField>
+        <label uiLabel for="email">Email address</label>
+        <input
+          uiInput
+          id="email"
+          name="email"
+          type="email"
+          [(ngModel)]="email"
+          required
+          placeholder="Email address"
+        />
+      </div>
+
+      <div uiFormField>
+        <label uiLabel for="password">Password</label>
+        <input
+          uiInput
+          id="password"
+          name="password"
+          type="password"
+          [(ngModel)]="password"
+          required
+          placeholder="Password"
+        />
+      </div>
+
+      <div>
+        <button type="submit" uiButton class="w-full" [disabled]="isLoading()">
+          {{ isLoading() ? 'Signing in...' : 'Sign in' }}
+        </button>
+      </div>
+
+      <div class="flex items-center justify-between">
+        <div class="text-sm">
+          <a routerLink="/auth/register" class="font-medium text-accent-500 hover:text-accent-400">
+            Don't have an account? Sign up
+          </a>
+        </div>
+      </div>
+
+      <div class="mt-6">
+        <div class="relative">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-base-700"></div>
+          </div>
+          <div class="relative flex justify-center text-sm">
+            <span class="px-2 bg-bg text-fore-600">Or continue with</span>
+          </div>
+        </div>
+
+        <div class="mt-6 grid grid-cols-2 gap-3">
+          <button type="button" uiButton (click)="signInWithGoogle()">Google</button>
+          <button type="button" uiButton (click)="signInWithApple()">Apple</button>
+        </div>
+      </div>
+    </form>
   `,
   host: {
     class: 'block w-full max-w-md m-auto',

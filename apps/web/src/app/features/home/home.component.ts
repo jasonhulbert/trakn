@@ -12,14 +12,14 @@ import { UiButtonDirective, UiCardComponent, UiCardHeaderDirective } from 'src/a
   imports: [RouterLink, DatePipe, UiButtonDirective, UiCardComponent, UiCardHeaderDirective],
   template: `
     <div class="text-center mb-8">
-      <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">Welcome to Trakn</h2>
+      <h2 class="text-3xl font-extrabold text-fore-300 sm:text-4xl">Welcome to Trakn</h2>
     </div>
 
     @if (!userProfileService.hasProfile()) {
       <!-- Complete Profile CTA -->
-      <div class="max-w-md mx-auto bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-        <h3 class="text-lg font-medium text-yellow-900 mb-2">Complete Your Profile</h3>
-        <p class="text-sm text-yellow-700 mb-4">Tell us about yourself to get personalized workout recommendations.</p>
+      <div class="max-w-md mx-auto bg-accent-500/10 border border-accent-500/20 rounded-lg p-6">
+        <h3 class="text-lg font-medium text-accent-400 mb-2">Complete Your Profile</h3>
+        <p class="text-sm text-fore-500 mb-4">Tell us about yourself to get personalized workout recommendations.</p>
         <a routerLink="/profile" uiButton>Set Up Profile</a>
       </div>
     } @else {
@@ -31,41 +31,33 @@ import { UiButtonDirective, UiCardComponent, UiCardHeaderDirective } from 'src/a
 
       <ui-card [variant]="'elevated'" [padding]="'none'">
         <div uiCardHeader>
-          <h3 class="text-sm font-semibold text-gray-700">Recent Workouts</h3>
+          <h3 class="text-sm font-semibold text-fore-300">Recent Workouts</h3>
           @if (recentWorkouts().length > 0) {
-            <a routerLink="/workouts" class="text-xs text-indigo-600 hover:text-indigo-800">View All</a>
+            <a routerLink="/workouts" class="text-xs text-accent-500 hover:text-accent-400">View All</a>
           }
         </div>
-        <div class="divide-y divide-gray-100">
+        <div class="divide-y divide-base-700">
           @if (workoutService.isLoadingWorkouts()) {
             <div class="flex justify-center py-6">
-              <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-600"></div>
+              <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-accent-500"></div>
             </div>
           } @else if (recentWorkouts().length === 0) {
             <div class="text-center py-6">
-              <p class="text-sm text-gray-400">No workouts yet</p>
+              <p class="text-sm text-fore-700">No workouts yet</p>
             </div>
           } @else {
             @for (workout of recentWorkouts(); track workout.id) {
               <a
                 [routerLink]="['/workouts', workout.id]"
-                class="flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors"
+                class="flex items-center justify-between px-4 py-3 hover:bg-base-800 transition-colors"
               >
                 <div class="flex items-center gap-3">
-                  <span
-                    class="px-2 py-0.5 text-xs font-medium rounded-full"
-                    [class.bg-purple-100]="workout.workout_type === 'hypertrophy'"
-                    [class.text-purple-800]="workout.workout_type === 'hypertrophy'"
-                    [class.bg-red-100]="workout.workout_type === 'strength'"
-                    [class.text-red-800]="workout.workout_type === 'strength'"
-                    [class.bg-green-100]="workout.workout_type === 'conditioning'"
-                    [class.text-green-800]="workout.workout_type === 'conditioning'"
-                  >
+                  <span class="px-2 py-0.5 text-xs font-medium rounded-full bg-base-700 text-fore-300">
                     {{ formatWorkoutType(workout.workout_type) }}
                   </span>
-                  <span class="text-sm text-gray-600">{{ workout.data.total_duration_minutes }} min</span>
+                  <span class="text-sm text-fore-500">{{ workout.data.total_duration_minutes }} min</span>
                 </div>
-                <span class="text-xs text-gray-400">{{ workout.created_at | date: 'MMM d' }}</span>
+                <span class="text-xs text-fore-700">{{ workout.created_at | date: 'MMM d' }}</span>
               </a>
             }
           }

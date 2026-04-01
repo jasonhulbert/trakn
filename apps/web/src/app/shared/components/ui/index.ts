@@ -47,3 +47,7 @@ export type {
   UiCardBodyPadding,
   UiCardAccentColor,
 } from './card/ui-card.types';
+export { UiPatternComponent } from './pattern/ui-pattern.component';
+export { UiPatternHeroComponent } from './pattern/ui-pattern-hero.component';
+export { UiPatternDividerComponent } from './pattern/ui-pattern-divider.component';
+export type { UiPatternType } from './pattern/ui-pattern.types';

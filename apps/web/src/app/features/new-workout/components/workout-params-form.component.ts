@@ -67,9 +67,9 @@ type WorkoutType = 'hypertrophy' | 'strength' | 'conditioning';
           <div>
             <label class="flex items-center space-x-2">
               <input type="checkbox" formControlName="tempo_focus" class="rounded" />
-              <span class="text-sm font-medium text-gray-700">Emphasize controlled tempo</span>
+              <span class="text-sm font-medium text-fore-300">Emphasize controlled tempo</span>
             </label>
-            <p class="mt-1 text-sm text-gray-500">Focus on slow, controlled movements for muscle tension</p>
+            <p class="mt-1 text-sm text-fore-600">Focus on slow, controlled movements for muscle tension</p>
           </div>
 
           <div uiFormField>
@@ -213,8 +213,8 @@ type WorkoutType = 'hypertrophy' | 'strength' | 'conditioning';
 
         <!-- Error Message -->
         @if (errorMessage()) {
-          <div class="p-4 bg-red-50 border border-red-200 rounded-md">
-            <p class="text-sm text-red-600">{{ errorMessage() }}</p>
+          <div class="p-4 bg-danger-500/10 border border-danger-500/20 rounded-md">
+            <p class="text-sm text-danger-400">{{ errorMessage() }}</p>
           </div>
         }
 

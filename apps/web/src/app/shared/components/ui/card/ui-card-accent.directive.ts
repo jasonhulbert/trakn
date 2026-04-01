@@ -3,14 +3,9 @@ import { cx } from '../_internal';
 import type { UiCardAccentColor } from './ui-card.types';
 
 const COLOR_CLASSES: Record<UiCardAccentColor, string> = {
-  primary: 'bg-primary-500',
-  cyan: 'bg-cyan-500',
-  violet: 'bg-violet-500',
-  rose: 'bg-rose-500',
-  success: 'bg-success-500',
+  default: 'bg-fore-600',
+  accent: 'bg-accent-500',
   danger: 'bg-danger-500',
-  warning: 'bg-warning-500',
-  info: 'bg-info-500',
 };
 
 @Directive({
@@ -23,7 +18,7 @@ const COLOR_CLASSES: Record<UiCardAccentColor, string> = {
   },
 })
 export class UiCardAccentDirective {
-  readonly color = input<UiCardAccentColor>('primary');
+  readonly color = input<UiCardAccentColor>('default');
 
   protected readonly hostClass = computed(() =>
     cx('absolute inset-y-[var(--radius-xl)] left-1.5 w-1 rounded-full', COLOR_CLASSES[this.color()])

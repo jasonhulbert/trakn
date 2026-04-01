@@ -34,7 +34,7 @@ import {
     >
       <div [uiAccordionItem]="'revision'" class="border-0">
         <button uiAccordionTrigger [disabled]="isLoading()" class="h-full w-auto px-0 py-0 hover:bg-transparent">
-          <span class="inline-flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-800">
+          <span class="inline-flex items-center gap-2 text-sm font-medium text-accent-500 hover:text-accent-400">
             <app-icon name="sparks" class="inline-block h-6 w-6"></app-icon>
             <span>{{ label() }}</span>
           </span>
@@ -53,7 +53,7 @@ import {
                 class="text-sm"
               ></textarea>
               <div class="flex items-center justify-between">
-                <span class="text-xs text-gray-400">{{ revisionText.length }}/500</span>
+                <span class="text-xs text-fore-700">{{ revisionText.length }}/500</span>
                 <div class="flex gap-2">
                   <button type="button" uiButton (click)="onCancel()" [disabled]="isLoading()">Cancel</button>
                   <button

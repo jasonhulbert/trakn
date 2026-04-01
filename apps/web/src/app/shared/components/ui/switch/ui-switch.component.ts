@@ -40,7 +40,7 @@ export class UiSwitchComponent {
       'transition-colors',
       UI_STYLES.focusVisibleRing,
       UI_STYLES.disabled,
-      this.checkedState() ? 'bg-primary-500' : 'bg-surface-300'
+      this.checkedState() ? 'bg-accent-500' : 'bg-base-600'
     );
 
   protected readonly thumbClass = () =>

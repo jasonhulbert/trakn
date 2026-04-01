@@ -81,6 +81,28 @@ body {
   color: var(--color-fg);
 }
 
+/* ── Geometric Patterns ── */
+/* Workout-type SVG patterns used as repeating backgrounds via UiPatternComponent. */
+/* Defined globally to avoid Angular component style budgets (4 kB warn / 8 kB error). */
+
+.pattern-hypertrophy {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Ccircle cx='30' cy='30' r='28' fill='none' stroke='%23F5F0E4' stroke-width='1'/%3E%3Ccircle cx='30' cy='30' r='20' fill='none' stroke='%23F5F0E4' stroke-width='1'/%3E%3Ccircle cx='30' cy='30' r='12' fill='none' stroke='%23F5F0E4' stroke-width='1'/%3E%3Ccircle cx='30' cy='30' r='4' fill='%23F5F0E4'/%3E%3C/svg%3E");
+  background-size: 60px 60px;
+  background-repeat: repeat;
+}
+
+.pattern-strength {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24'%3E%3Cpath d='M24 0v24M0 24h24' stroke='%23F5F0E4' stroke-width='1' fill='none'/%3E%3C/svg%3E");
+  background-size: 24px 24px;
+  background-repeat: repeat;
+}
+
+.pattern-conditioning {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath d='M-4 4l8-8M0 16l16-16M12 20l8-8' stroke='%23F5F0E4' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+  background-size: 16px 16px;
+  background-repeat: repeat;
+}
+
 /* ── supports-base-select custom variant ── */
 /* Shorthand for @supports (appearance: base-select). Used by UiSelectDirective. */
 @custom-variant supports-base-select {

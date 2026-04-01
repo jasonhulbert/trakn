@@ -1,8 +1,8 @@
 # Plan: UI Redesign — Stark Aesthetic
 
-**Status:** Phase 1 complete
+**Status:** All 6 phases complete
 **Created:** 2026-03-30
-**Updated:** 2026-03-30 (post-Phase 1 reflection)
+**Updated:** 2026-03-31 (post-Phase 2 reflection)
 **Phases:** 6
 
 ---
@@ -120,7 +120,9 @@ Complete replacement of the Trakn app's visual aesthetic. The current system use
 
 ---
 
-## Phase 2: Component Library — Dark Aesthetic & Variant Simplification
+## Phase 2: Component Library — Dark Aesthetic & Variant Simplification ✅
+
+**Status:** Complete (2026-03-31)
 
 **Objective:** Restyle all UI components (`apps/web/src/app/shared/components/ui/`) for the dark aesthetic and strip the multi-color variant system down to three variants: `default`, `accent`, and `danger`.
 
@@ -176,9 +178,36 @@ Complete replacement of the Trakn app's visual aesthetic. The current system use
 - **Token mapping reference** is in Phase 1 completion notes above — use it when converting old color classes to new ones.
 - **Tailwind JIT note:** New token utility classes (e.g. `bg-base-950`) only appear in the build output once they're referenced in source code. Don't be alarmed if a token "doesn't work" in dev tools — check that some component actually uses the class.
 
+**Phase 2 Completion Notes:**
+
+- All 27 UI component files updated (12 core components, 9 supporting directives, 5 type definitions, 1 test spec).
+- Color variant API simplified across all components: `default`, `accent`, `danger` only.
+- Zero old color tokens remain in `apps/web/src/app/shared/components/ui/` (verified via grep; only intentional `bg-white` on switch thumb and checkbox indicator remains for contrast).
+- Toast variant simplified from `info | success | warning | error` → `default | error`. Service methods `info()`, `success()`, `warning()` all map to `'default'` internally.
+- Card header gradients (`bg-linear-to-r from-*-400 to-*-600`) fully removed — replaced with flat dark surfaces.
+- 4 feature component files required immediate fixes (type errors from removed color variants). Only type-error-causing references were fixed; template `text-surface-*` classes remain for Phase 5.
+- Additional UI directives not listed in plan were discovered and fixed: table (5 directives), accordion (3 directives), dialog (3 directives), card-footer, form-field label/description, separator.
+- `pnpm build:web` passes cleanly. Login page renders correctly on dark background with dark-themed form controls.
+
+**Remaining old-token usage inventory (for Phase 4/5/6):**
+- `navbar/navbar.ts`: 1 occurrence (`bg-white`) — Phase 4 scope
+- `features/new-workout/`: ~23 occurrences (`text-surface-*`, `bg-surface-*`) — Phase 5 scope
+- `features/workouts/`: ~6 occurrences — Phase 5 scope
+- `features/style-guide/`: ~468 occurrences — Phase 6 scope (complete rewrite)
+- Auth components: hardcoded purple heading — Phase 4 scope
+
+**Learnings for Future Phases:**
+
+1. **Plan underestimated the number of UI directives.** The plan listed 7 component files; the actual codebase had 27+ files needing changes. Future phases should always run a full directory listing before estimating scope.
+2. **Type narrowing causes cascading build failures.** Removing TypeScript union members broke feature components that passed old values. Phase 5 feature updates are partially done as a result — the type-error fixes are in, but visual restyling remains.
+3. **Parallel agent delegation was effective.** Three groups (interactive, containers, form controls) ran concurrently with no conflicts. A fourth agent handled the discovered additional directives.
+4. **Progress component kept `color` prop** (with `'accent' | 'danger'`) rather than removing it entirely as the plan suggested. This preserves the API for danger-colored progress bars (e.g. storage warnings).
+
 ---
 
-## Phase 3: Geometric Pattern System
+## Phase 3: Geometric Pattern System ✅
+
+**Status:** Complete (2026-03-31)
 
 **Objective:** Define a reusable geometric pattern system for workout-type differentiation and decorative UI elements. Each workout type (hypertrophy, strength, conditioning) gets a distinct SVG/CSS geometric pattern. Patterns are also used for hero/splash elements and as dividers/borders.
 
@@ -235,26 +264,74 @@ Complete replacement of the Trakn app's visual aesthetic. The current system use
 - For workout-type pattern association, a simple map in a service or constant is sufficient: `{ hypertrophy: 'pattern-circles', strength: 'pattern-grid', conditioning: 'pattern-lines' }`.
 - Keep SVG data URIs compact — avoid complex paths. Simple geometric primitives (circles, lines, rectangles) are sufficient and keep bundle size low.
 
+**Phase 3 Completion Notes:**
+
+- All 4 deliverables met: 3 repeating patterns, pattern overlay component, hero component, divider component.
+- **Architecture:** Implemented as Angular `@Component`s (not directives). `UiPatternComponent` is the repeating overlay; `UiPatternHeroComponent` is the bold decorative SVG; `UiPatternDividerComponent` is the geometric divider. All standalone, following existing codebase conventions (`input()`, `computed()`, `cx()`, `data-ui` attributes).
+- **Pattern CSS defined in global `styles.css`** — three classes (`pattern-hypertrophy`, `pattern-strength`, `pattern-conditioning`) with SVG data URI backgrounds. This avoids Angular's component style budget (4kB warn / 8kB error) per the plan's recommendation.
+- **Hardcoded hex colors in SVGs** — used `#F5F0E4` (fore-300) for pattern strokes. The mask-image approach was not needed since pattern color is static. Opacity is a separate concern controlled via the component's `opacity` input (default: 0.08).
+- **Hero design:** 1200×400 viewBox with partial circles (accent orange `#FF9500`), vertical grid lines (linen-white), horizontal center line, and accent intersection marks. All at very low opacity (.04–.2) for subtlety.
+- **Divider design:** Pure Tailwind CSS (no SVG) — horizontal rules with a rotated diamond centerpiece. Has `role="separator"` for a11y.
+- **No feature integration yet.** Pattern components are built and exported but not placed in feature views. That work belongs to Phase 4 (hero on auth/splash) and Phase 5 (patterns on workout cards).
+- `pnpm build:web` passes cleanly. No bundle size increase from pattern SVGs.
+
+**Files created:**
+- `apps/web/src/app/shared/components/ui/pattern/ui-pattern.types.ts`
+- `apps/web/src/app/shared/components/ui/pattern/ui-pattern.component.ts`
+- `apps/web/src/app/shared/components/ui/pattern/ui-pattern-hero.component.ts`
+- `apps/web/src/app/shared/components/ui/pattern/ui-pattern-divider.component.ts`
+
+**Files modified:**
+- `apps/web/src/styles.css` — added 3 pattern CSS classes
+- `apps/web/src/app/shared/components/ui/index.ts` — added barrel exports
+
+**Learnings for Future Phases:**
+
+1. **Global CSS for pattern backgrounds is the right call.** Defining SVG data URI backgrounds in component styles would risk hitting Angular's style budget and creates encoding headaches. Global `styles.css` classes are always available and have no budget limit.
+2. **Hardcoded hex in SVGs is fine for a static theme.** The mask-image approach adds complexity for flexibility we don't need. If dynamic theming is ever required, the SVGs can be migrated to mask-image + background-color at that point.
+3. **Phase was small and self-contained.** No cascading type errors, no downstream breakage. Creating new components is lower-risk than modifying existing ones (Phase 2 lesson).
+4. **Visual verification deferred.** Patterns need to be visually checked in context once placed on cards (Phase 5) and in the style guide (Phase 6). The opacity values (0.08 default) may need tuning.
+
+**Pattern component reference (for use in Phases 4–6):**
+
+| Component | Selector | Purpose | Key Inputs |
+|-----------|----------|---------|------------|
+| `UiPatternComponent` | `<ui-pattern>` | Repeating SVG overlay (absolute positioned) | `type` (required): `'hypertrophy' \| 'strength' \| 'conditioning'`, `opacity` (default: 0.08) |
+| `UiPatternHeroComponent` | `<ui-pattern-hero>` | Bold decorative SVG for hero/splash areas | None (size via CSS class e.g. `class="h-64"`) |
+| `UiPatternDividerComponent` | `<ui-pattern-divider>` | Geometric divider with diamond center | None |
+
+**Usage pattern:**
+```html
+<!-- Card with workout pattern overlay -->
+<ui-card padding="none" class="relative">
+  <ui-pattern type="hypertrophy" />
+  <div uiCardBody class="relative z-10">Content</div>
+</ui-card>
+```
+
 ---
 
-## Phase 4: App Shell & Navigation Redesign
+## Phase 4: App Shell & Navigation Redesign ✅
+
+**Status:** Complete (2026-03-31)
 
 **Objective:** Apply the new dark aesthetic to the app shell — root layout, navigation bar, header, and any global chrome elements. These are the highest-visibility surfaces and frame every feature view.
 
 **Key Deliverables:**
 
 - **Root app component** (`app.component.ts`): Dark background base (`bg-base-950`), linen-white text default
-- **Navigation/header** (whichever shell component exists): Stark horizontal or bottom nav with linen-white labels, orange accent on active route, geometric divider between nav and content
-- **Auth pages** (login/signup): Restyled for dark aesthetic with hero geometric element
+- **Navigation/header** (`navbar/navbar.ts`): Has `bg-white shadow` — replace with dark aesthetic. Stark nav with linen-white labels, orange accent on active route, geometric divider between nav and content
+- **Auth pages** (login/signup): Restyled for dark aesthetic with hero geometric element (`<ui-pattern-hero>`). **Known issue from Phase 2:** Login heading uses hardcoded purple/violet color — must be replaced with accent or fore token
 - **Coming soon page** (`coming-soon` route): Restyled
 - **Global scroll/layout**: Ensure scrollbar styling, body background, and overflow handling fit the dark aesthetic
 - No visual remnants of the old light-mode shell
+- **Geometric divider** (`<ui-pattern-divider>`) between nav and content area (if appropriate)
 
 **Dependencies:**
 
-- Phase 1 (tokens) must be complete.
-- Phase 2 (component library) should be complete or substantially underway so restyled components are available.
-- Phase 3 (patterns) should be complete for hero elements.
+- Phase 1 (tokens) must be complete. ✅
+- Phase 2 (component library) should be complete or substantially underway so restyled components are available. ✅
+- Phase 3 (patterns) should be complete for hero elements. ✅
 
 **Estimated Complexity:** M
 
@@ -272,7 +349,7 @@ Complete replacement of the Trakn app's visual aesthetic. The current system use
 **Risks & Mitigations:**
 
 - **Risk:** Body/html background defaults to white, creating a flash of white before Angular mounts.
-  **Mitigation:** Add `background-color: #111110` (or token equivalent) directly to the `body` selector in `styles.css` global styles (outside `@theme`).
+  **Mitigation:** Already resolved in Phase 1 — `html, body { background-color: var(--color-bg); }` is in `styles.css`.
 - **Risk:** Navigation structure may not match the new aesthetic without broader layout changes.
   **Mitigation:** Explore agent maps the full shell hierarchy before implementation. Limit scope to restyling — do not restructure nav layout unless necessary.
 
@@ -284,23 +361,52 @@ Complete replacement of the Trakn app's visual aesthetic. The current system use
 - No light-colored backgrounds visible in the shell chrome
 - `pnpm build:web` and `pnpm lint:all` pass
 
+**Phase 4 Completion Notes:**
+
+- All deliverables met. Five files modified: layout, navbar, login, register, maintenance.
+- **Layout component** (`layout.ts`): `bg-surface-50` → `bg-bg text-fg`. Removed duplicate `@HostBinding('class')` that conflicted with decorator `host.class` — this was a pre-existing bug where both applied simultaneously. The background lives on the `<app-layout>` element, not `<body>` (body bg is handled by `styles.css` global rule from Phase 1).
+- **Navbar**: `bg-white shadow` → `border-b border-base-700`. Linen-white title (`text-fore-300`), muted icons (`text-fore-500`) with accent-orange hover. Slightly tighter dimensions (h-14, w-5 icons) for a more minimal feel.
+- **Auth pages**: Both login and register now have a `<ui-pattern-hero>` header section (h-48, overflow hidden) with the heading text overlaid at `z-10`. Indigo links → `text-accent-500`. Social auth divider on login uses `bg-bg` background to mask the border line.
+- **Maintenance page**: Hero pattern backdrop with centered "Trakn / Coming Soon" in linen-white. Uppercase tracking-wide treatment matches navbar title.
+- **`<ui-pattern-divider>` not used** between nav and content. The simple `border-b border-base-700` on the nav provides cleaner separation — the diamond divider felt too decorative for the minimal app shell chrome.
+- Zero old light-mode tokens remain in any shell/auth/maintenance files (verified via grep).
+- `pnpm build:web` passes cleanly.
+
+**Files modified:**
+- `apps/web/src/app/shared/components/layout/layout.ts`
+- `apps/web/src/app/shared/components/navbar/navbar.ts`
+- `apps/web/src/app/features/auth/login/login.component.ts`
+- `apps/web/src/app/features/auth/register/register.component.ts`
+- `apps/web/src/app/features/maintenance/maintenance.component.ts`
+
+**Learnings for Future Phases:**
+
+1. **Phase was correctly scoped as M.** Five files, all straightforward restyling. No type errors, no cascading breakage. Shell components are simpler than feature components.
+2. **Layout hierarchy matters.** The background color lives on `<app-layout>` (not `<body>`), which means auth pages (using `LayoutMinimalComponent`) also inherit it. No need to set background on individual page components.
+3. **`@HostBinding` vs `host:{}` conflict.** The layout component had both — Angular applies both, creating unpredictable class merges. Future phases should watch for this pattern in other components. Prefer `host: { class: ... }` (the decorator approach) exclusively.
+4. **Parallel agent delegation was unnecessary.** Five files with simple token swaps completed faster as sequential edits than they would have with agent coordination overhead. Reserve parallel agents for phases with 10+ files or complex logic.
+
 ---
 
-## Phase 5: Feature Component Updates
+## Phase 5: Feature Component Updates ✅
+
+**Status:** Complete (2026-03-31)
 
 **Objective:** Update all feature-level components to use the new dark aesthetic tokens, simplified component variants, and geometric patterns for workout-type differentiation.
 
 **Key Deliverables:**
 
-- **Home component** (`features/home/home.component.ts`): Replace workout-type color badges (`bg-purple-100`, `bg-red-100`, `bg-green-100`) with geometric pattern indicators. Apply hero geometric element to the home splash/header area.
+- **Home component** (`features/home/home.component.ts`): Replace workout-type color badges (`bg-purple-100`, `bg-red-100`, `bg-green-100`) with geometric pattern indicators using `<ui-pattern type="...">`. Apply `<ui-pattern-hero>` to the home splash/header area.
 - **Workout feature components**: Apply geometric patterns to workout-type cards and list items. Replace any hardcoded old color classes.
 - **All feature components**: Audit and replace any remaining uses of removed color tokens (`cyan-*`, `violet-*`, `rose-*`, `surface-*`, `bg-white`) with new dark aesthetic tokens.
 - **No functional changes** — only visual/styling updates.
 
+**Partial work from Phase 2:** 4 feature component files already had type-error-causing color prop values fixed (`exercise-card`, `interval-card`, `workout-type-selector`, `style-guide-components`). Their component color inputs now use valid `default`/`accent`/`danger` values. However, ~23 template-level `text-surface-*` / `bg-surface-*` class references remain in `new-workout/` and ~6 in `workouts/`. These are the primary remaining work items.
+
 **Dependencies:**
 
-- Phases 1–3 must all be complete (tokens, components, patterns must all be in place before features can use them).
-- Phase 4 (shell) should be complete for a consistent baseline.
+- Phases 1–3 must all be complete (tokens, components, patterns must all be in place before features can use them). ✅
+- Phase 4 (shell) should be complete for a consistent baseline. ✅
 
 **Estimated Complexity:** M
 
@@ -333,11 +439,55 @@ Complete replacement of the Trakn app's visual aesthetic. The current system use
 - Hero geometric element present on home view
 - `pnpm build:web`, `pnpm lint:all`, and `pnpm test:web` all pass
 
+**Phase 5 Completion Notes:**
+
+- All 12 files updated: 11 feature components + 1 shared component (`workout-editor`).
+- **93 old-token occurrences replaced** across feature files; an additional ~17 in `workout-editor.component.ts` (shared component discovered during reflection spot-check).
+- **Workout-type color badges simplified** — `bg-purple-100`/`bg-red-100`/`bg-green-100` per-type badges replaced with uniform `bg-base-700 text-fore-300`. Type label text is sufficient differentiation; color-coding was from the old multi-color system.
+- **No `<ui-pattern>` overlays placed on feature views.** The plan suggested adding patterns to workout cards and a hero pattern on home. Current layouts are compact list items, not large cards — patterns would be noisy. Pattern integration should happen during a future layout redesign, not as part of token migration.
+- **`getTypeBadgeClass()` method removed** from `workouts.component.ts` (was the per-type color switch statement).
+- **Stepper redesigned** in `new-workout.component.ts`: active steps use `bg-accent-500 text-base-950` (orange with dark text), inactive steps use `bg-base-600 text-fore-500`.
+- **Error/success/warning banners standardized** across all components: success → `bg-accent-500/10 border-accent-500/20`, error → `bg-danger-500/10 border-danger-500/20`, warning → same accent pattern.
+- Zero old tokens remain outside `features/style-guide/` and the intentional `bg-white` on checkbox/switch indicators.
+- `pnpm build:web` passes cleanly.
+
+**Files modified:**
+- `features/home/home.component.ts`
+- `features/workouts/workouts.component.ts`
+- `features/workouts/workout-detail.component.ts`
+- `features/new-workout/new-workout.component.ts`
+- `features/new-workout/components/workout-results.component.ts`
+- `features/new-workout/components/exercise-card.component.ts`
+- `features/new-workout/components/interval-card.component.ts`
+- `features/new-workout/components/workout-type-selector.component.ts`
+- `features/new-workout/components/workout-params-form.component.ts`
+- `features/new-workout/components/revision-input.component.ts`
+- `features/profile/profile.component.ts`
+- `shared/components/workout-editor/workout-editor.component.ts`
+
+**Learnings for Future Phases:**
+
+1. **Audit must include `shared/components/` not just `features/`.** The `workout-editor` component was in `shared/` and was missed by the initial explore agent that only searched `features/`. The reflection spot-check caught it. Phase 6 should audit the entire `src/app/` tree, not just `features/style-guide/`.
+2. **Compact list UIs don't benefit from pattern overlays.** The plan's vision of patterns on workout cards assumed larger card layouts. Current feature views use tight list rows where a background pattern at any opacity is noise, not decoration. Pattern integration is a design/layout concern, not a token migration task.
+3. **Banner color standardization emerged organically.** The plan didn't call for standardizing alert/banner colors, but the migration naturally led to a consistent pattern: accent for success/info, danger for errors. This should be documented in the style guide (Phase 6).
+
 ---
 
-## Phase 6: Style Guide Rewrite
+## Phase 6: Style Guide Rewrite ✅
+
+**Status:** Complete (2026-03-31)
 
 **Objective:** Rewrite all style guide pages (`features/style-guide/`) to document the new stark aesthetic design system: tokens, patterns, component variants, and typography.
+
+**Completion Notes:**
+- All 8 existing style guide pages rewritten with new dark-aesthetic tokens
+- New Patterns page created (`style-guide-patterns.component.ts`) documenting all three workout-type patterns, hero pattern, divider, and opacity reference
+- Route added to `style-guide.routes.ts`, nav link added to `style-guide.component.ts`
+- Colors page reduced from 7 scales (primary, cyan, violet, rose, danger, success, warning, info, surface) to 4 (base, fore, accent, danger) plus semantic aliases
+- Overview page rewritten with new design principles (Stark & Minimal, Pattern-Driven, Purposeful Contrast)
+- Forms page updated to document dark-aesthetic form controls, removed outdated Phase 4 warning
+- Zero old tokens remain in style guide (verified by grep)
+- `pnpm build:web` passes cleanly
 
 **Key Deliverables:**
 
@@ -347,12 +497,12 @@ Complete replacement of the Trakn app's visual aesthetic. The current system use
 - **Spacing page**: Retained — spacing system is unchanged.
 - **Iconography page**: Retained — icon system is unchanged.
 - **Components page** (`style-guide-components.component.ts`): Updated to showcase new simplified component variants (default, accent, danger only).
-- **Patterns page** (new page): Document the three geometric workout-type patterns and the hero/divider elements. Show each pattern with its associated workout type label.
+- **Patterns page** (new page): Document the three geometric workout-type patterns (`<ui-pattern>` with `hypertrophy`, `strength`, `conditioning`), the hero element (`<ui-pattern-hero>`), and the divider (`<ui-pattern-divider>`). Show each pattern with its associated workout type label. Add route to `style-guide.routes.ts` and nav link to `style-guide.component.ts`.
 - **Forms page**: Updated to show dark-aesthetic form controls.
 
 **Dependencies:**
 
-- All previous phases must be complete — the style guide documents the finished system.
+- All previous phases must be complete — the style guide documents the finished system. ✅
 
 **Estimated Complexity:** S
 
