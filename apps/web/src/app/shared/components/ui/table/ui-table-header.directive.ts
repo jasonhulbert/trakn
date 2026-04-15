@@ -4,7 +4,7 @@ import { Directive } from '@angular/core';
   selector: 'thead[uiTableHeader]',
   standalone: true,
   host: {
-    class: 'bg-surface-50',
+    class: 'bg-base-800',
     '[attr.data-ui]': "'table-header'",
   },
 })

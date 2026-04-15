@@ -10,10 +10,10 @@ import { cx } from '../_internal';
   },
 })
 export class UiCardFooterDirective {
-  /** Applies a muted surface background — use for action footers in composed cards. */
+  /** Applies a muted background — use for action footers in composed cards. */
   readonly muted = input(false, { transform: booleanAttribute });
 
   protected readonly hostClass = computed(() =>
-    cx('flex items-center px-4 py-3 border-t border-surface-200', this.muted() && 'bg-surface-50')
+    cx('flex items-center px-4 py-3 border-t border-border', this.muted() && 'bg-base-800')
   );
 }

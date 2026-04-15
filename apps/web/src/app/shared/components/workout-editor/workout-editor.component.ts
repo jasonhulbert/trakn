@@ -30,24 +30,24 @@ import { UiButtonDirective, UiInputDirective } from 'src/app/shared/components';
       <div class="mb-6">
         <div class="flex items-center justify-between mb-2">
           <h2 class="text-3xl font-bold">{{ formatWorkoutType(workout().workout_type) }} Workout</h2>
-          <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+          <span class="px-3 py-1 bg-base-700 text-fore-300 rounded-full text-sm font-medium">
             {{ getDifficultyLabel(workout().difficulty_rating) }}
           </span>
         </div>
-        <p class="text-gray-600">Total Duration: {{ workout().total_duration_minutes }} minutes</p>
+        <p class="text-fore-500">Total Duration: {{ workout().total_duration_minutes }} minutes</p>
       </div>
 
       <!-- Conflicting Parameters Warning -->
       @if (workout().conflicting_parameters) {
-        <div class="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-          <h3 class="text-sm font-semibold text-yellow-800 mb-1">Parameter Adjustments</h3>
-          <p class="text-sm text-yellow-700">{{ workout().conflicting_parameters }}</p>
+        <div class="mb-6 p-4 bg-accent-500/10 border border-accent-500/20 rounded-lg">
+          <h3 class="text-sm font-semibold text-accent-400 mb-1">Parameter Adjustments</h3>
+          <p class="text-sm text-accent-500/80">{{ workout().conflicting_parameters }}</p>
         </div>
       }
 
       <!-- Workout-Level Revision -->
       @if (editable()) {
-        <div class="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+        <div class="mb-6 p-4 bg-base-800 border border-base-700 rounded-lg">
           <app-revision-input
             label="Want to make some changes?"
             placeholder="e.g. 'Make it shorter' or 'Add more core work' or 'Reduce rest times'"
@@ -68,7 +68,7 @@ import { UiButtonDirective, UiInputDirective } from 'src/app/shared/components';
               </button>
             }
           </div>
-          <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+          <div class="bg-base-800 border border-base-700 rounded-lg p-4">
             @if (isEditingWarmup()) {
               @for (item of editWarmup; track $index) {
                 <div class="flex items-center gap-2 mb-2">
@@ -86,7 +86,7 @@ import { UiButtonDirective, UiInputDirective } from 'src/app/shared/components';
             } @else {
               <ul class="list-disc list-inside space-y-1">
                 @for (item of workout().warmup; track $index) {
-                  <li class="text-sm text-gray-700">{{ item }}</li>
+                  <li class="text-sm text-fore-300">{{ item }}</li>
                 }
               </ul>
             }
@@ -113,8 +113,8 @@ import { UiButtonDirective, UiInputDirective } from 'src/app/shared/components';
             </div>
 
             @if (getHypertrophyWorkout().estimated_volume) {
-              <div class="mt-4 p-3 bg-gray-50 border border-gray-200 rounded-md">
-                <p class="text-sm text-gray-700">
+              <div class="mt-4 p-3 bg-base-800 border border-base-700 rounded-md">
+                <p class="text-sm text-fore-300">
                   <span class="font-medium">Estimated Volume:</span> {{ getHypertrophyWorkout().estimated_volume }}
                 </p>
               </div>
@@ -138,8 +138,8 @@ import { UiButtonDirective, UiInputDirective } from 'src/app/shared/components';
             </div>
 
             @if (getStrengthWorkout().estimated_intensity) {
-              <div class="mt-4 p-3 bg-gray-50 border border-gray-200 rounded-md">
-                <p class="text-sm text-gray-700">
+              <div class="mt-4 p-3 bg-base-800 border border-base-700 rounded-md">
+                <p class="text-sm text-fore-300">
                   <span class="font-medium">Estimated Intensity:</span> {{ getStrengthWorkout().estimated_intensity }}
                 </p>
               </div>
@@ -162,8 +162,8 @@ import { UiButtonDirective, UiInputDirective } from 'src/app/shared/components';
             </div>
 
             @if (getConditioningWorkout().estimated_calories) {
-              <div class="mt-4 p-3 bg-gray-50 border border-gray-200 rounded-md">
-                <p class="text-sm text-gray-700">
+              <div class="mt-4 p-3 bg-base-800 border border-base-700 rounded-md">
+                <p class="text-sm text-fore-300">
                   <span class="font-medium">Estimated Calories:</span> ~{{
                     getConditioningWorkout().estimated_calories
                   }}
@@ -186,7 +186,7 @@ import { UiButtonDirective, UiInputDirective } from 'src/app/shared/components';
               </button>
             }
           </div>
-          <div class="bg-purple-50 border border-purple-200 rounded-lg p-4">
+          <div class="bg-base-800 border border-base-700 rounded-lg p-4">
             @if (isEditingCooldown()) {
               @for (item of editCooldown; track $index) {
                 <div class="flex items-center gap-2 mb-2">
@@ -204,7 +204,7 @@ import { UiButtonDirective, UiInputDirective } from 'src/app/shared/components';
             } @else {
               <ul class="list-disc list-inside space-y-1">
                 @for (item of workout().cooldown; track $index) {
-                  <li class="text-sm text-gray-700">{{ item }}</li>
+                  <li class="text-sm text-fore-300">{{ item }}</li>
                 }
               </ul>
             }
@@ -216,16 +216,16 @@ import { UiButtonDirective, UiInputDirective } from 'src/app/shared/components';
       @if (workout().general_notes) {
         <div class="mb-6">
           <h3 class="text-xl font-semibold mb-3">General Notes</h3>
-          <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <p class="text-sm text-gray-700 whitespace-pre-line">{{ workout().general_notes }}</p>
+          <div class="bg-base-800 border border-base-700 rounded-lg p-4">
+            <p class="text-sm text-fore-300 whitespace-pre-line">{{ workout().general_notes }}</p>
           </div>
         </div>
       }
 
       <!-- Error Display -->
       @if (error()) {
-        <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <p class="text-sm text-red-700">{{ error() }}</p>
+        <div class="mb-6 p-4 bg-danger-500/10 border border-danger-500/20 rounded-lg">
+          <p class="text-sm text-danger-400">{{ error() }}</p>
         </div>
       }
     </div>

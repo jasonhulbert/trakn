@@ -12,16 +12,16 @@ import { UiButtonDirective, UiToastService } from 'src/app/shared/components';
     <div class="max-w-4xl mx-auto">
       <!-- Saved Success Banner -->
       @if (isSaved() && savedWorkoutId()) {
-        <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center justify-between">
-          <p class="text-sm font-medium text-green-800">Workout saved successfully!</p>
+        <div class="mb-6 p-4 bg-accent-500/10 border border-accent-500/20 rounded-lg flex items-center justify-between">
+          <p class="text-sm font-medium text-accent-400">Workout saved successfully!</p>
           <div class="flex items-center gap-3">
             <a
               [routerLink]="['/workouts', savedWorkoutId()]"
-              class="text-sm text-green-700 hover:text-green-900 underline"
+              class="text-sm text-accent-500 hover:text-accent-400 underline"
             >
               View Workout
             </a>
-            <button type="button" (click)="onStartOver()" class="text-sm text-green-700 hover:text-green-900 underline">
+            <button type="button" (click)="onStartOver()" class="text-sm text-accent-500 hover:text-accent-400 underline">
               Create Another
             </button>
           </div>
@@ -42,7 +42,7 @@ import { UiButtonDirective, UiToastService } from 'src/app/shared/components';
       />
 
       <!-- Actions -->
-      <div class="flex justify-between pt-6 border-t border-gray-200">
+      <div class="flex justify-between pt-6 border-t border-base-700">
         <div class="flex gap-3">
           <button type="button" uiButton (click)="onBackToEdit()">Modify Parameters</button>
           <button type="button" uiButton (click)="onStartOver()">Start Over</button>
